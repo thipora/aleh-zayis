@@ -6,3 +6,11 @@ export const loginUserQuery = () => {
     WHERE 
         name = ?`;
 }
+export const registerUserQuery = () => {
+    return ` SELECT 
+        1
+    FROM 
+        users 
+    WHERE 
+        name = ?`;
+}

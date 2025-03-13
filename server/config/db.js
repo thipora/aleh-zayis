@@ -7,13 +7,13 @@ async function executeQuery(query, params) {
             host: 'localhost',
             user: 'root',
             port: 3306,
-            database: process.env.DB_NAME || 'alehzayis',
-            password: process.env.DB_PASSWORD || 1234
+            database: process.env.DB_NAME || 'alehZayis',
+            password: process.env.DB_PASSWORD || '1234'
         });
 
         connection.connect(err => {
             if (err) {
-                reject(err);
+                 reject(err);
                 return;
             }
 
