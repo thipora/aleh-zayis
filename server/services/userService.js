@@ -17,26 +17,25 @@ export class UserService {
             throw new Error("Invalid name or password");
         }
 
-        // השוואת הסיסמה עם הסיסמה המאוחסנת בבסיס הנתונים
         const isMatch = await bcrypt.compare(password, users[0].password);
         if (!isMatch) {
             throw new Error("Invalid name or password");
         }
 
-        delete users[0].password; // לא מחזירים את הסיסמה
+        delete users[0].password;
         return users[0];
     }
 
 
     async registerUser(params) {
-        const { name, password } = params;
+        const { name, password, email, isEmployee } = params;
         const userExists = await this.userExists(name);
         if (userExists) {
             throw new Error("User already exists");
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = { name: name, password: hashedPassword };
+        const newUser = { name: name, password: hashedPassword, email: email, isEmployee: isEmployee };
 
         // הכנס את המשתמש לטבלת המשתמשים
         const userId = await this.addUser(newUser);
