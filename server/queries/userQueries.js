@@ -1,6 +1,6 @@
 export const loginUserQuery = () => {
     return ` SELECT 
-        name, password
+        id_user, name, password, account_type
     FROM 
         users 
     WHERE 
