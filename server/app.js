@@ -1,5 +1,6 @@
 import express from 'express';
 import { authRouters } from './routes/authRouters.js';
+import jobRouter from './routes/jobsRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { logErrors } from './middleware/logError.js';
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/auth', authRouters);
+app.use('/worklogs', jobRouter);
 
 app.use(logErrors);
 

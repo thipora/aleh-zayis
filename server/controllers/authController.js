@@ -15,7 +15,7 @@ export class AuthController {
             next({
                 statusCode: ex.errno || 500,
                 message: ex.message || ex
-            });
+            });     
         }
     }
 
