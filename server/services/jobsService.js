@@ -1,20 +1,3 @@
-// import executeQuery from '../config/db.js';
-// import { GeneryQuery } from '../queries/generyQueries.js';
-
-// export class JobsService {
-//     static table = "jobs";
-
-//     async getJobsByEmployee(employeeId, { start = 0, range = 10, sort = "created_at DESC" } = {}) {
-//         const columns = "id_job, title, description, status, created_at";
-//         const conditions = ["employee_id"];
-//         const query = GeneryQuery.getQuery(JobsService.table, columns, conditions);
-//         const advancedQuery = GeneryQuery.getAdvancedQuery({ start, range, sort });
-//         const finalQuery = query + advancedQuery;
-
-//         return await executeQuery(finalQuery, [employeeId]);
-//     }
-// }
-
 
 import executeQuery from '../config/db.js';
 import { GeneryQuery } from '../queries/generyQueries.js';
@@ -52,32 +35,61 @@ export class JobsService {
 
 
         let query = `
-        SELECT 
-            w.book_id, 
-            w.date, 
-            w.work_quantity, 
-            w.notes, 
-            p.type AS payment_type
-        FROM alehzayis.work_logs w
-        JOIN alehzayis.payment_types p ON w.payment_type_id = p.id_payment_types
-        WHERE ${conditions.join(" AND ")}
-        `;
+        SELECT b.title, w.id_work_logs, w.date, w.work_quantity, w.description, w.notes, p.type AS payment_type FROM alehzayis.work_logs w JOIN alehzayis.payment_types p ON w.payment_type_id = p.id_payment_types JOIN alehzayis.books b ON w.book_id = b.id_book WHERE ${conditions.join(" AND ")}`;
 
         if (sort) {
             query += ` ORDER BY ${sort}`;
         }
-
-
-
-
-    
-        // const columns = "book_id, date, work_quantity, notes, payment_type_id";
-        // const query = GeneryQuery.getQuery(JobsService.table, columns, conditions);
-        // const advancedQuery = GeneryQuery.getAdvancedQuery({ start, range, sort });
-        // const finalQuery = query + advancedQuery;
-
-        // return await executeQuery(finalQuery, values);
         return await executeQuery(query, values);
 
     }
+
+
+
+    async updateJob(jobId, { date, workQuantity, bookId, description, notes, paymentTypeId }) {
+        const updateFields = [];
+        const values = [];
+
+        if (date) {
+            updateFields.push("date = ?");
+            values.push(date);
+        }
+
+        if (workQuantity) {
+            updateFields.push("work_quantity = ?");
+            values.push(workQuantity);
+        }
+
+        if (bookId) {
+            updateFields.push("book_id = ?");
+            values.push(bookId);
+        }
+
+        if (description) {
+            updateFields.push("description = ?");
+            values.push(description);
+        }
+
+        if (notes) {
+            updateFields.push("notes = ?");
+            values.push(notes);
+        }
+
+        if (paymentTypeId) {
+            updateFields.push("payment_type_id = ?");
+            values.push(paymentTypeId);
+        }
+
+        // מבנה השאילתה לעדכון
+        const query = `
+            UPDATE ${JobsService.table}
+            SET ${updateFields.join(", ")}
+            WHERE id_work_logs = ?
+        `;
+        
+        values.push(jobId); // הוספת מזהה העבודה לשאילתה
+
+        return await executeQuery(query, values);
+    }
+
 }

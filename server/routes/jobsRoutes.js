@@ -5,5 +5,7 @@ const jobRouter = express.Router();
 const jobsController = new JobsController();
 
 jobRouter.get('/:userId', jobsController.getJobsByUser);
+jobRouter.put('/:jobId', jobsController.updateJob); // עדכון עבודה לפי מזהה עבודה
+
 
 export default jobRouter;
