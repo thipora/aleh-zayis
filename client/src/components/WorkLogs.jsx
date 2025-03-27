@@ -136,4 +136,3 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
 };
 
 export default WorkLogs;
-

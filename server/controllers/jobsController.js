@@ -44,5 +44,26 @@ export class JobsController {
             });
         }
     }
+
+
+    async createJob(req, res, next) {
+        try {
+            const { userId } = req.params; // מזהה המשתמש
+            const { date, workQuantity, bookId, description, notes, paymentTypeId } = req.body; // פרטי העבודה
+
+            // קריאה לשירות להוספת העבודה
+            const newJob = await JobsController.jobsService.createJob(userId, {
+                date, workQuantity, bookId, description, notes, paymentTypeId
+            });
+
+            return res.status(201).json(newJob); // עבודה הוספה בהצלחה
+        } catch (ex) {
+            next({
+                statusCode: ex.errno || 500,
+                message: ex.message || ex
+            });
+        }
+    }
+
 }
 

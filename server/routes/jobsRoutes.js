@@ -6,6 +6,8 @@ const jobsController = new JobsController();
 
 jobRouter.get('/:userId', jobsController.getJobsByUser);
 jobRouter.put('/:jobId', jobsController.updateJob); // עדכון עבודה לפי מזהה עבודה
+jobRouter.post('/:userId', JobsController.prototype.createJob); // להוספת עבודה חדשה
+
 
 
 export default jobRouter;

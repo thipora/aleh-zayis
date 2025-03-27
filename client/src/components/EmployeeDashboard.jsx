@@ -4,6 +4,7 @@ import { APIrequests } from "../APIrequests";
 import WorkLogs from "./WorkLogs";
 import WorkForm from "./WorkForm";
 import ErrorNotification from "./ErrorNotification";
+import AddWorkDialog from "./AddWorkDialog"; // השתמש בקומפוננטה החדשה כאן
 
 const EmployeeDashboard = () => {
   const [workLogs, setWorkLogs] = useState([]);
@@ -29,20 +30,24 @@ const EmployeeDashboard = () => {
   // טיפול בשליחת עבודה חדשה
   const handleAddWork = async () => {
     try {
-      const { bookId, hoursWorked, comments } = newWork;
-      if (!bookId || !hoursWorked) {
+      const { book_id, quantity, description, notes } = newWork; // הגדרת הערכים מתוך הסטייט
+      if (!book_id || !quantity || !description) { // בדיקת שדות חובה
         setError("Please fill in all fields");
         return;
       }
-
-      await apiRequests.postRequest("/worklogs", { bookId, hoursWorked, comments });
-      setNewWork({ bookId: "", hoursWorked: "", comments: "" });
-      setOpen(false); // סגירת החלון לאחר השליחה
+  
+      // קריאה ל-API לשליחת הנתונים
+      await apiRequests.postRequest("/worklogs", { book_id, quantity, description, notes });
+  
+      // איפוס הסטייט לאחר הוספת העבודה
+      setNewWork({ book_id: "", quantity: "", description: "", notes: "" });
+      setOpen(false); // סגירת הדיאלוג
       fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
     } catch (err) {
-      setError("Failed to add work log");
+      setError("Failed to add work log"); // הצגת שגיאה במקרה של בעיה בהוספה
     }
   };
+  
 
   const handleUpdateWork = async (updatedWork) => {
     try {
@@ -81,7 +86,8 @@ const EmployeeDashboard = () => {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>הוספת עבודה חדשה</DialogTitle>
         <DialogContent>
-          <WorkForm newWork={newWork} setNewWork={setNewWork} handleAddWork={handleAddWork} />
+          {/* <WorkForm newWork={newWork} setNewWork={setNewWork} handleAddWork={handleAddWork} /> */}
+          <AddWorkDialog open={open} onClose={() => setOpen(false)} onAdd={handleAddWork} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">ביטול</Button>
