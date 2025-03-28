@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
-import { APIrequests } from "../APIrequests"; 
+import { APIrequests } from "../APIrequests";
 import WorkLogs from "./WorkLogs";
 import WorkForm from "./WorkForm";
 import ErrorNotification from "./ErrorNotification";
@@ -8,7 +8,13 @@ import AddWorkDialog from "./AddWorkDialog"; // השתמש בקומפוננטה 
 
 const EmployeeDashboard = () => {
   const [workLogs, setWorkLogs] = useState([]);
-  const [newWork, setNewWork] = useState({ bookId: "", hoursWorked: "", comments: "" });
+  const [newWork, setNewWork] = useState({
+    book_id: "",
+    quantity: "",
+    description: "",
+    notes: "",
+    date: new Date().toISOString().split('T')[0] // תאריך ברירת מחדל
+  });
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false); // מצב להצגת הדיאלוג
 
@@ -27,32 +33,74 @@ const EmployeeDashboard = () => {
     }
   };
 
-  // טיפול בשליחת עבודה חדשה
-  const handleAddWork = async () => {
+  // // טיפול בשליחת עבודה חדשה
+  // const handleAddWork = async () => {
+  //   try {
+  //     const { book_id, quantity, description, notes } = newWork; // הגדרת הערכים מתוך הסטייט
+  //     const userData = localStorage.getItem("user"); // שליפת פרטי המשתמש מ-localStorage
+  //     const user = JSON.parse(userData); // המרת המידע לאובייקט
+  //     const userId = user?.id_user; // ה-ID של המשתמש
+  //     const currentDate = new Date().toISOString().split('T')[0]; // תאריך של היום בפורמט YYYY-MM-DD
+
+  //     // if (!userId || !book_id || !quantity || !description) { // בדיקת שדות חובה
+  //     //   setError("Please fill in all fields");
+  //     //   return;
+  //     // }
+
+  //     // קריאה ל-API לשליחת הנתונים עם ה-ID של המשתמש והתאריך
+  //     await apiRequests.postRequest(`/worklogs/${userId}`, {
+  //       book_id,
+  //       quantity,
+  //       description,
+  //       notes,
+  //       user_id: userId, // הוספת ID של המשתמש
+  //       date: currentDate // הוספת התאריך של היום
+  //     });
+
+  //     // איפוס הסטייט לאחר הוספת העבודה
+  //     setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
+  //     setOpen(false); // סגירת הדיאלוג
+  //     fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
+  //   } catch (err) {
+  //     setError("Failed to add work log"); // הצגת שגיאה במקרה של בעיה בהוספה
+  //   }
+  // };
+
+  const handleAddWork = async (newWorkData) => {
     try {
-      const { book_id, quantity, description, notes } = newWork; // הגדרת הערכים מתוך הסטייט
-      if (!book_id || !quantity || !description) { // בדיקת שדות חובה
-        setError("Please fill in all fields");
-        return;
-      }
+      const { book_id, quantity, description, notes } = newWorkData; // קבלת הנתונים החדשים
+      const userData = localStorage.getItem("user");
+      const user = JSON.parse(userData);
+      const userId = user?.id_user;
+      const currentDate = new Date().toISOString().split('T')[0];
   
       // קריאה ל-API לשליחת הנתונים
-      await apiRequests.postRequest("/worklogs", { book_id, quantity, description, notes });
+      await apiRequests.postRequest(`/worklogs/${userId}`, {
+        book_id,
+        quantity,
+        description,
+        notes,
+        user_id: userId,
+        date: currentDate
+      });
+
+      setWorkLogs((prevWorkLogs) => [...prevWorkLogs, newWorkLog]);
   
-      // איפוס הסטייט לאחר הוספת העבודה
-      setNewWork({ book_id: "", quantity: "", description: "", notes: "" });
+      // עדכון הסטייט עם הערכים החדשים
+      // setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
       setOpen(false); // סגירת הדיאלוג
       fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
     } catch (err) {
-      setError("Failed to add work log"); // הצגת שגיאה במקרה של בעיה בהוספה
+      setError("Failed to add work log");
     }
   };
   
 
+
   const handleUpdateWork = async (updatedWork) => {
     try {
       // שליחת העבודה המעודכנת לשרת (יש לשלוח את הנתונים לרקורסיה המתאימה בשרת שלך)
-      await apiRequests.putRequest(`/worklogs/${updatedWork.id_work_logs}`, updatedWork); 
+      await apiRequests.putRequest(`/worklogs/${updatedWork.id_work_logs}`, updatedWork);
       fetchWorkLogs(); // עדכון הרשימה עם העבודה המעודכנת
     } catch (err) {
       setError("Failed to update work log");

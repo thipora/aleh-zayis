@@ -49,11 +49,11 @@ export class JobsController {
     async createJob(req, res, next) {
         try {
             const { userId } = req.params; // מזהה המשתמש
-            const { date, workQuantity, bookId, description, notes, paymentTypeId } = req.body; // פרטי העבודה
+            const { date, quantity, book_id, description, notes } = req.body; // פרטי העבודה
 
             // קריאה לשירות להוספת העבודה
             const newJob = await JobsController.jobsService.createJob(userId, {
-                date, workQuantity, bookId, description, notes, paymentTypeId
+                date, quantity, book_id, description, notes
             });
 
             return res.status(201).json(newJob); // עבודה הוספה בהצלחה

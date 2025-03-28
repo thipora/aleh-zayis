@@ -51,23 +51,6 @@ export class UserService {
 
 
 
-    async createJob(userId, { date, workQuantity, bookId, description, notes, paymentTypeId }) {
-        const employeeQuery = "SELECT id_employee FROM employees WHERE user_id = ?";
-        const employees = await executeQuery(employeeQuery, [userId]);
-
-        if (!employees.length) throw new Error("Employee not found");
-
-        const employeeId = employees[0].id_employee;
-
-        const query = `
-            INSERT INTO ${JobsService.table} (employee_id, date, work_quantity, book_id, description, notes, payment_type_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`;
-
-        const values = [employeeId, date, workQuantity, bookId, description, notes, paymentTypeId];
-
-        const result = await executeQuery(query, values);
-        return { id_work_logs: result.insertId, ...values }; // מחזיר את פרטי העבודה החדשה
-    }
 
 
 

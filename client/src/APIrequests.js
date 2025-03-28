@@ -19,6 +19,7 @@ export class APIrequests {
             }
             return data;
         } catch (error) {
+            console.log("bbbbbbbb" + error);
             throw error;
         };
     }
