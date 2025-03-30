@@ -1,59 +1,3 @@
-
-
-
-// // import Login from "./components/Login";
-
-// // function App() {
-// //   return <Login onLogin={(email, password) => console.log(email, password)} />;
-// // }
-
-// // export default App;
-
-// import { BrowserRouter as Router, Route,Routes } from 'react-router-dom';
-// import EmployeeRegister from "./components/EmployeeRegister";
-// // import {Login} from "./components/Login";
-
-// function App() {
-//   return <EmployeeRegister />;
-//   // return (
-//   //   <>
-//   //     <Router>
-//   //       <Routes>
-//   //         {/* <Route path="/" element={<Home />} />
-//   //         <Route path="/Home" element={<Home />} />
-//   //         <Route path="businesses">
-//   //           <Route index element={<Businesses />} />
-//   //           <Route path=':idBusiness' element={<Business />} />
-//   //           <Route path='register' element={<BusinessRegister />} />
-//   //           <Route path='login' element={<BusinessLogin />} />
-//   //           <Route path='personal-area' element={<PersonalArea />} />
-//   //         </Route> */}
-
-
-
-//   //         <Route path="/employeeRegister" element={<EmployeeRegister />} />
-//   //         <Route path="/" element={<EmployeeRegister />} />
-
-//   //         {/* <Route path="/login" element={<Login />} /> */}
-//   //       </Routes>
-//   //     </Router>
-//   //   </>
-//   // )
-
-// }
-
-// export default App;
-
-
-
-// import React from "react";
-// import { Routes, Route, Link } from "react-router-dom"; // נתיב, רכיב ה-Link ו-Routes
-// import {LoginPage} from "./components/Login.jsx";
-// import EmployeeDashboard from "./components/EmployeeDashboard.jsx";
-// import ManagerPage from "./components/ManagerPage.jsx";  // עמוד ריק למנהל
-// import ClientPage from "./components/ClientPage.jsx";    // עמוד ריק ללקוח
-// import AddWorkLog from "./components/AddWorkLog";              // עמוד הוספת עבודה
-
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Login from "./components/Login";   // עדכון אם שינית את השם או המיקום
@@ -63,6 +7,9 @@ import EmployeeDashboard from "./components/EmployeeDashboard"; // עדכון א
 import WorkLogs from "./components/WorkLogs"; // עדכון אם שינית את השם או המיקום
 import ManagerPage from "./components/ManagerPage"; // עדכון אם שינית את השם או המיקום
 import ClientPage from "./components/ClientPage"; // עדכון אם שינית את השם או המיקום
+import EmployeeList from "./components/EmployeeList.jsx";
+import AddEmployee from "./components/AddEmployee.jsx";
+
 
 
 const App = () => {
@@ -81,13 +28,15 @@ const App = () => {
         <Route path="/client-dashboard" element={<ClientPage />} />
         <Route path="/add-work-log" element={<AddWorkLog />} /> */}
 
-<Route path="/" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
         {/* <Route path="/dashboard/manager" element={<DashboardManager />} />
         <Route path="/dashboard/client" element={<DashboardClient />} /> */}
         <Route path="/worklog/add" element={<WorkLogs />} />
         <Route path="/manager" element={<ManagerPage />} />
+        <Route path="/employee-list" element={<EmployeeList />} />
+        <Route path="/add-employee" element={<AddEmployee />} />
         <Route path="/client" element={<ClientPage />} />
       </Routes>
     </div>

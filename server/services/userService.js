@@ -8,23 +8,42 @@ export class UserService {
     static table = "users";
 
     // פונקציה שתטפל בהתחברות
+    // async loginUser(params) {
+    //     const query = loginUserQuery();
+    //     const { name, password } = params;
+    //     const users = await executeQuery(query, [name]);
+
+    //     if (!users || users.length === 0) {
+    //         throw new Error("Invalid name or password");
+    //     }
+
+    //     const isMatch = await bcrypt.compare(password, users[0].password);
+    //     if (!isMatch) {
+    //         throw new Error("Invalid name or password");
+    //     }
+
+    //     delete users[0].password;
+    //     return users[0];
+    // }
+
     async loginUser(params) {
-        const query = loginUserQuery();
-        const { name, password } = params;
-        const users = await executeQuery(query, [name]);
-
+        const query = loginUserQuery(); // עדכן את השאילתא כך שתתאים לחיפוש לפי email
+        const { email, password } = params;
+        const users = await executeQuery(query, [email]);
+    
         if (!users || users.length === 0) {
-            throw new Error("Invalid name or password");
+            throw new Error("Invalid email or password");
         }
-
+    
         const isMatch = await bcrypt.compare(password, users[0].password);
         if (!isMatch) {
-            throw new Error("Invalid name or password");
+            throw new Error("Invalid email or password");
         }
-
+    
         delete users[0].password;
         return users[0];
     }
+    
 
 
     async registerUser(params) {

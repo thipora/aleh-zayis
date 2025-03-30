@@ -4,7 +4,7 @@ export const loginUserQuery = () => {
     FROM 
         users 
     WHERE 
-        name = ?`;
+        email = ?`;
 }
 export const registerUserQuery = () => {
     return ` SELECT 
@@ -12,5 +12,5 @@ export const registerUserQuery = () => {
     FROM 
         users 
     WHERE 
-        name = ?`;
+        email = ?`;
 }

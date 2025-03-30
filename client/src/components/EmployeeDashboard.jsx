@@ -8,7 +8,7 @@ import AddWorkDialog from "./AddWorkDialog"; // השתמש בקומפוננטה 
 
 const EmployeeDashboard = () => {
   const [workLogs, setWorkLogs] = useState([]);
-  const [newWork, setNewWork] = useState({
+  const [newWorkLog, setNewWork] = useState({
     book_id: "",
     quantity: "",
     description: "",
@@ -87,7 +87,7 @@ const EmployeeDashboard = () => {
       setWorkLogs((prevWorkLogs) => [...prevWorkLogs, newWorkLog]);
   
       // עדכון הסטייט עם הערכים החדשים
-      // setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
+      setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
       setOpen(false); // סגירת הדיאלוג
       fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
     } catch (err) {

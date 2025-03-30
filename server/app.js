@@ -5,6 +5,8 @@ import bookRouter from './routes/bookRouters.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { logErrors } from './middleware/logError.js';
+import roleRoutes from './routes/roleRoutes.js';
+import employeeRoute from './routes/employeeRoutes.js';
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ app.use(cors({
 app.use('/auth', authRouters);
 app.use('/worklogs', jobRouter);
 app.use('/books', bookRouter);
+app.use('/roles', roleRoutes);
+app.use('/employees', employeeRoute);
 
 app.use(logErrors);
 
