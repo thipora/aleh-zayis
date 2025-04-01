@@ -6,7 +6,7 @@ import { UserService } from './userService.js'; // Import the UserService
 export class EmployeeService {
 
     async getAllEmployees() {
-        const query = 'SELECT employees.id_employee, users.name, users.email, roles.name AS role FROM alehzayis.employees JOIN alehzayis.users ON employees.user_id = users.id_user JOIN alehzayis.roles ON employees.role = roles.id_role';
+        const query = 'SELECT employees.id_employee, users.name, users.email, roles.name AS role FROM alehzayis.employees JOIN alehzayis.users ON employees.user_id = users.id_user JOIN alehzayis.roles ON employees.role_id = roles.id_role';
         const result = await executeQuery(query);
         return result;
     }
@@ -24,7 +24,7 @@ export class EmployeeService {
 
     // יצירת עובד חדש + משתמש
     async createEmployee(params) {
-        const { name, email, role } = params;
+        const { name, email, role_id } = params;
 
         // 1. יצירת סיסמא אקראית
         const rawPassword = this.generateRandomPassword();
@@ -46,8 +46,8 @@ export class EmployeeService {
         }
 
         // 4. יצירת עובד בטבלת employees
-        const employeeQuery = `INSERT INTO alehzayis.employees (user_id, role) VALUES (?, ?)`;
-        const result = await executeQuery(employeeQuery, [userId, role]);
+        const employeeQuery = `INSERT INTO alehzayis.employees (user_id, role_id) VALUES (?, ?)`;
+        const result = await executeQuery(employeeQuery, [userId, role_id]);
 
         if (!result.insertId) {
             throw new Error('Failed to create employee');
@@ -64,6 +64,14 @@ export class EmployeeService {
             `
         });
             
-        return { id: result.insertId, userId, role };
+        return { id: result.insertId, userId, role_id };
     }
+
+
+    async getEmployeeIdByUserId(userId) {
+        const query = 'SELECT id_employee FROM alehZayis.employees WHERE user_id = ?';
+        const result = await executeQuery(query, [userId]);
+        return result.length > 0 ? result[0] : null; // אם יש תוצאה, מחזירים את ה-employeeId, אחרת null
+    }
+    
 }

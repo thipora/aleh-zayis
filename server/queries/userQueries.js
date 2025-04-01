@@ -6,6 +6,7 @@ export const loginUserQuery = () => {
     WHERE 
         email = ?`;
 }
+
 export const registerUserQuery = () => {
     return ` SELECT 
         1

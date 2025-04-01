@@ -30,4 +30,19 @@ export class RoleController {
             });
         }
     }
+
+
+    async checkSpecialPaymentType(req, res, next) {
+        try {
+            const { employeeId } = req.params;
+            const canAssignSpecialWork = await RoleController.roleService.checkSpecialPaymentType(employeeId);
+
+            return res.json({ canAssignSpecialWork });
+        } catch (ex) {
+            next({
+                statusCode: ex.errno || 500,
+                message: ex.message || ex
+            });
+        }
+    }
 }

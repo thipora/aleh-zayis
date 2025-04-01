@@ -17,4 +17,20 @@ export class RoleService {
         const result = await executeQuery(query, [name]);
         return { id_roles: result.insertId, name };
     }
+
+
+    async checkSpecialPaymentType(employeeId) {
+        const query = `
+            SELECT EXISTS (
+                SELECT 1
+                FROM alehzayis.employees e
+                JOIN alehzayis.roles r ON e.role_id = r.id_role
+                WHERE r.special_payment_type IS NOT NULL
+            ) AS exists_special_payment_type
+        `;
+
+        const role = await executeQuery(query, [employeeId]);
+        return role.length && role[0].special_payment_type ? true : false;
+    }
+
 }

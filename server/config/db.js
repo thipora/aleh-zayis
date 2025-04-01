@@ -8,7 +8,7 @@ async function executeQuery(query, params) {
             user: 'root',
             port: 3306,
             database: process.env.DB_NAME || 'alehZayis',
-            password: process.env.DB_PASSWORD || '1234'
+            password: process.env.DB_PASSWORD || 'TZ1234'
         });
 
         connection.connect(err => {

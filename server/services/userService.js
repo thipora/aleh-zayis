@@ -2,29 +2,12 @@ import bcrypt from 'bcrypt';
 import executeQuery from '../config/db.js';
 import { loginUserQuery, registerUserQuery } from '../queries/userQueries.js';
 import { GeneryQuery } from "../queries/generyQueries.js";
+import {EmployeeService} from "./employeesService.js"
 
 
 export class UserService {
     static table = "users";
-
-    // פונקציה שתטפל בהתחברות
-    // async loginUser(params) {
-    //     const query = loginUserQuery();
-    //     const { name, password } = params;
-    //     const users = await executeQuery(query, [name]);
-
-    //     if (!users || users.length === 0) {
-    //         throw new Error("Invalid name or password");
-    //     }
-
-    //     const isMatch = await bcrypt.compare(password, users[0].password);
-    //     if (!isMatch) {
-    //         throw new Error("Invalid name or password");
-    //     }
-
-    //     delete users[0].password;
-    //     return users[0];
-    // }
+    static EmployeeService = new EmployeeService();
 
     async loginUser(params) {
         const query = loginUserQuery(); // עדכן את השאילתא כך שתתאים לחיפוש לפי email
@@ -41,6 +24,13 @@ export class UserService {
         }
     
         delete users[0].password;
+
+        if (users[0].account_type === "Employee") {
+            const employeeId = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
+            users[0].employee_id = employeeId.id_employee || null; // אם לא נמצא, שים null
+        }
+    
+    
         return users[0];
     }
     
@@ -93,6 +83,4 @@ export class UserService {
         const result = await executeQuery(userQuery, Object.values(params));
         return result.insertId;
     }
-
-
 }

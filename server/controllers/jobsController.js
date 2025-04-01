@@ -24,11 +24,11 @@ export class JobsController {
     async updateJob(req, res, next) {
         try {
             const { jobId } = req.params; // מזהה העבודה לעדכון
-            const { date, workQuantity, bookId, description, notes, paymentTypeId } = req.body; // פרטי העבודה החדשה
+            const { date, workQuantity, bookId, description, notes, paymentTypeId, isSpecialWork } = req.body; // פרטי העבודה החדשה
 
             // קריאה לפונקציה לשירות לעדכון העבודה
             const updatedJob = await JobsController.jobsService.updateJob(jobId, {
-                date, workQuantity, bookId, description, notes, paymentTypeId
+                date, workQuantity, bookId, description, notes, paymentTypeId, isSpecialWork
             });
 
             // אם העבודה עודכנה בהצלחה, נחזיר תשובה
@@ -49,11 +49,11 @@ export class JobsController {
     async createJob(req, res, next) {
         try {
             const { userId } = req.params; // מזהה המשתמש
-            const { date, quantity, book_id, description, notes } = req.body; // פרטי העבודה
+            const { date, quantity, book_id, description, notes, isSpecialWork } = req.body; // פרטי העבודה
 
             // קריאה לשירות להוספת העבודה
             const newJob = await JobsController.jobsService.createJob(userId, {
-                date, quantity, book_id, description, notes
+                date, quantity, book_id, description, notes, isSpecialWork
             });
 
             return res.status(201).json(newJob); // עבודה הוספה בהצלחה

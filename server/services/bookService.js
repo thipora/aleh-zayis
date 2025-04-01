@@ -9,8 +9,8 @@ export class BooksService {
         // start, range, sort
         const query = `SELECT books.id_book, books.title 
 FROM alehzayis.books 
-INNER JOIN alehzayis.user_books ON books.id_book = user_books.book_id
-INNER JOIN alehzayis.employees ON user_books.employee_id = employees.id_employee
+INNER JOIN alehzayis.employees_books ON books.id_book = employees_books.book_id
+INNER JOIN alehzayis.employees ON employees_books.employee_id = employees.id_employee
 INNER JOIN alehzayis.users ON employees.user_id = users.id_user
 WHERE users.id_user = ?`;
         // ORDER BY ${sort} LIMIT ?, ?
@@ -40,7 +40,7 @@ WHERE users.id_user = ?`;
 
         // קישור הספר לעובד
         const userBooksQuery = `
-            INSERT INTO user_books (employee_id, book_id)
+            INSERT INTO employees_books (employee_id, book_id)
             VALUES (?, ?)`;
         
         await executeQuery(userBooksQuery, [employeeId, result.insertId]);
