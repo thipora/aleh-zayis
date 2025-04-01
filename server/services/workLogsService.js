@@ -33,8 +33,43 @@ export class WorkLogsService {
         }
 
 
-        let query = `
-        SELECT b.title, w.id_work_logs, w.date, w.work_quantity, w.description, w.notes AS payment_type FROM alehzayis.work_logs w JOIN alehzayis.books b ON w.book_id = b.id_book WHERE ${conditions.join(" AND ")}`;
+//         let query = `
+//           SELECT 
+//     b.title, 
+//     w.id_work_logs, 
+//     w.date, 
+//     w.work_quantity, 
+//     w.description, 
+//     w.notes,
+//     w.id_spicial_work,
+//     r.payment_type, 
+//     r.special_payment_type
+//   FROM alehzayis.work_logs w
+//   JOIN alehzayis.books b ON w.book_id = b.id_book
+//   JOIN alehzayis.employees e ON w.employee_id = e.id_employee
+//   JOIN alehzayis.roles r ON e.role_id = r.id_role
+//   WHERE ${conditions.join(" AND ")}
+//         `;
+let query = `
+  SELECT 
+    b.title, 
+    w.id_work_logs, 
+    w.date, 
+    w.work_quantity, 
+    w.description, 
+    w.notes,
+    w.is_special_work,
+    CASE 
+      WHEN w.is_special_work = TRUE THEN r.special_payment_type
+      ELSE r.payment_type
+    END AS payment_type
+  FROM alehzayis.work_logs w
+  JOIN alehzayis.books b ON w.book_id = b.id_book
+  JOIN alehzayis.employees e ON w.employee_id = e.id_employee
+  JOIN alehzayis.roles r ON e.role_id = r.id_role
+  WHERE ${conditions.join(" AND ")}
+`;
+
 
         if (sort) {
             query += ` ORDER BY ${sort}`;
