@@ -1,11 +1,10 @@
 
 import executeQuery from '../config/db.js';
-import { GeneryQuery } from '../queries/generyQueries.js';
 
-export class JobsService {
+export class WorkLogsService {
     static table = "work_logs";
 
-    async getJobsByUser(userId, { start = 0, range = 10, sort = "date DESC", bookId, fromDate, toDate } = {}) {
+    async getWorkLogsByUser(userId, { start = 0, range = 10, sort = "date DESC", bookId, fromDate, toDate } = {}) {
         // שליפת ה-employee_id לפי ה-userId
         const employeeQuery = "SELECT id_employee FROM employees WHERE user_id = ?";
         const employees = await executeQuery(employeeQuery, [userId]);
@@ -46,7 +45,7 @@ export class JobsService {
 
 
 
-    async updateJob(jobId, { date, workQuantity, bookId, description, notes, paymentTypeId }) {
+    async updateWorkLog(workLogId, { date, workQuantity, bookId, description, notes, paymentTypeId }) {
         const updateFields = [];
         const values = [];
 
@@ -82,12 +81,12 @@ export class JobsService {
 
         // מבנה השאילתה לעדכון
         const query = `
-            UPDATE ${JobsService.table}
+            UPDATE ${WorkLogsService.table}
             SET ${updateFields.join(", ")}
             WHERE id_work_logs = ?
         `;
         
-        values.push(jobId); // הוספת מזהה העבודה לשאילתה
+        values.push(workLogId); // הוספת מזהה העבודה לשאילתה
 
         return await executeQuery(query, values);
     }
@@ -106,7 +105,7 @@ export class JobsService {
 
 
 
-        async createJob(userId, { date, quantity, book_id, description, notes }) {
+        async createWorkLog(userId, { date, quantity, book_id, description, notes }) {
             const employeeQuery = "SELECT id_employee FROM employees WHERE user_id = ?";
             const employees = await executeQuery(employeeQuery, [userId]);
     

@@ -1,16 +1,16 @@
 
 
-import { JobsService } from '../services/jobsService.js';
+import { WorkLogsService } from '../services/workLogsService.js';
 
-export class JobsController {
-    static jobsService = new JobsService();
+export class WorkLogsController {
+    static workLogsService = new WorkLogsService();
 
-    async getJobsByUser(req, res, next) {
+    async getWorkLogsByUser(req, res, next) {
         try {
             const { userId } = req.params; // 🔹 שימוש ב-userId
             const { start = 0, range = 10, sort = "date DESC", bookId, fromDate, toDate } = req.query;
 
-            const jobs = await JobsController.jobsService.getJobsByUser(userId, { start, range, sort, bookId, fromDate, toDate });
+            const jobs = await WorkLogsController.workLogsService.getWorkLogsByUser(userId, { start, range, sort, bookId, fromDate, toDate });
             return res.json(jobs);
         } catch (ex) {
             next({
@@ -21,18 +21,18 @@ export class JobsController {
     }
 
 
-    async updateJob(req, res, next) {
+    async updateWorkLog(req, res, next) {
         try {
-            const { jobId } = req.params; // מזהה העבודה לעדכון
+            const { WorkLogId } = req.params; // מזהה העבודה לעדכון
             const { date, workQuantity, bookId, description, notes, paymentTypeId, isSpecialWork } = req.body; // פרטי העבודה החדשה
 
             // קריאה לפונקציה לשירות לעדכון העבודה
-            const updatedJob = await JobsController.jobsService.updateJob(jobId, {
+            const updatedWorkLog = await WorkLogsController.workLogsService.updateWorkLog(WorkLogId, {
                 date, workQuantity, bookId, description, notes, paymentTypeId, isSpecialWork
             });
 
             // אם העבודה עודכנה בהצלחה, נחזיר תשובה
-            if (updatedJob.affectedRows > 0) {
+            if (updatedWorkLog.affectedRows > 0) {
                 return res.status(200).json({ message: "Work log updated successfully" });
             } else {
                 return res.status(404).json({ message: "Work log not found" });
@@ -46,17 +46,17 @@ export class JobsController {
     }
 
 
-    async createJob(req, res, next) {
+    async createWorkLog(req, res, next) {
         try {
             const { userId } = req.params; // מזהה המשתמש
             const { date, quantity, book_id, description, notes, isSpecialWork } = req.body; // פרטי העבודה
 
             // קריאה לשירות להוספת העבודה
-            const newJob = await JobsController.jobsService.createJob(userId, {
+            const newWorkLog = await WorkLogsController.workLogsService.createWorkLog(userId, {
                 date, quantity, book_id, description, notes, isSpecialWork
             });
 
-            return res.status(201).json(newJob); // עבודה הוספה בהצלחה
+            return res.status(201).json(newWorkLog); // עבודה הוספה בהצלחה
         } catch (ex) {
             next({
                 statusCode: ex.errno || 500,
