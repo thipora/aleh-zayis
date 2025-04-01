@@ -1,6 +1,6 @@
 import express from 'express';
 import { authRouters } from './routes/authRouters.js';
-import jobRouter from './routes/jobsRoutes.js';
+import workLogRouter from './routes/workLogsRoutes.js';
 import bookRouter from './routes/bookRouters.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -22,7 +22,7 @@ app.use(cors({
   }));
 
 app.use('/auth', authRouters);
-app.use('/worklogs', jobRouter);
+app.use('/worklogs', workLogRouter);
 app.use('/books', bookRouter);
 app.use('/roles', roleRoutes);
 app.use('/employees', employeeRoute);

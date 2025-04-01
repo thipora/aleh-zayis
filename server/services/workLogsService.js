@@ -105,7 +105,7 @@ export class WorkLogsService {
 
 
 
-        async createWorkLog(userId, { date, quantity, book_id, description, notes }) {
+        async createWorkLog(userId, { date, quantity, book_id, description, notes,  specialWork }) {
             const employeeQuery = "SELECT id_employee FROM employees WHERE user_id = ?";
             const employees = await executeQuery(employeeQuery, [userId]);
     
@@ -114,10 +114,10 @@ export class WorkLogsService {
             const employeeId = employees[0].id_employee;
     
             const query = `
-                INSERT INTO ${JobsService.table} (employee_id, date, work_quantity, book_id, description, notes)
-                VALUES (?, ?, ?, ?, ?, ?)`;
+                INSERT INTO ${WorkLogsService.table} (employee_id, date, work_quantity, book_id, description, notes, is_special_work)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`;
     
-            const values = [employeeId, date, quantity, book_id, description, notes];
+            const values = [employeeId, date, quantity, book_id, description, notes,  specialWork];
     
             const result = await executeQuery(query, values);
             return { id_work_logs: result.insertId, ...values }; // מחזיר את פרטי העבודה החדשה

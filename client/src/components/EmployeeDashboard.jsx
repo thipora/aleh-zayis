@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { APIrequests } from "../APIrequests";
 import WorkLogs from "./WorkLogs";
-import WorkForm from "./WorkForm";
 import ErrorNotification from "./ErrorNotification";
 import AddWorkDialog from "./AddWorkDialog"; // השתמש בקומפוננטה החדשה כאן
 
@@ -66,34 +65,66 @@ const EmployeeDashboard = () => {
   //   }
   // };
 
+  // const handleAddWork = async (newWorkData) => {
+  //   try {
+  //     const { book_id, quantity, description, notes } = newWorkData; // קבלת הנתונים החדשים
+  //     const userData = localStorage.getItem("user");
+  //     const user = JSON.parse(userData);
+  //     const userId = user?.id_user;
+  //     const currentDate = new Date().toISOString().split('T')[0];
+  
+  //     // קריאה ל-API לשליחת הנתונים
+  //     await apiRequests.postRequest(`/worklogs/${userId}`, {
+  //       book_id,
+  //       quantity,
+  //       description,
+  //       notes,
+  //       user_id: userId,
+  //       date: currentDate
+  //     });
+
+  //     setWorkLogs((prevWorkLogs) => [...prevWorkLogs, newWorkLog]);
+  
+  //     // עדכון הסטייט עם הערכים החדשים
+  //     setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
+  //     setOpen(false); // סגירת הדיאלוג
+  //     fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
+  //   } catch (err) {
+  //     setError("Failed to add work log");
+  //   }
+  // };
+
+
   const handleAddWork = async (newWorkData) => {
     try {
-      const { book_id, quantity, description, notes } = newWorkData; // קבלת הנתונים החדשים
+      const { book_id, quantity, description, notes, specialWork } = newWorkData; // קבלת הנתונים החדשים
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
       const userId = user?.id_user;
       const currentDate = new Date().toISOString().split('T')[0];
   
-      // קריאה ל-API לשליחת הנתונים
+      // קריאה ל-API לשליחת הנתונים כולל specialWork
       await apiRequests.postRequest(`/worklogs/${userId}`, {
         book_id,
         quantity,
         description,
         notes,
         user_id: userId,
-        date: currentDate
+        date: currentDate,
+        specialWork // הוספת specialWork לנתונים
       });
-
-      setWorkLogs((prevWorkLogs) => [...prevWorkLogs, newWorkLog]);
+  
+      setWorkLogs((prevWorkLogs) => [...prevWorkLogs, { ...newWorkData, specialWork }]); // עדכון הסטייט עם העבודה החדשה
   
       // עדכון הסטייט עם הערכים החדשים
-      setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
+      setNewWork({ book_id: "", quantity: "", description: "", notes: "", specialWork: false, date: currentDate });
       setOpen(false); // סגירת הדיאלוג
       fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
     } catch (err) {
       setError("Failed to add work log");
     }
   };
+  
   
 
 

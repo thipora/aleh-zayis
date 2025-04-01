@@ -49,11 +49,11 @@ export class WorkLogsController {
     async createWorkLog(req, res, next) {
         try {
             const { userId } = req.params; // מזהה המשתמש
-            const { date, quantity, book_id, description, notes, isSpecialWork } = req.body; // פרטי העבודה
+            const { date, quantity, book_id, description, notes, specialWork = 0 } = req.body; // פרטי העבודה
 
             // קריאה לשירות להוספת העבודה
             const newWorkLog = await WorkLogsController.workLogsService.createWorkLog(userId, {
-                date, quantity, book_id, description, notes, isSpecialWork
+                date, quantity, book_id, description, notes, specialWork
             });
 
             return res.status(201).json(newWorkLog); // עבודה הוספה בהצלחה
