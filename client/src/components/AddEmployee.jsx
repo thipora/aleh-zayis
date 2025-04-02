@@ -1,240 +1,26 @@
-// // import React, { useState, useEffect } from "react";
-// // import { Box, Typography, TextField, Button, Container, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-// // import { useNavigate } from "react-router-dom"; // ניווט חזרה
-// // import { APIrequests } from "../APIrequests"; // הוספת ה-import של מחלקת ה-APIrequests
-
-// // const AddEmployee = () => {
-// //   const [employeeData, setEmployeeData] = useState({
-// //     name: "",
-// //     email: "",
-// //     password: "",
-// //     roleId: "", // עדכון לשמירת ID של התפקיד
-// //   });
-// //   const [roles, setRoles] = useState([]); // רשימת התפקידים
-// //   const navigate = useNavigate();
-
-// //   const api = new APIrequests(); // יצירת מופע של מחלקת ה-APIrequests
-
-// //   // טוען את רשימת התפקידים מה-API
-// //   useEffect(() => {
-// //     const fetchRoles = async () => {
-// //       try {
-// //         const rolesData = await api.getRequest("/roles"); // שימוש ב-getRequest של מחלקת ה-APIrequests
-// //         setRoles(rolesData); // עדכון רשימת התפקידים
-// //       } catch (error) {
-// //         console.error("Error fetching roles:", error);
-// //       }
-// //     };
-
-// //     fetchRoles();
-// //   }, []);
-
-// //   // עדכון הנתונים בטופס
-// //   const handleInputChange = (e) => {
-// //     const { name, value } = e.target;
-// //     setEmployeeData({ ...employeeData, [name]: value });
-// //   };
-
-// //   // שליחה ושמירת העובד החדש
-// //   const handleSubmit = async () => {
-// //     try {
-// //       const response = await api.postRequest("/employees", employeeData); // שליחת הנתונים עם postRequest
-// //       alert("Employee created successfully");
-// //       navigate("/employee-list"); // לאחר הוספה, חזרה לדף העובדים
-// //     } catch (error) {
-// //       console.error("Error:", error);
-// //       alert("Failed to add employee");
-// //     }
-// //   };
-
-// //   return (
-// //     <Container>
-// //       <Box sx={{ padding: 3 }}>
-// //         <Typography variant="h4" gutterBottom>
-// //           הוסף עובד חדש
-// //         </Typography>
-
-// //         <TextField
-// //           label="שם העובד"
-// //           name="name"
-// //           value={employeeData.name}
-// //           onChange={handleInputChange}
-// //           fullWidth
-// //           margin="normal"
-// //         />
-// //         <TextField
-// //           label="אימייל"
-// //           name="email"
-// //           value={employeeData.email}
-// //           onChange={handleInputChange}
-// //           fullWidth
-// //           margin="normal"
-// //         />
-// //         <TextField
-// //           label="סיסמא"
-// //           name="password"
-// //           type="password"
-// //           value={employeeData.password}
-// //           onChange={handleInputChange}
-// //           fullWidth
-// //           margin="normal"
-// //         />
-
-// //         <FormControl fullWidth margin="normal">
-// //           <InputLabel>תפקיד</InputLabel>
-// //           <Select
-// //             name="roleId"
-// //             value={employeeData.roleId}
-// //             onChange={handleInputChange}
-// //           >
-// //             {roles.map((role) => (
-// //               <MenuItem key={role.id_roles} value={role.id_roles}>
-// //                 {role.name}
-// //               </MenuItem>
-// //             ))}
-// //           </Select>
-// //         </FormControl>
-
-// //         <Button
-// //           variant="contained"
-// //           color="primary"
-// //           onClick={handleSubmit}
-// //           sx={{ marginTop: 2 }}
-// //         >
-// //           הוסף עובד
-// //         </Button>
-// //       </Box>
-// //     </Container>
-// //   );
-// // };
-
-// // export default AddEmployee;
-// import React, { useState, useEffect } from "react";
-// import { Box, Typography, TextField, Button, Container, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-// import { useNavigate } from "react-router-dom"; // ניווט חזרה
-// import { APIrequests } from "../APIrequests"; // הוספת ה-import של מחלקת ה-APIrequests
-
-// const AddEmployee = () => {
-//   const [employeeData, setEmployeeData] = useState({
-//     name: "",
-//     email: "",
-//     roleId: "", // עדכון לשמירת ID של התפקיד
-//   });
-//   const [roles, setRoles] = useState([]); // רשימת התפקידים
-//   const navigate = useNavigate();
-
-//   const api = new APIrequests(); // יצירת מופע של מחלקת ה-APIrequests
-
-//   // טוען את רשימת התפקידים מה-API
-//   useEffect(() => {
-//     const fetchRoles = async () => {
-//       try {
-//         const rolesData = await api.getRequest("/roles"); // שימוש ב-getRequest של מחלקת ה-APIrequests
-//         setRoles(rolesData); // עדכון רשימת התפקידים
-//       } catch (error) {
-//         console.error("Error fetching roles:", error);
-//       }
-//     };
-
-//     fetchRoles();
-//   }, []);
-
-//   // עדכון הנתונים בטופס
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setEmployeeData({ ...employeeData, [name]: value });
-//   };
-
-//   // שליחה ושמירת העובד החדש
-//   const handleSubmit = async () => {
-//     try {
-//       // שליחה של הנתונים ל-API, הסיסמא תתווסף בשרת
-//       const response = await api.postRequest("/employees", employeeData);
-//       alert("Employee created successfully");
-//       navigate("/employee-list"); // לאחר הוספה, חזרה לדף העובדים
-//     } catch (error) {
-//       console.error("Error:", error);
-//       alert("Failed to add employee");
-//     }
-//   };
-
-//   return (
-//     <Container>
-//       <Box sx={{ padding: 3 }}>
-//         <Typography variant="h4" gutterBottom>
-//           הוסף עובד חדש
-//         </Typography>
-
-//         <TextField
-//           label="שם העובד"
-//           name="name"
-//           value={employeeData.name}
-//           onChange={handleInputChange}
-//           fullWidth
-//           margin="normal"
-//         />
-//         <TextField
-//           label="אימייל"
-//           name="email"
-//           value={employeeData.email}
-//           onChange={handleInputChange}
-//           fullWidth
-//           margin="normal"
-//         />
-
-//         <FormControl fullWidth margin="normal">
-//           <InputLabel>תפקיד</InputLabel>
-//           <Select
-//             name="roleId"
-//             value={employeeData.roleId}
-//             onChange={handleInputChange}
-//           >
-//             {roles.map((role) => (
-//               <MenuItem key={role.id_roles} value={role.id_roles}>
-//                 {role.name}
-//               </MenuItem>
-//             ))}
-//           </Select>
-//         </FormControl>
-
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           onClick={handleSubmit}
-//           sx={{ marginTop: 2 }}
-//         >
-//           הוסף עובד
-//         </Button>
-//       </Box>
-//     </Container>
-//   );
-// };
-
-// export default AddEmployee;
-
-
 import React, { useState, useEffect } from "react";
 import { Box, Typography, TextField, Button, Container, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // ניווט חזרה
-import { APIrequests } from "../APIrequests"; // הוספת ה-import של מחלקת ה-APIrequests
+import { useNavigate } from "react-router-dom"; // Navigate back
+import { APIrequests } from "../APIrequests"; // Importing the APIrequests class
 
 const AddEmployee = () => {
   const [employeeData, setEmployeeData] = useState({
     name: "",
     email: "",
-    role: "", // עדכון לשם של תפקיד
+    role: "", // Role name update
   });
-  const [roles, setRoles] = useState([]); // רשימת התפקידים
+  const [roles, setRoles] = useState([]); // List of roles
+  const [errors, setErrors] = useState({ name: "", email: "", role: "" }); // Error messages for validation
   const navigate = useNavigate();
 
-  const api = new APIrequests(); // יצירת מופע של מחלקת ה-APIrequests
+  const api = new APIrequests(); // Creating an instance of the APIrequests class
 
-  // טוען את רשימת התפקידים מה-API
+  // Fetching roles from the API
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const rolesData = await api.getRequest("/roles"); // שימוש ב-getRequest של מחלקת ה-APIrequests
-        setRoles(rolesData); // עדכון רשימת התפקידים
+        const rolesData = await api.getRequest("/roles"); // Using the getRequest method from the APIrequests class
+        setRoles(rolesData); // Update the list of roles
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -243,23 +29,48 @@ const AddEmployee = () => {
     fetchRoles();
   }, []);
 
-
-  // עדכון הנתונים בטופס
+  // Updating the input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEmployeeData({ ...employeeData, [name]: value });
   };
 
-  // שליחה ושמירת העובד החדש
+  // Validating form fields
+  const validateForm = () => {
+    let isValid = true;
+    let errors = { name: "", email: "", role: "" };
+
+    if (!employeeData.name) {
+      errors.name = "Name is required";
+      isValid = false;
+    }
+
+    if (!employeeData.email) {
+      errors.email = "Email is required";
+      isValid = false;
+    }
+
+    if (!employeeData.role) {
+      errors.role = "Role is required";
+      isValid = false;
+    }
+
+    setErrors(errors);
+    return isValid;
+  };
+
+  // Submit and save new employee
   const handleSubmit = async () => {
-    try {
-      // שליחה של הנתונים ל-API, הסיסמא תתווסף בשרת
-      const response = await api.postRequest("/employees", employeeData);
-      alert("Employee created successfully");
-      navigate("/employee-list"); // לאחר הוספה, חזרה לדף העובדים
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to add employee");
+    if (validateForm()) {
+      try {
+        // Sending the data to the API, password will be added on the server
+        const response = await api.postRequest("/employees", employeeData);
+        alert("Employee created successfully");
+        navigate("/employee-list"); // After adding, navigate back to employee list
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to add employee");
+      }
     }
   };
 
@@ -267,28 +78,32 @@ const AddEmployee = () => {
     <Container>
       <Box sx={{ padding: 3 }}>
         <Typography variant="h4" gutterBottom>
-          הוסף עובד חדש
+          Add New Employee
         </Typography>
 
         <TextField
-          label="שם העובד"
+          label="Employee Name"
           name="name"
           value={employeeData.name}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          error={Boolean(errors.name)} // Show error if field is invalid
+          helperText={errors.name} // Display error message
         />
         <TextField
-          label="אימייל"
+          label="Email"
           name="email"
           value={employeeData.email}
           onChange={handleInputChange}
           fullWidth
           margin="normal"
+          error={Boolean(errors.email)} // Show error if field is invalid
+          helperText={errors.email} // Display error message
         />
 
-        <FormControl fullWidth margin="normal">
-          <InputLabel>תפקיד</InputLabel>
+        <FormControl fullWidth margin="normal" error={Boolean(errors.role)}>
+          <InputLabel>Role</InputLabel>
           <Select
             name="role"
             value={employeeData.role}
@@ -300,6 +115,7 @@ const AddEmployee = () => {
               </MenuItem>
             ))}
           </Select>
+          {errors.role && <Typography color="error">{errors.role}</Typography>} {/* Display error message for role */}
         </FormControl>
 
         <Button
@@ -308,7 +124,7 @@ const AddEmployee = () => {
           onClick={handleSubmit}
           sx={{ marginTop: 2 }}
         >
-          הוסף עובד
+          Add Employee
         </Button>
       </Box>
     </Container>

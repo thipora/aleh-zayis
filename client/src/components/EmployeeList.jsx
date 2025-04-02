@@ -1,121 +1,111 @@
-// import React, { useState, useEffect } from "react";
-// import { Box, Typography, Button, Container } from "@mui/material";
-// import { useNavigate } from "react-router-dom";
-// import { APIrequests } from '../APIrequests'; // הוספת קריאה ל-APIrequests.js
-
-// const EmployeeList = () => {
-//   const [employees, setEmployees] = useState([]);
-//   const navigate = useNavigate();
-//   const apiRequests = new APIrequests(); // יצירת אובייקט של APIrequests
-
-//   // טוען את רשימת העובדים מה-API
-//   useEffect(() => {
-//     const fetchEmployees = async () => {
-//       try {
-//         // קריאה ל-API דרך getRequest לשליפת העובדים
-//         const data = await apiRequests.getRequest('/employees'); 
-//         setEmployees(data); // עדכון רשימת העובדים
-//       } catch (error) {
-//         console.error("Error fetching employees:", error);
-//       }
-//     };
-
-//     fetchEmployees();
-//   }, []);
-
-//   // ניווט לדף הוספת עובד
-//   const handleAddEmployee = () => {
-//     navigate("/add-employee"); // ניווט לדף הוספת עובד
-//   };
-
-//   return (
-//     <Container>
-//       <Box sx={{ padding: 3 }}>
-//         <Typography variant="h4" gutterBottom>
-//           רשימת עובדים
-//         </Typography>
-
-//         {/* הצגת העובדים */}
-//         <Box mb={2}>
-//           {employees.map((employee) => (
-//             <Box key={employee.id} mb={1}>
-//               <Typography variant="h6">{employee.name}</Typography>
-//               <Typography variant="body1">{employee.role}</Typography>
-//             </Box>
-//           ))}
-//         </Box>
-
-//         {/* כפתור להוספת עובד חדש */}
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           onClick={handleAddEmployee} // קריאה לפונקציה להוספת עובד
-//         >
-//           הוסף עובד חדש
-//         </Button>
-//       </Box>
-//     </Container>
-//   );
-// };
-
-// export default EmployeeList;
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, Container, Card, CardContent } from "@mui/material";
+import { Box, Typography, Button, Container, Card, CardContent, TextField, Grid, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { APIrequests } from '../APIrequests'; // הוספת קריאה ל-APIrequests.js
+import { APIrequests } from '../APIrequests'; // Import APIrequests.js
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [searchName, setSearchName] = useState(""); // Search by employee name
+  const [searchRole, setSearchRole] = useState(""); // Search by employee role
+  const [roles, setRoles] = useState([]); // List of employee roles
   const navigate = useNavigate();
-  const apiRequests = new APIrequests(); // יצירת אובייקט של APIrequests
+  const apiRequests = new APIrequests(); // Create an instance of APIrequests
 
-  // טוען את רשימת העובדים מה-API
+  // Fetch employees and roles from the API
   useEffect(() => {
-    const fetchEmployees = async () => {
+    const fetchEmployeesAndRoles = async () => {
       try {
-        // קריאה ל-API דרך getRequest לשליפת העובדים
-        const data = await apiRequests.getRequest('/employees'); 
-        setEmployees(data); // עדכון רשימת העובדים
+        // API request to get employees
+        const employeeData = await apiRequests.getRequest('/employees'); 
+        setEmployees(employeeData); // Update employees list
+        setFilteredEmployees(employeeData); // Update filtered employees list
+
+        // API request to get roles
+        const rolesData = await apiRequests.getRequest('/roles');
+        setRoles(rolesData); // Set the roles list
       } catch (error) {
-        console.error("Error fetching employees:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchEmployees();
+    fetchEmployeesAndRoles();
   }, []);
 
-  // ניווט לדף הוספת עובד
+  // Function to filter employees based on name and role
+  useEffect(() => {
+    const filtered = employees.filter((employee) =>
+      employee.name.toLowerCase().includes(searchName.toLowerCase()) &&
+      employee.role.toLowerCase().includes(searchRole.toLowerCase())
+    );
+    setFilteredEmployees(filtered);
+  }, [searchName, searchRole, employees]);
+
+  // Navigate to the add employee page
   const handleAddEmployee = () => {
-    navigate("/add-employee"); // ניווט לדף הוספת עובד
+    navigate("/add-employee"); // Navigate to add employee page
   };
 
   return (
     <Container>
       <Box sx={{ padding: 3 }}>
         <Typography variant="h4" gutterBottom>
-          רשימת עובדים
+          Employee List
         </Typography>
 
-        {/* הצגת העובדים */}
+        {/* Search fields within Grid, side by side */}
+        <Box mb={3}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label="Search by Username"
+                variant="outlined"
+                fullWidth
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                size="small" // Small size
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Search by Role</InputLabel>
+                <Select
+                  value={searchRole}
+                  onChange={(e) => setSearchRole(e.target.value)}
+                  label="Search by Role"
+                >
+                  <MenuItem value="">All</MenuItem>
+                  {roles.map((role) => (
+                    <MenuItem key={role.id_role} value={role.name}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* Displaying the employees */}
         <Box mb={2}>
-          {employees.map((employee) => (
+          {filteredEmployees.map((employee) => (
             <Card key={employee.id_employee} sx={{ marginBottom: 2 }}>
               <CardContent>
                 <Typography variant="h6">{employee.name}</Typography>
-                <Typography variant="body1">תפקיד: {employee.role}</Typography>
-                <Typography variant="body2">מייל: {employee.email}</Typography>
+                <Typography variant="body1">Role: {employee.role}</Typography>
+                <Typography variant="body2">Email: {employee.email}</Typography>
               </CardContent>
             </Card>
           ))}
         </Box>
 
-        {/* כפתור להוספת עובד חדש */}
+        {/* Button to add a new employee */}
         <Button
           variant="contained"
           color="primary"
-          onClick={handleAddEmployee} // קריאה לפונקציה להוספת עובד
+          onClick={handleAddEmployee} // Call function to add employee
         >
-          הוסף עובד חדש
+          Add New Employee
         </Button>
       </Box>
     </Container>
@@ -123,3 +113,4 @@ const EmployeeList = () => {
 };
 
 export default EmployeeList;
+
