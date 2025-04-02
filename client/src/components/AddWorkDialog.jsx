@@ -1,138 +1,5 @@
-// import React, { useState, useEffect } from "react";
-// import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-// import { APIrequests } from "../APIrequests";
-
-// const AddWorkDialog = ({ open, onClose, onAdd }) => {
-//   const [newWork, setNewWork] = useState({
-//     book_id: "",  // ID של הספר הנבחר
-//     quantity: "",  // כמות העבודה שבוצעה
-//     description: "", // פירוט מה נעשה
-//     notes: "", // הערות נוספות
-//     date: new Date().toISOString().split('T')[0] // תאריך ברירת מחדל של היום
-//   });
-//   const [books, setBooks] = useState([]); // רשימת הספרים מה-DB
-//   const [loading, setLoading] = useState(false);
-//   const apiRequests = new APIrequests();
-
-//   useEffect(() => {
-//     // קריאה לשרת כדי להביא את רשימת הספרים מה-DB
-//     const fetchBooks = async () => {
-//       try {
-//         const userData = localStorage.getItem("user");
-//         const user = JSON.parse(userData);
-
-//         const data = await apiRequests.getRequest(`/books/${user.id_user}`);
-
-//         setBooks(data); // שמירת הספרים בסטייט
-//       } catch (error) {
-//         console.error("שגיאה בטעינת רשימת הספרים", error);
-//       }
-//     };
-
-//     if (open) {
-//       fetchBooks(); // נטען את הספרים רק כשהדיאלוג נפתח
-//     }
-//   }, [open]);
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setNewWork(prevState => ({
-//       ...prevState,
-//       [name]: value
-//     }));
-//   };
-
-//   const handleSave = async () => {
-//     if (newWork.book_id && newWork.quantity && newWork.description) {
-//       setLoading(true);
-//       try {
-//         await onAdd(newWork); // שולח את העבודה החדשה
-//         onClose(); // סגירת הדיאלוג לאחר ההוספה
-//       } catch (error) {
-//         alert("הייתה שגיאה בהוספת העבודה. אנא נסה שוב.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     } else {
-//       alert("אנא מלא את כל השדות.");
-//     }
-//   };
-
-//   return (
-//     <Dialog open={open} onClose={onClose}>
-//       <DialogTitle>הוסף עבודה חדשה</DialogTitle>
-//       <DialogContent>
-//         {/* בחירת ספר מתוך רשימה */}
-//         <FormControl fullWidth margin="normal">
-//           <InputLabel>בחר ספר</InputLabel>
-//           <Select
-//             name="book_id"
-//             value={newWork.book_id}
-//             onChange={handleInputChange}
-//           >
-//             {books.map((book) => (
-//               <MenuItem key={book.id_book} value={book.id_book}>
-//                 {book.title}
-//               </MenuItem>
-//             ))}
-//           </Select>
-//         </FormControl>
-
-//         <TextField
-//           label="כמות שהספקת"
-//           name="quantity"
-//           value={newWork.quantity || ""}
-//           onChange={handleInputChange}
-//           fullWidth
-//           margin="normal"
-//           type="number"
-//         />
-//         <TextField
-//           label="הסבר על העבודה"
-//           name="description"
-//           value={newWork.description || ""}
-//           onChange={handleInputChange}
-//           fullWidth
-//           margin="normal"
-//         />
-//         <TextField
-//           label="הערות"
-//           name="notes"
-//           value={newWork.notes || ""}
-//           onChange={handleInputChange}
-//           fullWidth
-//           margin="normal"
-//         />
-
-//         {/* שדה תאריך */}
-//         <TextField
-//           label="תאריך"
-//           name="date"
-//           type="date"
-//           value={newWork.date}
-//           onChange={handleInputChange}
-//           fullWidth
-//           margin="normal"
-//           InputLabelProps={{
-//             shrink: true,
-//           }}
-//         />
-//       </DialogContent>
-//       <DialogActions>
-//         <Button onClick={onClose} color="secondary">ביטול</Button>
-//         <Button onClick={handleSave} color="primary" disabled={loading}>
-//           {loading ? <CircularProgress size={24} color="secondary" /> : 'שמור'}
-//         </Button>
-//       </DialogActions>
-//     </Dialog>
-//   );
-// };
-
-// export default AddWorkDialog;
-
-
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import { APIrequests } from "../APIrequests";
 
 const AddWorkDialog = ({ open, onClose, onAdd }) => {
@@ -146,7 +13,10 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
   });
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [canAssignSpecialWork, setCanAssignSpecialWork] = useState(false);
+  const [paymentType, setPaymentType] = useState("");
+  const [specialPaymentType, setSpecialPaymentType] = useState("");
+  const [roleName, setRoleName] = useState("");
+  const [errors, setErrors] = useState({});
   const apiRequests = new APIrequests();
 
   useEffect(() => {
@@ -154,17 +24,19 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
       try {
         const userData = localStorage.getItem("user");
         const user = JSON.parse(userData);
-        
-        // שליחת בקשות מקבילות לספרים ולבדיקת specialWork
+
         const [booksData, roleData] = await Promise.all([
           apiRequests.getRequest(`/books/${user.id_user}`),
-          apiRequests.getRequest(`/roles/${user.employee_id}/special-work`)
+          apiRequests.getRequest(`/roles/${user.employee_id}/payment-types`)
         ]);
-        
+
         setBooks(booksData);
-        setCanAssignSpecialWork(roleData.canAssignSpecialWork);
+        setPaymentType(roleData.data.payment_type);
+        setSpecialPaymentType(roleData.data.special_payment_type || null);
+        // setRoleName(roleData.data.name);
+        setRoleName(prev => roleData.data.name || prev);
       } catch (error) {
-        console.error("שגיאה בטעינת הנתונים", error);
+        console.error("Error loading data", error);
       }
     };
 
@@ -172,6 +44,20 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
       fetchBooksAndRole();
     }
   }, [open]);
+
+  const getSpecialWorkLabel = () => {
+    switch(roleName) {
+      case "Editor":
+      case "Typist":
+        return "Corrections";
+      case "Proofreader":
+        return "Vocalization";
+      default:
+        return "Other Work";
+    }
+  };
+  
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -183,50 +69,115 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
   };
 
   const handleSave = async () => {
-    if (newWork.book_id && newWork.quantity && newWork.description) {
+    let newErrors = {};
+
+    if (!newWork.book_id) newErrors.book_id = "This field is required";
+    if (!newWork.quantity) newErrors.quantity = "This field is required";
+    if (!newWork.description) newErrors.description = "This field is required";
+    if (!newWork.date) newErrors.date = "This field is required";  // בדיקת תאריך
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
       setLoading(true);
       try {
-        await onAdd(newWork);
-        onClose();
+        await onAdd(newWork); // שומר את העבודה
+        onClose(); // סוגר את החלון
       } catch (error) {
-        alert("הייתה שגיאה בהוספת העבודה. אנא נסה שוב.");
+        alert("There was an error adding the work. Please try again.");
       } finally {
         setLoading(false);
       }
-    } else {
-      alert("אנא מלא את כל השדות.");
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>הוסף עבודה חדשה</DialogTitle>
+      <DialogTitle>Add New Work</DialogTitle>
       <DialogContent>
-        <FormControl fullWidth margin="normal">
-          <InputLabel>בחר ספר</InputLabel>
+
+        <FormControl fullWidth margin="normal" error={!!errors.book_id}>
+          <InputLabel>Choose Book</InputLabel>
           <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
             {books.map((book) => (
               <MenuItem key={book.id_book} value={book.id_book}>{book.title}</MenuItem>
             ))}
           </Select>
+          {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}
         </FormControl>
 
-        <TextField label="כמות שהספקת" name="quantity" value={newWork.quantity || ""} onChange={handleInputChange} fullWidth margin="normal" type="number" />
-        <TextField label="הסבר על העבודה" name="description" value={newWork.description || ""} onChange={handleInputChange} fullWidth margin="normal" />
-        <TextField label="הערות" name="notes" value={newWork.notes || ""} onChange={handleInputChange} fullWidth margin="normal" />
-        <TextField label="תאריך" name="date" type="date" value={newWork.date} onChange={handleInputChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
-        
-        {canAssignSpecialWork && (
+
+        <TextField
+          label={`Work Amount`}
+          name="quantity"
+          value={newWork.quantity}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          type="number"
+          error={!!errors.quantity}
+          helperText={errors.quantity}
+          sx={{
+            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+              display: "none",
+            },
+            "& input[type=number]": {
+              MozAppearance: "textfield",
+            },
+          }}
+        />
+
+        {specialPaymentType && (
           <FormControlLabel
             control={<Checkbox checked={newWork.specialWork} onChange={handleCheckboxChange} />}
-            label="עבודה מיוחדת"
+            label={getSpecialWorkLabel()} // משתמשים בלוגיקה כאן כדי להציג את הכיתוב המתאים
           />
         )}
+
+        <TextField
+          label="Work Description"
+          name="description"
+          value={newWork.description || ""}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          error={!!errors.description}
+          helperText={errors.description}
+        />
+
+        <TextField
+          label="Notes"
+          name="notes"
+          value={newWork.notes || ""}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+        />
+
+        <TextField
+          label="Date"
+          name="date"
+          type="date"
+          value={newWork.date}
+          onChange={handleInputChange}
+          fullWidth
+          margin="normal"
+          error={!!errors.date}
+          helperText={errors.date}
+        />
+
+
+        {/* {specialPaymentType && (
+          <FormControlLabel
+            control={<Checkbox checked={newWork.specialWork} onChange={handleCheckboxChange} />}
+            label={getSpecialWorkLabel()} // משתמשים בלוגיקה כאן כדי להציג את הכיתוב המתאים
+          />
+        )} */}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">ביטול</Button>
+        <Button onClick={onClose} color="secondary">Cancel</Button>
         <Button onClick={handleSave} color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} color="secondary" /> : 'שמור'}
+          {loading ? <CircularProgress size={24} color="secondary" /> : 'Save'}
         </Button>
       </DialogActions>
     </Dialog>
