@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button } from "@mui/material";
-import UpdateWorkDialog from "./UpdateWorkDialog"; // נייבא את הדיאלוג שיצרנו לעדכון העבודה
+import UpdateWorkDialog from "./UpdateWorkDialog"; // Import the dialog for work update
 
 const WorkLogs = ({ workLogs, onUpdate }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedWork, setSelectedWork] = useState(null);
 
-  // פונקציה שתפתח את הדיאלוג עם הנתונים של העבודה לצורך עדכון
+  // Function to open the dialog with the selected work data for update
   const handleUpdate = (log) => {
-    setSelectedWork(log); // מכניס את המידע של העבודה הנבחרת
-    setOpenDialog(true); // פותח את הדיאלוג
+    setSelectedWork(log); // Set the selected work data
+    setOpenDialog(true); // Open the dialog
   };
 
   const handleCloseDialog = () => {
@@ -23,12 +23,12 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell><Typography variant="subtitle1" fontWeight="bold">תאריך</Typography></TableCell>
-              <TableCell><Typography variant="subtitle1" fontWeight="bold">שם הספר</Typography></TableCell>
-              <TableCell><Typography variant="subtitle1" fontWeight="bold">כמות</Typography></TableCell>
-              <TableCell><Typography variant="subtitle1" fontWeight="bold">תאור</Typography></TableCell>
-              <TableCell><Typography variant="subtitle1" fontWeight="bold">הערות</Typography></TableCell>
-              <TableCell><Typography variant="subtitle1" fontWeight="bold">עדכון</Typography></TableCell>
+              <TableCell><Typography variant="subtitle1" fontWeight="bold">Date</Typography></TableCell>
+              <TableCell><Typography variant="subtitle1" fontWeight="bold">Book Title</Typography></TableCell>
+              <TableCell><Typography variant="subtitle1" fontWeight="bold">Work Amount</Typography></TableCell>
+              <TableCell><Typography variant="subtitle1" fontWeight="bold">Description</Typography></TableCell>
+              <TableCell><Typography variant="subtitle1" fontWeight="bold">Notes</Typography></TableCell>
+              <TableCell><Typography variant="subtitle1" fontWeight="bold">Update</Typography></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -39,15 +39,15 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
                 <TableCell>
                   {parseFloat(log.work_quantity).toFixed(2).replace(/\.00$/, '')}{" "}
                   {/* {log.is_special_work ? log.special_payment_type : log.payment_type} */}
-            {log.payment_type}
-                  </TableCell>
+                  {log.payment_type}
+                </TableCell>
                 <TableCell>
                   {log.description}
                 </TableCell>
                 <TableCell>{log.notes}</TableCell>
                 <TableCell>
                   <Button size="small" variant="outlined" color="primary" onClick={() => handleUpdate(log)}>
-                    עדכון
+                    Update
                   </Button>
                 </TableCell>
               </TableRow>
@@ -56,7 +56,7 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
         </Table>
       </TableContainer>
 
-      {/* דיאלוג לעדכון עבודה */}
+      {/* Dialog for work update */}
       {selectedWork && (
         <UpdateWorkDialog 
           open={openDialog} 

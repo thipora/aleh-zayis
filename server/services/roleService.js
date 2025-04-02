@@ -19,18 +19,27 @@ export class RoleService {
     }
 
 
-    async checkSpecialPaymentType(employeeId) {
-        const query = `
-            SELECT EXISTS (
-                SELECT 1
-                FROM alehzayis.employees e
-                JOIN alehzayis.roles r ON e.role_id = r.id_role
-                WHERE e.id_employee = ? AND r.special_payment_type IS NOT NULL
-            ) AS exists_special_payment_type
-        `;
+    async getPaymentTypes(employeeId) {
+        // const query = `
+        //     SELECT EXISTS (
+        //         SELECT 1
+        //         FROM alehzayis.employees e
+        //         JOIN alehzayis.roles r ON e.role_id = r.id_role
+        //         WHERE e.id_employee = ? AND r.special_payment_type IS NOT NULL
+        //     ) AS exists_special_payment_type
+        // `;
 
-        const role = await executeQuery(query, [employeeId]);
-        return role[0].exists_special_payment_type ? true : false;
+        const query = `
+        SELECT r.payment_type, r.special_payment_type, r.name
+        FROM alehzayis.employees e
+        JOIN alehzayis.roles r ON e.role_id = r.id_role
+        WHERE e.id_employee = ?
+    `;
+
+
+        const result = await executeQuery(query, [employeeId]);
+        // return role[0].exists_special_payment_type ? true : false;
+        return result[0];
     }
 
 }

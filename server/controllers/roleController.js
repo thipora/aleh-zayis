@@ -32,12 +32,12 @@ export class RoleController {
     }
 
 
-    async checkSpecialPaymentType(req, res, next) {
+    async getPaymentTypes(req, res, next) {
         try {
             const { employeeId } = req.params;
-            const canAssignSpecialWork = await RoleController.roleService.checkSpecialPaymentType(employeeId);
+            const data = await RoleController.roleService.getPaymentTypes(employeeId);
 
-            return res.json({ canAssignSpecialWork });
+            return res.json({ data });
         } catch (ex) {
             next({
                 statusCode: ex.errno || 500,

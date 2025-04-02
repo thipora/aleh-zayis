@@ -24,11 +24,11 @@ export class WorkLogsController {
     async updateWorkLog(req, res, next) {
         try {
             const { WorkLogId } = req.params; // מזהה העבודה לעדכון
-            const { date, workQuantity, bookId, description, notes, paymentTypeId, isSpecialWork } = req.body; // פרטי העבודה החדשה
+            const { work_quantity, description, notes, isSpecialWork } = req.body; // פרטי העבודה החדשה
 
             // קריאה לפונקציה לשירות לעדכון העבודה
             const updatedWorkLog = await WorkLogsController.workLogsService.updateWorkLog(WorkLogId, {
-                date, workQuantity, bookId, description, notes, paymentTypeId, isSpecialWork
+                work_quantity, description, notes, isSpecialWork
             });
 
             // אם העבודה עודכנה בהצלחה, נחזיר תשובה

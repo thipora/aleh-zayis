@@ -10,6 +10,6 @@ router.get('/', RoleController.prototype.getRoles);
 // יצירת תפקיד חדש
 router.post('/', RoleController.prototype.createRole);
 
-router.get('/:employeeId/special-work', RoleController.prototype.checkSpecialPaymentType);
+router.get('/:employeeId/payment-types', RoleController.prototype.getPaymentTypes);
 
 export default router;
