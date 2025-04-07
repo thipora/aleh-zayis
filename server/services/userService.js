@@ -2,7 +2,14 @@ import bcrypt from 'bcrypt';
 import executeQuery from '../config/db.js';
 import { loginUserQuery, registerUserQuery } from '../queries/userQueries.js';
 import { GeneryQuery } from "../queries/generyQueries.js";
-import {EmployeeService} from "./employeesService.js"
+import {EmployeeService} from "./employeesService.js";
+// import { getClickUpEmployees } from "./clickUpService.js";
+import { getFolderIdFromSpace, getListsInFolder } from './foldersService.js';
+import { getTaskMembersFromList } from './tasksService.js';
+import { findUserByEmailInClickUp } from './try.js';
+import { sendMail } from './MailService.js';
+
+
 
 
 export class UserService {
@@ -33,21 +40,52 @@ export class UserService {
     
         return users[0];
     }
-    
 
 
     async registerUser(params) {
-        const { name, password, email, isEmployee } = params;
-        const userExists = await this.userExists(name);
+        const { name, email } = params;
+
+        const clickupUser = await findUserByEmailInClickUp(email);
+        if (!clickupUser) {
+            throw new Error("You're not authorized to register – user not found in ClickUp.");
+        }
+        
+        const userExists = await this.userExists(email);
         if (userExists) {
             throw new Error("User already exists");
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = { name: name, password: hashedPassword, email: email, isEmployee: isEmployee };
+        const rawPassword = this.generateRandomPassword();
+        const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+        const newUser = {
+            name: name,
+            email,
+            password: hashedPassword,
+            account_type: 'employee'
+        };
+        const userId = await this.addUser(newUser);
+
+
+        await UserService.EmployeeService.createEmployee({
+            user_id: userId,
+            clickup_id: clickupUser.id
+        });
+    
+        // 6. שליחת מייל עם הסיסמה
+        await sendMail({
+            to: "tz0556776105@gmail.com",
+            subject: 'Welcome to Aleh Zayis Website!',
+            html: `
+                <h2>Welcome to Aleh Zayis!</h2>
+                <p>Your account has been successfully created.</p>
+                <p><strong>Password:</strong> ${rawPassword}</p>
+                <p>You can now log in using your email and this password.</p>
+            `
+        });    
+
 
         // הכנס את המשתמש לטבלת המשתמשים
-        const userId = await this.addUser(newUser);
         // const passwordId = await passwordService.addPassword({ password: password });
         // const newUser = { email: email, userName: userName, passwordId: passwordId, isActive: true }
         // const userId = await this.addUser(newUser);
@@ -62,6 +100,15 @@ export class UserService {
 
 
 
+    generateRandomPassword() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let password = '';
+        for (let i = 0; i < 6; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            password += characters[randomIndex];
+        }
+        return password;
+    }
 
 
 
@@ -70,10 +117,10 @@ export class UserService {
 
 
 
-    async userExists(name) {
+    async userExists(email) {
         // const columns = "1";
         const query = registerUserQuery();
-        const users = await executeQuery(query, [name]);
+        const users = await executeQuery(query, [email]);
         return users.length > 0;
     }
 

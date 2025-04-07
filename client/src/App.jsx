@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import Login from "./components/Login";   // עדכון אם שינית את השם או המיקום
+import Login from "./components/Login.jsx";   // עדכון אם שינית את השם או המיקום
+import Register from "./components/Register.jsx";   // עדכון אם שינית את השם או המיקום
+
 import EmployeeDashboard from "./components/EmployeeDashboard"; // עדכון אם שינית את השם או המיקום
 // import DashboardManager from "./components/DashboardManager"; // עדכון אם שינית את השם או המיקום
 // import DashboardClient from "./components/DashboardClient"; // עדכון אם שינית את השם או המיקום
@@ -30,6 +32,7 @@ const App = () => {
 
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
         {/* <Route path="/dashboard/manager" element={<DashboardManager />} />
         <Route path="/dashboard/client" element={<DashboardClient />} /> */}

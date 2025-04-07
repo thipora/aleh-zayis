@@ -22,10 +22,10 @@ export class AuthController {
 
     async register(req, res, next) {
         try {
-            const { error } = userSchema.validate(req.body);
-            if (error) {
-                return res.status(400).json({ error: error.details[0].message });
-            }
+            // const { error } = userSchema.validate(req.body);
+            // if (error) {
+            //     return res.status(400).json({ error: error.details[0].message });
+            // }
 
             const idUser = await AuthController.userService.registerUser(req.body);
             return res.status(201).json({ idUser });

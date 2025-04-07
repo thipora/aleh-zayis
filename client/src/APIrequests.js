@@ -13,16 +13,19 @@ export class APIrequests {
                 },
             });
             const data = await response.json();
-            console.log("aaaaaaaa" + data);
             if (!response.ok) {
                 throw new Error(data.error);
             }
             return data;
         } catch (error) {
-            console.log("bbbbbbbb" + error);
+            console.log("error" + error);
             throw error;
         };
     }
+
+
+
+
 
     async getRequest(url) {
         try {
