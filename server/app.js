@@ -8,18 +8,15 @@ import { logErrors } from './middleware/logError.js';
 import roleRoutes from './routes/roleRoutes.js';
 import employeeRoute from './routes/employeeRoutes.js';
 
-
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
 
-// app.use(cors());
-
 app.use(cors({
-    origin: 'http://localhost:5174', // או כתובת האתר של ה-client שלך
-    credentials: true // אפשר שליחת cookies או credentials אחרים
+    origin: 'http://localhost:5174',
+    credentials: true
   }));
 
 app.use('/auth', authRouters);

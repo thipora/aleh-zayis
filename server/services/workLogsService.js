@@ -1,5 +1,5 @@
 
-import executeQuery from '../config/db.js';
+import {executeQuery} from '../config/db.js';
 
 export class WorkLogsService {
     static table = "work_logs";

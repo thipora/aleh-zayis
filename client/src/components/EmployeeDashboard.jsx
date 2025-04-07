@@ -4,6 +4,8 @@ import { APIrequests } from "../APIrequests";
 import WorkLogs from "./WorkLogs";
 import ErrorNotification from "./ErrorNotification";
 import AddWorkDialog from "./AddWorkDialog"; // השתמש בקומפוננטה החדשה כאן
+import ChangePasswordDialog from "./ChangePasswordDialog";
+
 
 const EmployeeDashboard = () => {
   const [workLogs, setWorkLogs] = useState([]);
@@ -16,6 +18,8 @@ const EmployeeDashboard = () => {
   });
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false); // מצב להצגת הדיאלוג
+  const [isPasswordDialogOpen, setPasswordDialogOpen] = useState(false);
+
 
   const apiRequests = new APIrequests();
 
@@ -32,67 +36,6 @@ const EmployeeDashboard = () => {
     }
   };
 
-  // // טיפול בשליחת עבודה חדשה
-  // const handleAddWork = async () => {
-  //   try {
-  //     const { book_id, quantity, description, notes } = newWork; // הגדרת הערכים מתוך הסטייט
-  //     const userData = localStorage.getItem("user"); // שליפת פרטי המשתמש מ-localStorage
-  //     const user = JSON.parse(userData); // המרת המידע לאובייקט
-  //     const userId = user?.id_user; // ה-ID של המשתמש
-  //     const currentDate = new Date().toISOString().split('T')[0]; // תאריך של היום בפורמט YYYY-MM-DD
-
-  //     // if (!userId || !book_id || !quantity || !description) { // בדיקת שדות חובה
-  //     //   setError("Please fill in all fields");
-  //     //   return;
-  //     // }
-
-  //     // קריאה ל-API לשליחת הנתונים עם ה-ID של המשתמש והתאריך
-  //     await apiRequests.postRequest(`/worklogs/${userId}`, {
-  //       book_id,
-  //       quantity,
-  //       description,
-  //       notes,
-  //       user_id: userId, // הוספת ID של המשתמש
-  //       date: currentDate // הוספת התאריך של היום
-  //     });
-
-  //     // איפוס הסטייט לאחר הוספת העבודה
-  //     setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
-  //     setOpen(false); // סגירת הדיאלוג
-  //     fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
-  //   } catch (err) {
-  //     setError("Failed to add work log"); // הצגת שגיאה במקרה של בעיה בהוספה
-  //   }
-  // };
-
-  // const handleAddWork = async (newWorkData) => {
-  //   try {
-  //     const { book_id, quantity, description, notes } = newWorkData; // קבלת הנתונים החדשים
-  //     const userData = localStorage.getItem("user");
-  //     const user = JSON.parse(userData);
-  //     const userId = user?.id_user;
-  //     const currentDate = new Date().toISOString().split('T')[0];
-  
-  //     // קריאה ל-API לשליחת הנתונים
-  //     await apiRequests.postRequest(`/worklogs/${userId}`, {
-  //       book_id,
-  //       quantity,
-  //       description,
-  //       notes,
-  //       user_id: userId,
-  //       date: currentDate
-  //     });
-
-  //     setWorkLogs((prevWorkLogs) => [...prevWorkLogs, newWorkLog]);
-  
-  //     // עדכון הסטייט עם הערכים החדשים
-  //     setNewWork({ book_id: "", quantity: "", description: "", notes: "", date: currentDate });
-  //     setOpen(false); // סגירת הדיאלוג
-  //     fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
-  //   } catch (err) {
-  //     setError("Failed to add work log");
-  //   }
-  // };
 
 
   const handleAddWork = async (newWorkData) => {
@@ -102,7 +45,7 @@ const EmployeeDashboard = () => {
       const user = JSON.parse(userData);
       const userId = user?.id_user;
       const currentDate = new Date().toISOString().split('T')[0];
-  
+
       // קריאה ל-API לשליחת הנתונים כולל specialWork
       await apiRequests.postRequest(`/worklogs/${userId}`, {
         book_id,
@@ -113,9 +56,9 @@ const EmployeeDashboard = () => {
         date: currentDate,
         specialWork // הוספת specialWork לנתונים
       });
-  
+
       setWorkLogs((prevWorkLogs) => [...prevWorkLogs, { ...newWorkData, specialWork }]); // עדכון הסטייט עם העבודה החדשה
-  
+
       // עדכון הסטייט עם הערכים החדשים
       setNewWork({ book_id: "", quantity: "", description: "", notes: "", specialWork: false, date: currentDate });
       setOpen(false); // סגירת הדיאלוג
@@ -124,8 +67,8 @@ const EmployeeDashboard = () => {
       setError("Failed to add work log");
     }
   };
-  
-  
+
+
 
 
   const handleUpdateWork = async (updatedWork) => {
@@ -144,9 +87,16 @@ const EmployeeDashboard = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
+      {/* <Typography variant="h4" gutterBottom> */}
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4">Employee Dashboard</Typography>
+          {/* <Button variant="outlined" onClick={() => setPasswordDialogOpen(true)}>
+            שינוי סיסמה
+          </Button> */}
+        </Box>
+{/* 
         Employee Dashboard
-      </Typography>
+      </Typography> */}
 
       {/* הצגת שגיאה אם יש */}
       <ErrorNotification error={error} />
@@ -172,8 +122,19 @@ const EmployeeDashboard = () => {
           <Button onClick={() => setOpen(false)} color="secondary">ביטול</Button>
         </DialogActions>
       </Dialog>
+
+      {/* דיאלוג לשינוי סיסמה */}
+<ChangePasswordDialog
+  open={isPasswordDialogOpen}
+  onClose={() => setPasswordDialogOpen(false)}
+  userId={JSON.parse(localStorage.getItem("user")).id_user}
+/>
+
     </Container>
+
+    
   );
+
 };
 
 export default EmployeeDashboard;
