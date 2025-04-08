@@ -4,8 +4,10 @@ import { loginUserQuery, registerUserQuery } from '../queries/userQueries.js';
 import { GeneryQuery } from "../queries/generyQueries.js";
 import { EmployeeService } from "./employeesService.js";
 import { findUserByEmailInClickUp } from './clickup/clickupEmployeeService.js';
-import { sendMail } from './MailService.js';
+import { sendMail } from '../until/mailer.js';
 import { welcomeEmailTemplate } from '../emailTemplates/welcomeEmail.js';
+// import { generateRandomPassword } from "../utils/passwordUtils.js";
+import { generateRandomPassword } from "../until/passwordUtils.js";
 
 
 export class UserService {
@@ -38,9 +40,11 @@ export class UserService {
 
 
     async registerUser(params) {
-        await this.userExists(params.email);
-        const clickupUser = await this.validateClickUpUser(params.email);
-        const userId = await this.createUserEntry(params.name);
+        const email = params.email;
+        const name = params.name;
+        await this.userExists(email);
+        const clickupUser = await this.validateClickUpUser(email);
+        const {userId, rawPassword} = await this.createUserEntry(params);
         if (!userId) {
             throw new Error("Failed to create user");
         }
@@ -59,21 +63,22 @@ export class UserService {
     }
 
 
-    async createUserEntry(name) {
-        const rawPassword = this.generateRandomPassword();
+    async createUserEntry(params) {
+        const rawPassword = generateRandomPassword();
         const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
         const newUser = {
-            name: name,
-            email,
+            name: params.name,
+            email: params.email,
             password: hashedPassword,
             account_type: 'employee'
         };
-        return await this.addUser(newUser);
+        const userId = await this.addUser(newUser);
+        return {userId, rawPassword}
     }
 
 
-    async validateClickUpUser() {
+    async validateClickUpUser(email) {
         const clickupUser = await findUserByEmailInClickUp(email);
         if (!clickupUser) {
             throw new Error("You're not authorized to register – user not found in ClickUp.");
@@ -123,21 +128,13 @@ export class UserService {
     // }
 
 
-    generateRandomPassword() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let password = '';
-        for (let i = 0; i < 6; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            password += characters[randomIndex];
-        }
-        return password;
-    }
+
 
 
     async userExists(email) {
         const query = registerUserQuery();
         const users = await executeQuery(query, [email]);
-        if (!users.length > 0) {
+        if (users.length = 0) {
             throw new Error("User already exists");
         }
         return users.length > 0;

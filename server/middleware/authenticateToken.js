@@ -17,15 +17,15 @@ export const verifyToken = (req, res, next) => {
     }
 };
 
-export const createToken = (payload) => {
-    try {
-        if (!payload) {
-            throw new Error('Payload dont find');
-        }
-        const accessToken = jwt.sign(payload, secret);
-        return accessToken;
-    } catch (error) {
-        console.error('Error creating token:', error);
-        throw new Error('Internal server error');
-    }
-};
+// export const createToken = (payload) => {
+//     try {
+//         if (!payload) {
+//             throw new Error('Payload dont find');
+//         }
+//         const accessToken = jwt.sign(payload, secret);
+//         return accessToken;
+//     } catch (error) {
+//         console.error('Error creating token:', error);
+//         throw new Error('Internal server error');
+//     }
+// };
