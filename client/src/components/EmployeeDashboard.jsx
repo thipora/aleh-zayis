@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { APIrequests } from "../APIrequests";
-import WorkLogs from "./WorkLogs";
+import WorkEntries from "./WorkEntries";
 import ErrorNotification from "./ErrorNotification";
 import AddWorkDialog from "./AddWorkDialog"; // השתמש בקומפוננטה החדשה כאן
 import ChangePasswordDialog from "./ChangePasswordDialog";
 
 
 const EmployeeDashboard = () => {
-  const [workLogs, setWorkLogs] = useState([]);
-  const [newWorkLog, setNewWork] = useState({
+  const [workEntries, setWorkEntries] = useState([]);
+  const [newWorkEntrie, setNewWork] = useState({
     book_id: "",
     quantity: "",
     description: "",
@@ -24,12 +24,12 @@ const EmployeeDashboard = () => {
   const apiRequests = new APIrequests();
 
   // טוען את נתוני העבודה של העובד
-  const fetchWorkLogs = async () => {
+  const fetchWorkEntries = async () => {
     try {
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
-      const data = await apiRequests.getRequest(`/worklogs/${user.id_user}`);
-      setWorkLogs(data);
+      const data = await apiRequests.getRequest(`/workEntries/${user.employee_id}`);
+      setWorkEntries(data);
     } catch (err) {
       console.log(err);
       setError("Failed to fetch work logs");
@@ -47,7 +47,7 @@ const EmployeeDashboard = () => {
       const currentDate = new Date().toISOString().split('T')[0];
 
       // קריאה ל-API לשליחת הנתונים כולל specialWork
-      await apiRequests.postRequest(`/worklogs/${userId}`, {
+      await apiRequests.postRequest(`/workEntries/${userId}`, {
         book_id,
         quantity,
         description,
@@ -57,12 +57,12 @@ const EmployeeDashboard = () => {
         specialWork // הוספת specialWork לנתונים
       });
 
-      setWorkLogs((prevWorkLogs) => [...prevWorkLogs, { ...newWorkData, specialWork }]); // עדכון הסטייט עם העבודה החדשה
+      setWorkEntries((prevWorkEntries) => [...prevWorkEntries, { ...newWorkData, specialWork }]); // עדכון הסטייט עם העבודה החדשה
 
       // עדכון הסטייט עם הערכים החדשים
       setNewWork({ book_id: "", quantity: "", description: "", notes: "", specialWork: false, date: currentDate });
       setOpen(false); // סגירת הדיאלוג
-      fetchWorkLogs(); // עדכון הרשימה עם העבודה החדשה
+      fetchWorkEntries(); // עדכון הרשימה עם העבודה החדשה
     } catch (err) {
       setError("Failed to add work log");
     }
@@ -74,15 +74,15 @@ const EmployeeDashboard = () => {
   const handleUpdateWork = async (updatedWork) => {
     try {
       // שליחת העבודה המעודכנת לשרת (יש לשלוח את הנתונים לרקורסיה המתאימה בשרת שלך)
-      await apiRequests.putRequest(`/worklogs/${updatedWork.id_work_logs}`, updatedWork);
-      fetchWorkLogs(); // עדכון הרשימה עם העבודה המעודכנת
+      await apiRequests.putRequest(`/workEntries/${updatedWork.id_work_logs}`, updatedWork);
+      fetchWorkEntries(); // עדכון הרשימה עם העבודה המעודכנת
     } catch (err) {
       setError("Failed to update work log");
     }
   };
 
   useEffect(() => {
-    fetchWorkLogs(); // טוען את העבודה בהתחלה
+    fetchWorkEntries(); // טוען את העבודה בהתחלה
   }, []);
 
   return (
@@ -102,7 +102,7 @@ const EmployeeDashboard = () => {
       <ErrorNotification error={error} />
 
       {/* רשימת העבודה של העובד */}
-      <WorkLogs workLogs={workLogs} onUpdate={handleUpdateWork} /> {/* שולח את handleUpdateWork כ-prop */}
+      <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} /> {/* שולח את handleUpdateWork כ-prop */}
 
       {/* כפתור לפתיחת הדיאלוג */}
       <Box mt={2}>

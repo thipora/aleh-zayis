@@ -21,14 +21,13 @@ const api = axios.create({
 });
 
 export class ClickUpService {
-    // מביא את כל הצוותים שלך
     async getTeams() {
         try {
             const response = await api.get('/team');
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת הצוותים:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
@@ -68,20 +67,12 @@ export class ClickUpService {
     // מביא משימות ברשימה
     async getTasks(listId, page = 0) {
         try {
-            // const response = await api.get(`/list/${listId}/task`);
             const response = await api.get(`/list/${listId}/task?page=${page}`);
-
-            // const response = await api.get(`/list/${listId}/task`, {
-            //     params: {
-            //         page,
-            //         limit: 100
-            //     }
-            // });
             console.log("response: " + response);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת המשימות:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
@@ -95,6 +86,16 @@ export class ClickUpService {
             throw error;
         }
     };
+
+    async getFolderIdByName(folderName) {
+        try {
+            const data = await this.getFolders();
+            const folder = data.folders.find(folder => folder.name === folderName);
+            return folder.id;
+        } catch (error) {
+            console.error('שגיאה בהבאת התיקיות:', error);
+        }
+    }
 
 
 

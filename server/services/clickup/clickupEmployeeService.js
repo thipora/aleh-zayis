@@ -14,23 +14,6 @@ export async function findUserByEmailInClickUp(email) {
     return users.find(user => user.email === email) || null;
 }
 
-
-// export async function getClickUpEmployee() {
-//     //give id of the folder whith name 'Freelancer Database'.
-//     const folderId = await getFolderIdByName(folderName);
-//     //give all lists that have in this folder.
-//     const data = await clickUpService.getLists(folderId);
-//     //give all tasks that have in this lists.
-//     const tasks = await Promise.all(data.lists.map(list => fetchTasksFromList(list.id)));
-//     //give ID of all this tasks.
-//     const tasksWithIdAndEmail = tasks.flatMap(list =>
-//         list.map(task => ({ id: task.id, name: task.name, email: task.custom_fields.find(field => field.name === 'Email').value }))
-//     );
-
-//     return tasksWithIdAndEmail;
-// }
-
-
 export async function getClickUpEmployee() {
     const now = Date.now();
   
@@ -38,7 +21,7 @@ export async function getClickUpEmployee() {
       return clickupCache;
     }
   
-    const folderId = await getFolderIdByName(folderName);
+    const folderId = await clickUpService.getFolderIdByName(folderName);
     const data = await clickUpService.getLists(folderId);
     const tasks = await Promise.all(data.lists.map(list => fetchTasksFromList(list.id)));
     
@@ -57,15 +40,15 @@ export async function getClickUpEmployee() {
   }
   
 
-export async function getFolderIdByName(folderName) {
-    try {
-        const data = await clickUpService.getFolders();
-        const folder = data.folders.find(folder => folder.name === folderName);
-        return folder.id;
-    } catch (error) {
-        console.error('שגיאה בהבאת התיקיות:', error);
-    }
-}
+// export async function getFolderIdByName(folderName) {
+//     try {
+//         const data = await clickUpService.getFolders();
+//         const folder = data.folders.find(folder => folder.name === folderName);
+//         return folder.id;
+//     } catch (error) {
+//         console.error('שגיאה בהבאת התיקיות:', error);
+//     }
+// }
 
 
 async function fetchTasksFromList(listId) {

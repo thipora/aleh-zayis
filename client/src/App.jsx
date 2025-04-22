@@ -6,7 +6,7 @@ import Register from "./components/Register.jsx";   // עדכון אם שיני�
 import EmployeeDashboard from "./components/EmployeeDashboard"; // עדכון אם שינית את השם או המיקום
 // import DashboardManager from "./components/DashboardManager"; // עדכון אם שינית את השם או המיקום
 // import DashboardClient from "./components/DashboardClient"; // עדכון אם שינית את השם או המיקום
-import WorkLogs from "./components/WorkLogs"; // עדכון אם שינית את השם או המיקום
+import WorkEntries from "./components/WorkEntries"; // עדכון אם שינית את השם או המיקום
 import ManagerPage from "./components/ManagerPage"; // עדכון אם שינית את השם או המיקום
 import ClientPage from "./components/ClientPage"; // עדכון אם שינית את השם או המיקום
 import EmployeeList from "./components/EmployeeList.jsx";
@@ -28,7 +28,7 @@ const App = () => {
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         <Route path="/manager-dashboard" element={<ManagerPage />} />
         <Route path="/client-dashboard" element={<ClientPage />} />
-        <Route path="/add-work-log" element={<AddWorkLog />} /> */}
+        <Route path="/add-work-log" element={<AddWorkEntrie />} /> */}
 
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
@@ -36,7 +36,7 @@ const App = () => {
         <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
         {/* <Route path="/dashboard/manager" element={<DashboardManager />} />
         <Route path="/dashboard/client" element={<DashboardClient />} /> */}
-        <Route path="/worklog/add" element={<WorkLogs />} />
+        <Route path="/workEntrie/add" element={<WorkEntries />} />
         <Route path="/manager" element={<ManagerPage />} />
         <Route path="/employee-list" element={<EmployeeList />} />
         <Route path="/add-employee" element={<AddEmployee />} />

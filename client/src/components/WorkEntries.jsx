@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Button } from "@mui/material";
 import UpdateWorkDialog from "./UpdateWorkDialog"; // Import the dialog for work update
 
-const WorkLogs = ({ workLogs, onUpdate }) => {
+const WorkEntries = ({ workEntries, onUpdate }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedWork, setSelectedWork] = useState(null);
 
@@ -32,18 +32,14 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {workLogs.map((log) => (
-              <TableRow key={log.id_work_logs}>
+            {workEntries.map((log) => (
+              <TableRow key={log.id_work_entries}>
                 <TableCell>{new Date(log.date).toLocaleDateString()}</TableCell>
-                <TableCell>{log.title}</TableCell>
+                <TableCell>{log.project_name}</TableCell>
                 <TableCell>
-                  {parseFloat(log.work_quantity).toFixed(2).replace(/\.00$/, '')}{" "}
-                  {/* {log.is_special_work ? log.special_payment_type : log.payment_type} */}
-                  {log.payment_type}
+                  {parseFloat(log.quantity).toFixed(2).replace(/\.00$/, '')} {log.rate_type}
                 </TableCell>
-                <TableCell>
-                  {log.description}
-                </TableCell>
+                <TableCell>{log.description_work}</TableCell>
                 <TableCell>{log.notes}</TableCell>
                 <TableCell>
                   <Button size="small" variant="outlined" color="primary" onClick={() => handleUpdate(log)}>
@@ -58,10 +54,10 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
 
       {/* Dialog for work update */}
       {selectedWork && (
-        <UpdateWorkDialog 
-          open={openDialog} 
-          onClose={handleCloseDialog} 
-          workData={selectedWork} 
+        <UpdateWorkDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          workData={selectedWork}
           onUpdate={onUpdate}
         />
       )}
@@ -69,4 +65,4 @@ const WorkLogs = ({ workLogs, onUpdate }) => {
   );
 };
 
-export default WorkLogs;
+export default WorkEntries;
