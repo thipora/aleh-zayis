@@ -37,4 +37,17 @@ export class EmployeeService {
         }
         return [];
     }
+
+
+    async getClickUpIdByWorkerId(workerId) {
+        const query = 'SELECT clickup_id FROM alehZayis.employees WHERE id_employee = ?';
+        const result = await executeQuery(query, [workerId]);
+
+        if (result.length === 0) {
+            throw new Error(`Employee with ID ${workerId} not found.`);
+        }
+
+        return result[0].clickup_id;
+    }
+
 }

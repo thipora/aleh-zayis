@@ -8,7 +8,7 @@ export class RoleController {
     async getRoles(req, res, next) {
         try {
             const roles = await RoleController.roleService.getAllRoles();
-            return res.json(roles);
+            res.json(roles);
         } catch (ex) {
             next({
                 statusCode: ex.errno || 500,

@@ -5,6 +5,7 @@ import { APIrequests } from "../APIrequests";
 const AddWorkDialog = ({ open, onClose, onAdd }) => {
   const [newWork, setNewWork] = useState({
     book_id: "",
+    book_title: "", // הוספת שדה כותרת
     quantity: "",
     description: "",
     notes: "",
@@ -26,15 +27,15 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
         const user = JSON.parse(userData);
 
         const [booksData, roleData] = await Promise.all([
-          apiRequests.getRequest(`/books/${user.id_user}`),
-          apiRequests.getRequest(`/roles/${user.employee_id}/payment-types`)
+          apiRequests.getRequest(`/books/${user.employee_id}`),
+          // apiRequests.getRequest(`/roles/${user.employee_id}/payment-types`)
         ]);
 
         setBooks(booksData);
-        setPaymentType(roleData.data.payment_type);
-        setSpecialPaymentType(roleData.data.special_payment_type || null);
+        // setPaymentType(roleData.data.payment_type);
+        // setSpecialPaymentType(roleData.data.special_payment_type || null);
         // setRoleName(roleData.data.name);
-        setRoleName(prev => roleData.data.name || prev);
+        // setRoleName(prev => roleData.data.name || prev);
       } catch (error) {
         console.error("Error loading data", error);
       }
@@ -59,10 +60,26 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
   
 
 
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setNewWork(prevState => ({ ...prevState, [name]: value }));
+  // };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewWork(prevState => ({ ...prevState, [name]: value }));
+    // אם שדה זה book_id צריך להכניס גם title
+    if (name === "book_id") {
+      const selectedBook = books.find(book => book.id_book === value);
+      setNewWork(prevState => ({
+        ...prevState,
+        book_id: value,
+        book_title: selectedBook ? selectedBook.title : ""
+      }));
+    } else {
+      setNewWork(prevState => ({ ...prevState, [name]: value }));
+    }
   };
+  
 
   const handleCheckboxChange = (e) => {
     setNewWork(prevState => ({ ...prevState, specialWork: e.target.checked }));

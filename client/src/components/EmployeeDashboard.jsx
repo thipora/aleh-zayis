@@ -43,16 +43,15 @@ const EmployeeDashboard = () => {
       const { book_id, quantity, description, notes, specialWork } = newWorkData; // קבלת הנתונים החדשים
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
-      const userId = user?.id_user;
+      const employeeId = user?.employee_id;
       const currentDate = new Date().toISOString().split('T')[0];
 
       // קריאה ל-API לשליחת הנתונים כולל specialWork
-      await apiRequests.postRequest(`/workEntries/${userId}`, {
+      await apiRequests.postRequest(`/workEntries/${employeeId}`, {
         book_id,
         quantity,
         description,
         notes,
-        user_id: userId,
         date: currentDate,
         specialWork // הוספת specialWork לנתונים
       });

@@ -13,7 +13,7 @@ export class BooksController {
             const books = await BooksController.booksService.getBooksForWorker(workerId, { start, range, sort });
             // const books = await BooksController.booksService.getBooksForWorker(workerId);
 
-            return res.json(books);
+            res.json(books);
         } catch (ex) {
             next({
                 statusCode: ex.errno || 500,

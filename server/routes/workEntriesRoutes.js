@@ -6,7 +6,7 @@ const workEntriesController = new WorkEntriesController(); // יצירת מופ�
 
 workEntrieRouter.get('/:employeeId', workEntriesController.getWorkEntriesByUser); // שליחה לפונקציה של המופע
 workEntrieRouter.put('/:WorkEntrieId', workEntriesController.updateWorkEntrie); // שליחה לפונקציה של המופע
-// workEntrieRouter.post('/:employeeId', workEntriesController.createWorkEntrie); // שליחה לפונקציה של המופע
+workEntrieRouter.post('/:employeeId', workEntriesController.createWorkEntry); // שליחה לפונקציה של המופע
 
 export default workEntrieRouter;
 

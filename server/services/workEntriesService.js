@@ -188,18 +188,18 @@ async getWorkEntriesByEmployee(employeeId, { month, year, projectId, sort = 'dat
 
 
 
-    async createWorkEntry(employeeId, { date, quantity, rate_type, description_work, notes, project_name, clickup_project_id }) 
+    async createWorkEntry(employeeId, { date, quantity, description, notes, user_id, book_id }) 
         {
         const query = `
             INSERT INTO ${WorkEntriesService.table}
-            (employee_id, date, quantity, rate_type, description_work, notes, project_name, clickup_project_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            (employee_id, date, quantity, description, notes, book_id)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
 
-        const values = [employeeId, date, quantity, rate_type, description_work, notes, project_name, clickup_project_id];
+        const values = [employeeId, date, quantity, description, notes, book_id];
 
         const result = await executeQuery(query, values);
         return {
-            id_work_entries: result.insertId, employeeId, date, quantity, rate_type, description_work, notes, project_name, clickup_project_id };
+            id_work_entries: result.insertId, employeeId, date, quantity, description, notes, book_id };
     }
 }
