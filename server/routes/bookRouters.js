@@ -8,7 +8,4 @@ const booksController = new BooksController();
 // שליפת ספרים לעובד לפי ה-workerId
 bookRouter.get('/:workerId', booksController.getBooksForWorker);
 
-// יצירת ספר חדש
-bookRouter.post('/:workerId', booksController.createBook);
-
 export default bookRouter;

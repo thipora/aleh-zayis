@@ -5,7 +5,7 @@ import { GeneryQuery } from "../queries/generyQueries.js";
 import { EmployeeService } from "./employeesService.js";
 import { findUserByEmailInClickUp } from './clickup/clickupEmployeeService.js';
 import { sendMail } from '../until/mailer.js';
-import { welcomeEmailTemplate } from '../emailTemplates/welcomeEmail.js';
+import { welcomeEmailTemplate } from '../until/emailTemplates.js';
 // import { generateRandomPassword } from "../utils/passwordUtils.js";
 import { generateRandomPassword } from "../until/passwordUtils.js";
 

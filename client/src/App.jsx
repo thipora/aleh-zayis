@@ -17,11 +17,11 @@ import AddEmployee from "./components/AddEmployee.jsx";
 const App = () => {
   return (
     <div>
-      <h1>ברוכים הבאים לאתר</h1>
+      <h1>Welcome to Aleh Zayis</h1>
       {/* כאן ניתן להוסיף קישורים אם רוצים לנוע בין דפים */}
-      <nav>
+      {/* <nav>
         <Link to="/login">התחבר</Link>
-      </nav>
+      </nav> */}
 
       <Routes>
         {/* <Route path="/login" element={<LoginPage />} />

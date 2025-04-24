@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel, Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import { APIrequests } from "../APIrequests";
 
-const AddWorkDialog = ({ open, onClose, onAdd }) => {
+const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
   const [newWork, setNewWork] = useState({
     book_id: "",
     book_name: "", // הוספת שדה כותרת
@@ -12,7 +12,7 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
     date: new Date().toISOString().split("T")[0],
     specialWork: false
   });
-  const [books, setBooks] = useState([]);
+  // const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [paymentType, setPaymentType] = useState("");
   const [specialPaymentType, setSpecialPaymentType] = useState("");
@@ -26,12 +26,8 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
         const userData = localStorage.getItem("user");
         const user = JSON.parse(userData);
 
-        const [booksData, roleData] = await Promise.all([
-          apiRequests.getRequest(`/books/${user.employee_id}`),
-          // apiRequests.getRequest(`/roles/${user.employee_id}/payment-types`)
-        ]);
-
-        setBooks(booksData);
+        // const booksData = bookData;
+        // setBooks(booksData);
         // setPaymentType(roleData.data.payment_type);
         // setSpecialPaymentType(roleData.data.special_payment_type || null);
         // setRoleName(roleData.data.name);

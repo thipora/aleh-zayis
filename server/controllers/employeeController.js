@@ -1,38 +1,3 @@
-// import employeeService from '../services/employeeService';
-
-// export class EmployeeController {
-//     // הוספת עובד חדש
-//     async addEmployee(req, res, next) {
-//         try {
-//             const { name, email, role } = req.body; // פרטי העובד החדש
-
-//             // הוספת העובד
-//             const newEmployee = await employeeService.addEmployee({ name, email, role });
-
-//             // שליחה של תגובה עם העובד החדש
-//             res.status(201).json(newEmployee);
-//         } catch (error) {
-//             next({
-//                 statusCode: error.statusCode || 500,
-//                 message: error.message || 'Error adding employee'
-//             });
-//         }
-//     }
-
-//     // שליפת כל העובדים
-//     async getAllEmployees(req, res, next) {
-//         try {
-//             const employees = await employeeService.getAllEmployees();
-//             res.json(employees);
-//         } catch (error) {
-//             next({
-//                 statusCode: error.statusCode || 500,
-//                 message: error.message || 'Error fetching employees'
-//             });
-//         }
-//     }
-// }
-
 import { EmployeeService } from '../services/employeesService.js';
 
 export class EmployeeController {
@@ -42,8 +7,8 @@ export class EmployeeController {
 
     async getAllEmployees(req, res, next) {
       try {
-          const employees = await EmployeeController.employeeService.getAllEmployees(); // קריאה לשירות לשליפת העובדים
-          res.status(200).json(employees); // החזרת הרשימה
+          const employees = await EmployeeController.employeeService.getAllEmployees();
+          res.status(200).json(employees);
       } catch (error) {
           next({
               statusCode: error.statusCode || 500,
@@ -53,15 +18,12 @@ export class EmployeeController {
   }
 
 
-    // יצירת עובד + משתמש
     async createEmployee(req, res, next) {
         try {
-            const { name, email, role } = req.body;  // פרטי העובד
+            const { name, email, role } = req.body;
 
-            // קריאה לשירות של העובד
             const employee = await EmployeeController.employeeService.createEmployee({ name, email, role });
 
-            // שליחה של התשובה עם פרטי העובד
             res.status(201).json(employee);
         } catch (error) {
             next({
