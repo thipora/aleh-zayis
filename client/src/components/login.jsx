@@ -116,6 +116,11 @@ const Login = ({ onLogin }) => {
           >
             Login
           </Button>
+          <Typography variant="body2" align="right" sx={{ mt: 1 }}>
+  <a href="/password" style={{ textDecoration: 'underline', cursor: 'pointer' }}>
+    Forgot your password?
+  </a>
+</Typography>
         </form>
         <Typography variant="body2" mt={2}>
           Don't have an account? <a href="/register">Sign up</a>

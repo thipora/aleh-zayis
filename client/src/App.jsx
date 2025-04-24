@@ -11,6 +11,7 @@ import ManagerPage from "./components/ManagerPage"; // עדכון אם שיני�
 import ClientPage from "./components/ClientPage"; // עדכון אם שינית את השם או המיקום
 import EmployeeList from "./components/EmployeeList.jsx";
 import AddEmployee from "./components/AddEmployee.jsx";
+import ChangePassword from "./components/ChangePassword.jsx";
 
 
 
@@ -41,6 +42,8 @@ const App = () => {
         <Route path="/employee-list" element={<EmployeeList />} />
         <Route path="/add-employee" element={<AddEmployee />} />
         <Route path="/client" element={<ClientPage />} />
+        <Route path="/password" element={<ChangePassword />} />
+
       </Routes>
     </div>
   );
