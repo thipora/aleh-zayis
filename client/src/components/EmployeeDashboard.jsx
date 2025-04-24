@@ -74,7 +74,7 @@ const EmployeeDashboard = () => {
   const handleUpdateWork = async (updatedWork) => {
     try {
       // שליחת העבודה המעודכנת לשרת (יש לשלוח את הנתונים לרקורסיה המתאימה בשרת שלך)
-      await apiRequests.putRequest(`/workEntries/${updatedWork.id_work_logs}`, updatedWork);
+      await apiRequests.putRequest(`/workEntries/${updatedWork.id_work_entries}`, updatedWork);
       fetchWorkEntries(); // עדכון הרשימה עם העבודה המעודכנת
     } catch (err) {
       setError("Failed to update work log");
@@ -87,22 +87,15 @@ const EmployeeDashboard = () => {
 
   return (
     <Container>
-      {/* <Typography variant="h4" gutterBottom> */}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h4">Employee Dashboard</Typography>
-          {/* <Button variant="outlined" onClick={() => setPasswordDialogOpen(true)}>
-            שינוי סיסמה
-          </Button> */}
         </Box>
-{/* 
-        Employee Dashboard
-      </Typography> */}
 
       {/* הצגת שגיאה אם יש */}
       <ErrorNotification error={error} />
 
       {/* רשימת העבודה של העובד */}
-      <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} /> {/* שולח את handleUpdateWork כ-prop */}
+      <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} /> 
 
       {/* כפתור לפתיחת הדיאלוג */}
       <Box mt={2}>
@@ -123,7 +116,6 @@ const EmployeeDashboard = () => {
         </DialogActions>
       </Dialog>
 
-      {/* דיאלוג לשינוי סיסמה */}
 <ChangePasswordDialog
   open={isPasswordDialogOpen}
   onClose={() => setPasswordDialogOpen(false)}
