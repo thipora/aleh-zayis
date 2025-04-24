@@ -78,27 +78,24 @@ async getWorkEntriesByEmployee(employeeId, { month, year, projectId, sort = 'dat
     }
 
     if (projectId) {
-        conditions.push('clickup_project_id = ?');
+        conditions.push('book_id = ?');
         values.push(projectId);
     }
+
 
     let query = `
         SELECT 
             id_work_entries,
             date,
             quantity,
-            description_work,
+            description,
             notes,
-            rate_type,
-            project_name,
-            clickup_project_id
+            book_id,
+            book_name
         FROM work_entries
         WHERE ${conditions.join(' AND ')}
         ORDER BY ${sort}
-        LIMIT ? OFFSET ?
     `;
-
-    values.push(range, start);
 
     return await executeQuery(query, values);
 }
@@ -188,18 +185,18 @@ async getWorkEntriesByEmployee(employeeId, { month, year, projectId, sort = 'dat
 
 
 
-    async createWorkEntry(employeeId, { date, quantity, description, notes, user_id, book_id }) 
+    async createWorkEntry(employeeId, { date, quantity, description, notes, user_id, book_id, book_name }) 
         {
         const query = `
             INSERT INTO ${WorkEntriesService.table}
-            (employee_id, date, quantity, description, notes, book_id)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (employee_id, date, quantity, description, notes, book_id, book_name)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
 
-        const values = [employeeId, date, quantity, description, notes, book_id];
+        const values = [employeeId, date, quantity, description, notes, book_id, book_name];
 
         const result = await executeQuery(query, values);
         return {
-            id_work_entries: result.insertId, employeeId, date, quantity, description, notes, book_id };
+            id_work_entries: result.insertId, employeeId, date, quantity, description, notes, book_id, book_name };
     }
 }

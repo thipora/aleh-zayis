@@ -5,7 +5,7 @@ import { APIrequests } from "../APIrequests";
 const AddWorkDialog = ({ open, onClose, onAdd }) => {
   const [newWork, setNewWork] = useState({
     book_id: "",
-    book_title: "", // הוספת שדה כותרת
+    book_name: "", // הוספת שדה כותרת
     quantity: "",
     description: "",
     notes: "",
@@ -73,7 +73,7 @@ const AddWorkDialog = ({ open, onClose, onAdd }) => {
       setNewWork(prevState => ({
         ...prevState,
         book_id: value,
-        book_title: selectedBook ? selectedBook.title : ""
+        book_name: selectedBook ? selectedBook.title : ""
       }));
     } else {
       setNewWork(prevState => ({ ...prevState, [name]: value }));

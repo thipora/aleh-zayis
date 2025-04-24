@@ -35,11 +35,11 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
             {workEntries.map((log) => (
               <TableRow key={log.id_work_entries}>
                 <TableCell>{new Date(log.date).toLocaleDateString()}</TableCell>
-                <TableCell>{log.project_name}</TableCell>
+                <TableCell>{log.book_name}</TableCell>
                 <TableCell>
                   {parseFloat(log.quantity).toFixed(2).replace(/\.00$/, '')} {log.rate_type}
                 </TableCell>
-                <TableCell>{log.description_work}</TableCell>
+                <TableCell>{log.description}</TableCell>
                 <TableCell>{log.notes}</TableCell>
                 <TableCell>
                   <Button size="small" variant="outlined" color="primary" onClick={() => handleUpdate(log)}>

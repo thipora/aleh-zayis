@@ -40,7 +40,7 @@ const EmployeeDashboard = () => {
 
   const handleAddWork = async (newWorkData) => {
     try {
-      const { book_id, quantity, description, notes, specialWork } = newWorkData; // קבלת הנתונים החדשים
+      const { book_id, book_name, quantity, description, notes, specialWork } = newWorkData; // קבלת הנתונים החדשים
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
       const employeeId = user?.employee_id;
@@ -49,6 +49,7 @@ const EmployeeDashboard = () => {
       // קריאה ל-API לשליחת הנתונים כולל specialWork
       await apiRequests.postRequest(`/workEntries/${employeeId}`, {
         book_id,
+        book_name,
         quantity,
         description,
         notes,
