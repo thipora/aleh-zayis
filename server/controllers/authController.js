@@ -37,23 +37,19 @@ export class AuthController {
 
     async changePassword(req, res, next) {
         try {
-            const { userId, currentPassword, newPassword, confirmPassword } = req.body;
-
-            if (!userId || !currentPassword || !newPassword || !confirmPassword) {
+            const { email, currentPassword, newPassword } = req.body;
+    
+            if (!email || !currentPassword || !newPassword) {
                 return res.status(400).json({ message: "Missing fields" });
             }
-
-            if (newPassword !== confirmPassword) {
-                return res.status(400).json({ message: "New passwords do not match" });
-            }
-
+    
             const userService = new UserService();
-            const success = await userService.changePassword(userId, currentPassword, newPassword);
-
+            const success = await userService.changePasswordByEmail(email, currentPassword, newPassword);
+    
             if (!success) {
-                return res.status(401).json({ message: "Incorrect current password" });
+                return res.status(401).json({ message: "Email or current password is incorrect" });
             }
-
+    
             res.status(200).json({ message: "Password updated successfully" });
         } catch (ex) {
             next({

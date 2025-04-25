@@ -12,7 +12,7 @@ const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(true);  // משתנה למעקב אחר מצב התצוגה של הסיסמה
+  const [showPassword, setShowPassword] = useState(false);  // משתנה למעקב אחר מצב התצוגה של הסיסמה
 
   const apiRequests = new APIrequests();
 
@@ -89,7 +89,7 @@ const Login = ({ onLogin }) => {
           <TextField
             fullWidth
             label="Password"
-            type={showPassword ? "password" : "text"}  // שינוי סוג השדה לפי מצב הצגת הסיסמה
+            type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             margin="normal"
@@ -97,8 +97,8 @@ const Login = ({ onLogin }) => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton 
-                    onClick={handleClickShowPassword} 
+                  <IconButton
+                    onClick={handleClickShowPassword}
                     edge="end"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -117,10 +117,10 @@ const Login = ({ onLogin }) => {
             Login
           </Button>
           <Typography variant="body2" align="right" sx={{ mt: 1 }}>
-  <a href="/password" style={{ textDecoration: 'underline', cursor: 'pointer' }}>
-    Forgot your password?
-  </a>
-</Typography>
+            <a href="/password" style={{ textDecoration: 'underline', cursor: 'pointer' }}>
+              Forgot your password?
+            </a>
+          </Typography>
         </form>
         <Typography variant="body2" mt={2}>
           Don't have an account? <a href="/register">Sign up</a>

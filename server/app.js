@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:5174',
+  origin: true,
   credentials: true // זה חשוב אם הבקשה מהקליינט כוללת cookies או כל מידע מזהה
 }));
 

@@ -86,50 +86,6 @@ export class UserService {
         return clickupUser;
     }
 
-    // async registerUser(params) {
-    //     const { name, email } = params;
-
-    //     const clickupUser = await findUserByEmailInClickUp(email);
-    //     if (!clickupUser) {
-    //         throw new Error("You're not authorized to register – user not found in ClickUp.");
-    //     }
-
-    //     const userExists = await this.userExists(email);
-    //     if (userExists) {
-    //         throw new Error("User already exists");
-    //     }
-
-    //     const rawPassword = this.generateRandomPassword();
-    //     const hashedPassword = await bcrypt.hash(rawPassword, 10);
-
-    //     const newUser = {
-    //         name: name,
-    //         email,
-    //         password: hashedPassword,
-    //         account_type: 'employee'
-    //     };
-    //     const userId = await this.addUser(newUser);
-
-    //     await UserService.EmployeeService.createEmployee({
-    //         user_id: userId,
-    //         clickup_id: clickupUser.id
-    //     });
-
-    //     await sendMail({
-    //         to: "tz0556776105@gmail.com",
-    //         subject: 'Welcome to Aleh Zayis Website!',
-    //         html: welcomeEmailTemplate(name, rawPassword)
-    //       });          
-
-    //     if (!userId) {
-    //         throw new Error("Failed to create user");
-    //     }
-    //     return userId;
-    // }
-
-
-
-
 
     async userExists(email) {
         const query = registerUserQuery();
@@ -148,19 +104,19 @@ export class UserService {
     }
 
 
-    async changePassword(userId, currentPassword, newPassword) {
-        const userQuery = `SELECT password FROM users WHERE id_user = ?`;
-        const users = await executeQuery(userQuery, [userId]);
-
+    async changePasswordByEmail(email, currentPassword, newPassword) {
+        const userQuery = `SELECT id_user, password FROM users WHERE email = ?`;
+        const users = await executeQuery(userQuery, [email]);
+    
         if (!users || users.length === 0) return false;
-
+    
         const isMatch = await bcrypt.compare(currentPassword, users[0].password);
         if (!isMatch) return false;
-
+    
         const hashed = await bcrypt.hash(newPassword, 10);
         const updateQuery = `UPDATE users SET password = ? WHERE id_user = ?`;
-        await executeQuery(updateQuery, [hashed, userId]);
-
+        await executeQuery(updateQuery, [hashed, users[0].id_user]);
+    
         return true;
     }
 }
