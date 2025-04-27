@@ -7,6 +7,7 @@ import cors from 'cors';
 import { logErrors } from './middleware/logError.js';
 // import roleRoutes from './routes/roleRoutes.js';
 import employeeRoute from './routes/employeeRoutes.js';
+import summaryRouter from './routes/summaryRouter.js';
 
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/auth', authRouters);
 app.use('/workEntries', workEntrieRouter);
 app.use('/books', bookRouter);
 // app.use('/employees', employeeRoute);
+app.use('/summary', summaryRouter);
 
 app.use(logErrors);
 
