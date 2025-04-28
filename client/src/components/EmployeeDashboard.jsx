@@ -64,7 +64,7 @@ const EmployeeDashboard = () => {
 
   const handleAddWork = async (newWorkData) => {
     try {
-      const { book_id, book_name, quantity, description, notes, specialWork, date } = newWorkData;
+      const { book_id, book_name, quantity, description, notes, specialWork, date, start_time, end_time } = newWorkData;
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
       const employeeId = user?.employee_id;
@@ -77,7 +77,9 @@ const EmployeeDashboard = () => {
         description,
         notes,
         date,
-        specialWork
+        specialWork,
+        start_time,
+        end_time
       });
 
       setWorkEntries((prevWorkEntries) => [...prevWorkEntries, { ...newWorkData, specialWork }]);

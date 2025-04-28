@@ -13,6 +13,8 @@ import EmployeeList from "./components/EmployeeList.jsx";
 import AddEmployee from "./components/AddEmployee.jsx";
 import ChangePassword from "./components/ChangePassword.jsx";
 // import "react-datepicker/dist/react-datepicker.css";
+import ReportsDashboard from "./components/ReportsDashboard.jsx"; // מיקום הקובץ
+
 
 
 
@@ -45,6 +47,8 @@ const App = () => {
         <Route path="/add-employee" element={<AddEmployee />} />
         <Route path="/client" element={<ClientPage />} />
         <Route path="/password" element={<ChangePassword />} />
+        <Route path="/reports" element={<ReportsDashboard />} />
+
 
       </Routes>
     </div>

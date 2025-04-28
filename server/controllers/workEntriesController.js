@@ -49,10 +49,10 @@ export class WorkEntriesController {
     async createWorkEntry(req, res, next) {
         try {
             const { employeeId } = req.params;
-            const { date, quantity, description, notes, book_id, book_name } = req.body;
+            const { date, quantity, description, notes, book_id, book_name, start_time, end_time } = req.body;
 
             const newEntry = await WorkEntriesController.workEntriesService.createWorkEntry(employeeId, {
-                date, quantity, description, notes, book_id, book_name });
+                date, quantity, description, notes, book_id, book_name, start_time, end_time });
 
             res.status(201).json(newEntry);
         } catch (ex) {
@@ -62,5 +62,112 @@ export class WorkEntriesController {
             });
         }
     }
+
+
+
+
+
+
+
+
+    async getEditorWorkByMonth(req, res, next) {
+        try {
+            const { employeeId } = req.params;
+            const { month, year } = req.query;
+
+            if (!employeeId || !month || !year) {
+                return res.status(400).json({ message: 'Missing required parameters' });
+            }
+
+            const data = await WorkEntriesController.workEntriesService.getEditorWorkByMonth(
+                employeeId, { month, year }
+            );
+            res.json(data);
+        } catch (ex) {
+            next({
+                statusCode: ex.errno || 500,
+                message: ex.message || ex
+            });
+        }
+    }
+
+    // דוח 2: כל העבודה על ספר/פרויקט מסוים (לפי עורכים) בחודש מסוים
+    async getProjectWorkByMonth(req, res, next) {
+        try {
+            const { bookId } = req.params;
+            const { month, year } = req.query;
+
+            if (!bookId || !month || !year) {
+                return res.status(400).json({ message: 'Missing required parameters' });
+            }
+
+            const data = await WorkEntriesController.workEntriesService.getProjectWorkByMonth(
+                bookId, { month, year }
+            );
+            res.json(data);
+        } catch (ex) {
+            next({
+                statusCode: ex.errno || 500,
+                message: ex.message || ex
+            });
+        }
+    }
+
+    // דוח 3: סיכום עריכה לכל העורכים באותו החודש
+    async getEditorsSummaryByMonth(req, res, next) {
+        try {
+            const { month, year } = req.query;
+
+            if (!month || !year) {
+                return res.status(400).json({ message: 'Missing required parameters' });
+            }
+
+            const data = await WorkEntriesController.workEntriesService.getEditorsSummaryByMonth(
+                { month, year }
+            );
+            res.json(data);
+        } catch (ex) {
+            next({
+                statusCode: ex.errno || 500,
+                message: ex.message || ex
+            });
+        }
+    }
+
+        // דוח 4: סיכום שעות לפי ספר
+        async getBooksSummary(req, res, next) {
+            try {
+                const { month, year } = req.query;
+                const data = await WorkEntriesController.workEntriesService.getBooksSummary({ month, year });
+                res.json(data);
+            } catch (ex) {
+                next({ statusCode: ex.errno || 500, message: ex.message || ex });
+            }
+        }
+    
+        // דוח 5: סיכום עובדים בספר (עם שעות לכל עובד)
+        async getBookEmployeesSummary(req, res, next) {
+            try {
+                const { bookId } = req.params;
+                const { month, year } = req.query;
+                const data = await WorkEntriesController.workEntriesService.getBookEmployeesSummary(bookId, { month, year });
+                res.json(data);
+            } catch (ex) {
+                next({ statusCode: ex.errno || 500, message: ex.message || ex });
+            }
+        }
+    
+        // דוח 6: פירוט עובד בספר מסוים (כל השורות)
+        async getBookEmployeeDetails(req, res, next) {
+            try {
+                const { bookId, employeeId } = req.params;
+                const { month, year } = req.query;
+                const data = await WorkEntriesController.workEntriesService.getBookEmployeeDetails(bookId, employeeId, { month, year });
+                res.json(data);
+            } catch (ex) {
+                next({ statusCode: ex.errno || 500, message: ex.message || ex });
+            }
+        }
+    
 }
 

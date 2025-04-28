@@ -8,6 +8,14 @@ workEntrieRouter.get('/:employeeId', workEntriesController.getWorkEntriesByEmplo
 workEntrieRouter.put('/:WorkEntrieId', workEntriesController.updateWorkEntrie); // שליחה לפונקציה של המופע
 workEntrieRouter.post('/:employeeId', workEntriesController.createWorkEntry); // שליחה לפונקציה של המופע
 // workEntriesRouter.get('/:employeeId', WorkEntriesController.getUniqueBooksByEmployee);
+workEntrieRouter.get('/reports/editor/:employeeId', workEntriesController.getEditorWorkByMonth);
+workEntrieRouter.get('/reports/project/:bookId', workEntriesController.getProjectWorkByMonth);
+workEntrieRouter.get('/reports/editors-summary', workEntriesController.getEditorsSummaryByMonth);
+
+workEntrieRouter.get('/reports/books-summary', workEntriesController.getBooksSummary);
+workEntrieRouter.get('/reports/book/:bookId/employee/:employeeId', workEntriesController.getBookEmployeeDetails);
+workEntrieRouter.get('/reports/book/:bookId', workEntriesController.getBookEmployeesSummary);
+
 
 export default workEntrieRouter;
 

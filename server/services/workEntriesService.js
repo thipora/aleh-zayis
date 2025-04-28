@@ -34,7 +34,9 @@ export class WorkEntriesService {
                 description,
                 notes,
                 book_id,
-                book_name
+                book_name,
+                start_time,
+                end_time
             FROM work_entries
             WHERE ${conditions.join(' AND ')}
             ORDER BY ${sort}
@@ -78,18 +80,161 @@ export class WorkEntriesService {
         return await executeQuery(query, values);
     }
 
-    async createWorkEntry(employeeId, { date, quantity, description, notes, book_id, book_name }) 
+    async createWorkEntry(employeeId, { date, quantity, description, notes, book_id, book_name, start_time, end_time }) 
         {
         const query = `
             INSERT INTO ${WorkEntriesService.table}
-            (employee_id, date, quantity, description, notes, book_id, book_name)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (employee_id, date, quantity, description, notes, book_id, book_name, start_time, end_time)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
-        const values = [employeeId, date, quantity, description, notes, book_id, book_name];
+        const values = [employeeId, date, quantity, description, notes, book_id, book_name, start_time, end_time];
 
         const result = await executeQuery(query, values);
         return {
-            id_work_entries: result.insertId, employeeId, date, quantity, description, notes, book_id, book_name };
+            id_work_entries: result.insertId, employeeId, date, quantity, description, notes, book_id, book_name, start_time, end_time };
     }
-}
+
+
+        // דוח 1: כל העבודה שעשה עורך מסוים בחודש מסוים (לפי פרויקטים)
+        // async getEditorWorkByMonth(employeeId, { month, year }) {
+        //     const sql = `
+        //         SELECT we.book_id, we.book_name, we.date, we.quantity, we.description, we.notes, we.start_time, we.end_time, we.book_id
+        //         FROM work_entries we
+        //         WHERE we.employee_id = ?
+        //           AND YEAR(we.date) = ?
+        //           AND MONTH(we.date) = ?
+        //         ORDER BY we.book_name, we.date
+        //     `;
+        //     return await executeQuery(sql, [employeeId, year, month]);
+        // }
+        
+
+        async getEditorWorkByMonth(employeeId, { month, year }) {
+            const sql = `
+                SELECT
+                    we.book_id,
+                    we.book_name,
+                    we.date,
+                    we.quantity,
+                    we.description,
+                    we.notes,
+                    we.start_time,
+                    we.end_time,
+                    we.book_id
+                FROM work_entries we
+                WHERE we.employee_id = ?
+                  AND YEAR(we.date) = ?
+                  AND MONTH(we.date) = ?
+                ORDER BY we.book_id, we.date
+            `;
+            return await executeQuery(sql, [employeeId, year, month]);
+        }
+        
+        
+    // דוח 2: כל העבודה בפרויקט מסוים בחודש מסוים (לפי עורכים)
+    async getProjectWorkByMonth(bookId, { month, year }) {
+        const sql = `
+            SELECT 
+                u.name AS editor_name,
+                we.date,
+                we.quantity,
+                we.description,
+                we.notes,
+                we.start_time,
+                we.end_time
+            FROM work_entries we
+            JOIN employees e ON we.employee_id = e.id_employee
+            JOIN users u ON e.user_id = u.id_user
+            WHERE we.book_id = ?
+              AND YEAR(we.date) = ?
+              AND MONTH(we.date) = ?
+            ORDER BY editor_name, we.date
+        `;
+        return await executeQuery(sql, [bookId, year, month]);
+    }
+    
+    // דוח 3: סיכום עריכה לכל העורכים באותו החודש (סה"כ שעות לפי עורך)
+    async getEditorsSummaryByMonth({ month, year }) {
+        const sql = `
+            SELECT 
+                u.name AS editor_name, e.id_employee as editor_id, 
+                SUM(we.quantity) AS total_hours
+            FROM work_entries we
+            JOIN employees e ON we.employee_id = e.id_employee
+            JOIN users u ON e.user_id = u.id_user
+            WHERE YEAR(we.date) = ?
+              AND MONTH(we.date) = ?
+            GROUP BY e.id_employee, u.name
+            ORDER BY total_hours DESC
+        `;
+        return await executeQuery(sql, [year, month]);
+    }
+
+        // דוח 4: סיכום שעות לכל ספר
+        async getBooksSummary({ month, year } = {}) {
+            let where = [];
+            let params = [];
+            if (month && year) {
+                where.push('YEAR(we.date) = ?');
+                where.push('MONTH(we.date) = ?');
+                params.push(year, month);
+            }
+            const sql = `
+                SELECT 
+                    we.book_id, we.book_name,
+                    SUM(we.quantity) AS total_hours
+                FROM work_entries we
+                ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+                GROUP BY we.book_id, we.book_name
+                ORDER BY total_hours DESC
+            `;
+            return await executeQuery(sql, params);
+        }
+    
+        // דוח 5: עובדים בספר
+        async getBookEmployeesSummary(bookId, { month, year } = {}) {
+            let where = ['we.book_id = ?'];
+            let params = [bookId];
+            if (month && year) {
+                where.push('YEAR(we.date) = ?');
+                where.push('MONTH(we.date) = ?');
+                params.push(year, month);
+            }
+            const sql = `
+                SELECT 
+                    u.name AS employee_name, e.id_employee as employee_id, 
+                    SUM(we.quantity) AS total_hours
+                FROM work_entries we
+                JOIN employees e ON we.employee_id = e.id_employee
+                JOIN users u ON e.user_id = u.id_user
+                WHERE ${where.join(' AND ')}
+                GROUP BY e.id_employee, u.name
+                ORDER BY total_hours DESC
+            `;
+            return await executeQuery(sql, params);
+        }
+    
+        // דוח 6: כל השורות של עובד בספר
+        async getBookEmployeeDetails(bookId, employeeId, { month, year } = {}) {
+            let where = ['we.book_id = ?', 'we.employee_id = ?'];
+            let params = [bookId, employeeId];
+            if (month && year) {
+                where.push('YEAR(we.date) = ?');
+                where.push('MONTH(we.date) = ?');
+                params.push(year, month);
+            }
+            const sql = `
+                SELECT
+                    we.date,
+                    we.quantity,
+                    we.description,
+                    we.notes
+                FROM work_entries we
+                WHERE ${where.join(' AND ')}
+                ORDER BY we.date
+            `;
+            return await executeQuery(sql, params);
+        }
+    
+    }
