@@ -51,7 +51,8 @@ export class UserService {
 
         await UserService.EmployeeService.createEmployee({
             user_id: userId,
-            clickup_id: clickupUser.id
+            clickup_id: clickupUser.id,
+            role: clickupUser.role
         });
         await sendMail({
             to: "tz0556776105@gmail.com",
