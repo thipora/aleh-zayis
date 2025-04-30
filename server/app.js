@@ -5,7 +5,7 @@ import bookRouter from './routes/bookRouters.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { logErrors } from './middleware/logError.js';
-// import roleRoutes from './routes/roleRoutes.js';
+import rolesRouter from './routes/rolesRouter.js';
 import employeeRoute from './routes/employeeRoutes.js';
 import summaryRouter from './routes/summaryRouter.js';
 
@@ -26,6 +26,7 @@ app.use('/workEntries', workEntrieRouter);
 app.use('/books', bookRouter);
 // app.use('/employees', employeeRoute);
 app.use('/summary', summaryRouter);
+app.use('/roles', rolesRouter);
 
 app.use(logErrors);
 

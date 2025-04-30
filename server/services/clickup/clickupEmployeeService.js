@@ -9,10 +9,25 @@ let lastFetchTime = 0;
 const CACHE_TTL_MS = 1000 * 60 * 10;
 
 
+// export async function findUserByEmailInClickUp(email) {
+//     const users = await getClickUpEmployee();
+//     return users.find(user => user.email === email) || null;
+// }
+
 export async function findUserByEmailInClickUp(email) {
-    const users = await getClickUpEmployee();
-    return users.find(user => user.email === email) || null;
+  const users = await getClickUpEmployee();
+  const matches = users.filter(user => user.email === email);
+
+  if (matches.length === 0) return null;
+
+  return {
+    id: matches[0].id, // נניח שזה אותו ID בכל המופעים
+    name: matches[0].name,
+    email: matches[0].email,
+    roles: matches.map(user => user.role) // כל התפקידים שלו
+  };
 }
+
 
 export async function getClickUpEmployee() {
     const now = Date.now();

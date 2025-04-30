@@ -10,6 +10,50 @@ export class EmployeeService {
     }
 
 
+    // async createEmployee(params) {
+    //     const roleMap = {
+    //         'Editors': 'Editor',
+    //         'Typists': 'Typist',
+    //         'Transcribers': 'Transcriber',
+    //         'Project Management': 'Project Manager'
+    //     };
+    
+    //     const normalizedRole = roleMap[params.role];
+    //     if (!normalizedRole) {
+    //         throw new Error(`Unknown role from ClickUp: ${params.role_id}`);
+    //     }
+    
+    //     // שליפת ה-role_id מה-DB לפי role_name התקני
+    //     const roleResult = await executeQuery(
+    //         `SELECT id_role FROM alehZayis.roles WHERE role_name = ?`,
+    //         [normalizedRole]
+    //     );
+    
+    //     if (!roleResult.length) {
+    //         throw new Error(`Role '${normalizedRole}' not found in roles table`);
+    //     }
+    
+    //     const roleId = roleResult[0].id_role;
+        
+    //     const employeeQuery = `INSERT INTO alehzayis.employees (user_id, clickup_id) VALUES (?, ?)`;
+    //     const result = await executeQuery(employeeQuery, [params.user_id, params.clickup_id]);
+
+    //     if (!result.insertId) {
+    //         throw new Error('Failed to create employee');
+    //     }
+
+    //     const employeeId = result.insertId;
+
+    //     // הכנסת הקשר לטבלת employee_roles
+    //     await executeQuery(
+    //         `INSERT INTO alehZayis.employee_roles (employee_id, role_id) VALUES (?, ?)`,
+    //         [employeeId, roleId]
+    //     );    
+
+    //     return employeeId;
+    // }
+
+
     async createEmployee(params) {
         const roleMap = {
             'Editors': 'Editor',
@@ -17,34 +61,39 @@ export class EmployeeService {
             'Transcribers': 'Transcriber',
             'Project Management': 'Project Manager'
         };
-    
-        const normalizedRole = roleMap[params.role];
-        if (!normalizedRole) {
-            throw new Error(`Unknown role from ClickUp: ${params.role_id}`);
+
+        const { user_id, clickup_id, roles } = params;
+      
+        const insertEmployeeQuery = `INSERT INTO alehzayis.employees (user_id, clickup_id) VALUES (?, ?)`;
+        const result = await executeQuery(insertEmployeeQuery, [user_id, clickup_id]);
+      
+        if (!result.insertId) {
+          throw new Error("Failed to create employee");
         }
-    
-        // שליפת ה-role_id מה-DB לפי role_name התקני
-        const roleResult = await executeQuery(
+      
+        const employeeId = result.insertId;
+      
+        for (const roleName of roles) {
+          const normalizedRole = roleMap[roleName];
+          if (!normalizedRole) continue;
+      
+          const roleResult = await executeQuery(
             `SELECT id_role FROM alehZayis.roles WHERE role_name = ?`,
             [normalizedRole]
-        );
-    
-        if (!roleResult.length) {
-            throw new Error(`Role '${normalizedRole}' not found in roles table`);
+          );
+      
+          if (roleResult.length) {
+            const roleId = roleResult[0].id_role;
+            await executeQuery(
+              `INSERT INTO alehzayis.employee_roles (employee_id, role_id) VALUES (?, ?)`,
+              [employeeId, roleId]
+            );
+          }
         }
-    
-        const roleId = roleResult[0].id_role;
-        
-        const employeeQuery = `INSERT INTO alehzayis.employees (user_id, clickup_id, role_id) VALUES (?, ?, ?)`;
-        const result = await executeQuery(employeeQuery, [params.user_id, params.clickup_id, roleId]);
-
-        if (!result.insertId) {
-            throw new Error('Failed to create employee');
-        }
-
-        return result.insertId;
+      
+        return employeeId;
     }
-
+      
 
     async getEmployeeIdByUserId(userId) {
         const query = 'SELECT id_employee FROM alehZayis.employees WHERE user_id = ?';

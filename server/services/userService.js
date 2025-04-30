@@ -30,10 +30,33 @@ export class UserService {
 
         delete users[0].password;
 
+
+
         if (users[0].account_type === "Employee") {
-            const employeeId = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
-            users[0].employee_id = employeeId.id_employee || null; // אם לא נמצא, שים null
+            // שליפת פרטי עובד
+            const employee = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
+            users[0].employee_id = employee?.id_employee || null;
+    
+            // שליפת כל התפקידים של העובדD
+            if (users[0].employee_id) {
+                const rolesQuery = `
+                SELECT role_id
+                FROM alehZayis.employee_roles
+                WHERE employee_id = ?
+            `;
+            const roles = await executeQuery(rolesQuery, [users[0].employee_id]);
+            users[0].roles = roles.map(r => r.role_id); // מחזיר רק מערך של מזהים
+                        } else {
+                users[0].roles = [];
+            }
         }
+    
+
+        // if (users[0].account_type === "Employee") {
+        //     const employee = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
+        //     users[0].employee_id = employee.id_employee || null; // אם לא נמצא, שים null
+        //     users[0].role_id = employee.role_id
+        // }
 
         return users[0];
     }
@@ -52,7 +75,7 @@ export class UserService {
         await UserService.EmployeeService.createEmployee({
             user_id: userId,
             clickup_id: clickupUser.id,
-            role: clickupUser.role
+            roles: clickupUser.roles
         });
         await sendMail({
             to: "tz0556776105@gmail.com",

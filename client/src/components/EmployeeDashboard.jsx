@@ -30,6 +30,7 @@ const EmployeeDashboard = () => {
   const [bookSummary, setBookSummary] = useState([]);
   const [months, setMonths] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
+  const [role, setRole] = useState(null);
 
   const apiRequests = new APIrequests();
 
@@ -47,20 +48,48 @@ const EmployeeDashboard = () => {
   // };
 
   // טעינת ספרים לפני פתיחת הדיאלוג
+  // const handleOpenAddWork = async () => {
+  //   setLoadingBooks(true);
+  //   setOpen(true);
+  //   try {
+  //     const userData = localStorage.getItem("user");
+  //     const user = JSON.parse(userData);
+  //     const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
+  //     setBooks(booksData);
+  //   } catch (err) {
+  //     setBooks([]);
+  //     setError("Failed to load books.");
+  //   }
+  //   setLoadingBooks(false);
+  // };
+
   const handleOpenAddWork = async () => {
     setLoadingBooks(true);
-    setOpen(true);
     try {
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
+      
+      // שליפת ספרים
       const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
       setBooks(booksData);
+  
+      // שליפת תפקיד העובד
+      // const roleData = await apiRequests.getRequest(`/roles/${user.role_id}`);
+      const ids = user.roles.join(','); // יוצר מחרוזת "1,2,3"
+const roleData = await apiRequests.getRequest(`/roles?ids=${ids}`);
+
+      setRole(roleData);
+  
+      // פותח את הדיאלוג רק אחרי שהכול נטען
+      setOpen(true);
+  
     } catch (err) {
       setBooks([]);
-      setError("Failed to load books.");
+      setError("Failed to load data.");
     }
     setLoadingBooks(false);
   };
+  
 
   const handleAddWork = async (newWorkData) => {
     try {
@@ -201,12 +230,21 @@ const handleFetchBookSummary = async () => {
               <CircularProgress color="primary" />
             </Box>
           ) : (
+            // <AddWorkDialog
+            //   open={open}
+            //   onClose={() => setOpen(false)}
+            //   onAdd={handleAddWork}
+            //   books={books} // books עוברים כ-prop
+            // />
+
             <AddWorkDialog
-              open={open}
-              onClose={() => setOpen(false)}
-              onAdd={handleAddWork}
-              books={books} // books עוברים כ-prop
-            />
+  open={open}
+  onClose={() => setOpen(false)}
+  onAdd={handleAddWork}
+  books={books}
+  role={role}
+/>
+
           )}
         </DialogContent>
         <DialogActions>
