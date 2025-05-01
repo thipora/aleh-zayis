@@ -236,5 +236,47 @@ export class WorkEntriesService {
             `;
             return await executeQuery(sql, params);
         }
+
+
+        async getMonthlyWorkSummaryByEmployees({ month, year }) {
+            const sql = `
+              SELECT
+                e.id_employee,
+                u.name AS employee_name,
+                SUM(we.quantity) AS total_quantity,
+                e.rate,
+                SUM(we.quantity * e.rate) AS total_payment
+              FROM work_entries we
+              JOIN employees e ON we.employee_id = e.id_employee
+              JOIN users u ON e.user_id = u.id_user
+              WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
+              GROUP BY e.id_employee, u.name, e.rate
+              ORDER BY total_payment DESC
+            `;
+            return await executeQuery(sql, [month, year]);
+          }
+
+
+
+          async getMonthlySummaryByEmployee(employeeId, { month, year }) {
+            const sql = `
+              SELECT
+                we.book_id,
+                we.book_name,
+                e.rate,
+                SUM(we.quantity) AS quantity,
+                SUM(we.quantity * e.rate) AS total_payment
+              FROM work_entries we
+              JOIN employees e ON we.employee_id = e.id_employee
+              WHERE we.employee_id = ?
+                AND MONTH(we.date) = ?
+                AND YEAR(we.date) = ?
+              GROUP BY we.book_id, we.book_name, e.rate
+              ORDER BY we.book_name
+            `;
+            return await executeQuery(sql, [employeeId, month, year]);
+          }
+          
+          
     
     }

@@ -168,6 +168,20 @@ export class WorkEntriesController {
                 next({ statusCode: ex.errno || 500, message: ex.message || ex });
             }
         }
+
+        async getMonthlyWorkSummaryByEmployees(req, res, next) {
+            try {
+              const { month, year } = req.query;
+              if (!month || !year) {
+                return res.status(400).json({ message: "Missing month or year" });
+              }
+              const data = await WorkEntriesController.workEntriesService.getPaymentsSummaryByMonth({ month, year });
+              res.json(data);
+            } catch (ex) {
+              next({ statusCode: ex.errno || 500, message: ex.message || ex });
+            }
+          }
+          
     
 }
 

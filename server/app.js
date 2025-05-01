@@ -8,6 +8,7 @@ import { logErrors } from './middleware/logError.js';
 import rolesRouter from './routes/rolesRouter.js';
 import employeeRoute from './routes/employeeRoutes.js';
 import summaryRouter from './routes/summaryRouter.js';
+import reportsRouter from './routes/reportsRouter.js';
 
 
 dotenv.config();
@@ -27,6 +28,9 @@ app.use('/books', bookRouter);
 // app.use('/employees', employeeRoute);
 app.use('/summary', summaryRouter);
 app.use('/roles', rolesRouter);
+app.use('/reports', reportsRouter);
+
+
 
 app.use(logErrors);
 

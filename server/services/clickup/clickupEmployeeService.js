@@ -6,7 +6,7 @@ const folderName = 'Freelancer Database'
 
 let clickupCache = null;
 let lastFetchTime = 0;
-const CACHE_TTL_MS = 1000 * 60 * 10;
+const CACHE_TTL_MS = 1000 * 60 * 90;
 
 
 // export async function findUserByEmailInClickUp(email) {
@@ -24,7 +24,7 @@ export async function findUserByEmailInClickUp(email) {
     id: matches[0].id, // נניח שזה אותו ID בכל המופעים
     name: matches[0].name,
     email: matches[0].email,
-    roles: matches.map(user => user.role) // כל התפקידים שלו
+    roles: matches.flatMap(user => user.roles || [user.role])
   };
 }
 
@@ -36,35 +36,48 @@ export async function getClickUpEmployee() {
       return clickupCache;
     }
   
-    // const folderId = await clickUpService.getFolderIdByName(folderName);
     const freelancersFolderId = await clickUpService.getFolderIdByName("Freelancer Database");
     const mazFolderId = await clickUpService.getFolderIdByName("MAZ Information");
 
-
-    // const data = await clickUpService.getLists(folderId);
     const freelancerLists = await clickUpService.getLists(freelancersFolderId);
     const mazLists = await clickUpService.getLists(mazFolderId);
 
-    // const tasks = await Promise.all(data.lists.map(list => fetchTasksFromList(list.id)));
-    // const tasksWithIdAndEmail = tasks.flatMap(list =>
-    //   list.map(task => ({
-    //     id: task.id,
-    //     name: task.name,
-    //     email: task.custom_fields.find(field => field.name === 'Email')?.value,
-    //     role: task.list.name
-    //   }))
+    // const freelancers = await Promise.all(
+    //   freelancerLists.lists.map(async (list) => {
+    //     const tasksInList = await fetchTasksFromList(list.id);
+    //     return tasksInList.map(task => ({
+    //       id: task.id,
+    //       name: task.name,
+    //       email: task.custom_fields.find(field => field.name === 'Email')?.value,
+    //       role: list.name  // ← ברור שזה בא מה-list
+    //     }));
+    //   })
     // );
+
     const freelancers = await Promise.all(
       freelancerLists.lists.map(async (list) => {
         const tasksInList = await fetchTasksFromList(list.id);
-        return tasksInList.map(task => ({
-          id: task.id,
-          name: task.name,
-          email: task.custom_fields.find(field => field.name === 'Email')?.value,
-          role: list.name  // ← ברור שזה בא מה-list
-        }));
+        return tasksInList.map(task => {
+          const email = task.custom_fields.find(field => field.name === 'Email')?.value;
+    
+          const baseData = {
+            id: task.id,
+            name: task.name,
+            email
+          };
+    
+          if (list.name === "Graphics & Layout") {
+            // שולף את כל התוויות בתור תפקידים
+            const roles = task.tags.map(tag => tag.name);
+            return { ...baseData, roles };
+          } else {
+            // שאר הרשימות – שם הרשימה הוא התפקיד היחיד
+            return { ...baseData, roles: list.name };
+          }
+        });
       })
     );
+        
 
 
     const officeList = mazLists.lists.find(list => list.name === 'Employee Information');
@@ -85,24 +98,10 @@ if (officeList) {
       role: roleName
     };
   });
-}
-
-    // const officeWorkers = await Promise.all(
-    //   mazLists.lists.map(async (list) => {
-    //     const tasksInList = await fetchTasksFromList(list.id);
-    //     return tasksInList.map(task => ({
-    //       id: task.id,
-    //       name: task.name,
-    //       email: task.custom_fields.find(field => field.name === 'Email')?.value,
-    //       role: task.custom_fields.find(field => field.name === 'Department')?.value  // שדה מותאם אישית
-    //     }));
-    //   })
-    // );
-    
+}   
 
     const allEmployees = [...officeWorkers.flat(), ...freelancers.flat()];
   
-    // clickupCache = tasksWithIdAndEmail;
     clickupCache = allEmployees;
     lastFetchTime = now;
   

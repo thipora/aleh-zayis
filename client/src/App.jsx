@@ -1,20 +1,20 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import Login from "./components/Login.jsx";   // עדכון אם שינית את השם או המיקום
-import Register from "./components/Register.jsx";   // עדכון אם שינית את השם או המיקום
+import Login from "./components/auth/Login.jsx";   // עדכון אם שינית את השם או המיקום
+import Register from "./components/auth/Register.jsx";   // עדכון אם שינית את השם או המיקום
 
-import EmployeeDashboard from "./components/EmployeeDashboard"; // עדכון אם שינית את השם או המיקום
+import EmployeeDashboard from "./components/employees/EmployeeDashboard.jsx"; // עדכון אם שינית את השם או המיקום
 // import DashboardManager from "./components/DashboardManager"; // עדכון אם שינית את השם או המיקום
 // import DashboardClient from "./components/DashboardClient"; // עדכון אם שינית את השם או המיקום
-import WorkEntries from "./components/WorkEntries"; // עדכון אם שינית את השם או המיקום
-import ManagerPage from "./components/ManagerPage"; // עדכון אם שינית את השם או המיקום
-import ClientPage from "./components/ClientPage"; // עדכון אם שינית את השם או המיקום
-import EmployeeList from "./components/EmployeeList.jsx";
-import AddEmployee from "./components/AddEmployee.jsx";
-import ChangePassword from "./components/ChangePassword.jsx";
+import WorkEntries from "./components/workEntries/WorkEntries.jsx"; // עדכון אם שינית את השם או המיקום
+import ManagerPage from "./components/ManagerPage.jsx"; // עדכון אם שינית את השם או המיקום
+import ClientPage from "./components/ClientPage.jsx"; // עדכון אם שינית את השם או המיקום
+import EmployeeList from "./components/employees/EmployeeList.jsx";
+// import AddEmployee from "./components/auth/AddEmployee.jsx";
+import ChangePassword from "./components/auth/ChangePassword.jsx";
 // import "react-datepicker/dist/react-datepicker.css";
-import ReportsDashboard from "./components/ReportsDashboard.jsx"; // מיקום הקובץ
-
+import ReportsDashboard from "./components/reports/ReportsDashboard.jsx"; // מיקום הקובץ
+import MonthlyEmployeesSummary from "./components/reports/MonthlyEmployeesSummary.jsx"; // מיקום הקובץ
 
 
 
@@ -44,10 +44,11 @@ const App = () => {
         <Route path="/workEntrie/add" element={<WorkEntries />} />
         <Route path="/manager" element={<ManagerPage />} />
         <Route path="/employee-list" element={<EmployeeList />} />
-        <Route path="/add-employee" element={<AddEmployee />} />
+        {/* <Route path="/add-employee" element={<AddEmployee />} /> */}
         <Route path="/client" element={<ClientPage />} />
         <Route path="/password" element={<ChangePassword />} />
         <Route path="/reports" element={<ReportsDashboard />} />
+        <Route path="/reportss" element={<MonthlyEmployeesSummary />} />
 
 
       </Routes>
