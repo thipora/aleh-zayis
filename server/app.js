@@ -9,6 +9,7 @@ import rolesRouter from './routes/rolesRouter.js';
 import employeeRoute from './routes/employeeRoutes.js';
 import summaryRouter from './routes/summaryRouter.js';
 import reportsRouter from './routes/reportsRouter.js';
+import './cron/bookCron.js';
 
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use('/reports', reportsRouter);
 
 
 app.use(logErrors);
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
