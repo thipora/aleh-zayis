@@ -22,6 +22,7 @@ export async function fetchBooksFromClickUp() {
   for (const task of tasks) {
     const name = task.name;
     const clickup_id = task.id;
+    const AZ_book_id = task.custom_id;
 
     // חיפוש שדה "Manager"
     const managerField = task.custom_fields.find(f => f.name === 'Manager');
@@ -38,6 +39,7 @@ export async function fetchBooksFromClickUp() {
       name,
       clickup_id,
       project_manager_clickup_id: projectManagerClickupId,
+      AZ_book_id
     });
   }
 
@@ -86,13 +88,13 @@ export async function syncBooksToDatabase() {
 
     if (existing.length > 0) {
       await executeQuery(
-        `UPDATE books SET name = ?, project_manager_clickup_id = ? WHERE clickup_id = ?`,
-        [book.name, book.project_manager_clickup_id, book.clickup_id]
+        `UPDATE books SET name = ?, project_manager_clickup_id = ?, AZ_book_id = ? WHERE clickup_id = ?`,
+        [book.name, book.project_manager_clickup_id, book.AZ_book_id, book.clickup_id]
       );
     } else {
       await executeQuery(
-        `INSERT INTO books (clickup_id, name, project_manager_clickup_id) VALUES (?, ?, ?)`,
-        [book.clickup_id, book.name, book.project_manager_clickup_id]
+        `INSERT INTO books (clickup_id, name, project_manager_clickup_id, AZ_book_id) VALUES (?, ?, ?, ?)`,
+        [book.clickup_id, book.name, book.project_manager_clickup_id, book.AZ_book_id]
       );
     }
   }

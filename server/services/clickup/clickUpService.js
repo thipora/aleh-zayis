@@ -77,6 +77,25 @@ export class ClickUpService {
     };
 
 
+    async getAllTasks(listId) {
+        let page = 0;
+        let allTasks = [];
+        let hasMore = true;
+      
+        while (hasMore) {
+          const response = await api.get(`/list/${listId}/task?page=${page}`);
+          const tasks = response.data.tasks;
+      
+          allTasks = allTasks.concat(tasks);
+          hasMore = !response.data.last_page; // המשך רק אם יש עוד עמודים
+          page++;
+        }
+      
+        return allTasks;
+      }
+      
+
+
     async getField(folderId) {
         try {
             const response = await api.get(`/folder/${folderId}/field`);

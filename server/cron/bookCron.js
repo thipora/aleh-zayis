@@ -1,8 +1,8 @@
 import cron from 'node-cron';
 import { syncBooksToDatabase } from '../services/bookSyncService.js';
 
-// cron.schedule('0 */4 * * *', async () => {
-  cron.schedule('0 2 * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
+  // cron.schedule('0 2 * * *', async () => {
     try {
     console.log('Running book sync...');
     await syncBooksToDatabase();

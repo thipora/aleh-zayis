@@ -6,10 +6,11 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { logErrors } from './middleware/logError.js';
 import rolesRouter from './routes/rolesRouter.js';
-import employeeRoute from './routes/employeeRoutes.js';
 import summaryRouter from './routes/summaryRouter.js';
 import reportsRouter from './routes/reportsRouter.js';
 import './cron/bookCron.js';
+import bookAssignmentsRouter from './routes/bookAssignmentsRouter.js';
+
 
 
 dotenv.config();
@@ -30,7 +31,7 @@ app.use('/books', bookRouter);
 app.use('/summary', summaryRouter);
 app.use('/roles', rolesRouter);
 app.use('/reports', reportsRouter);
-
+app.use('/book-assignments', bookAssignmentsRouter);
 
 
 app.use(logErrors);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
+import { Select, InputLabel, FormControl, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
@@ -31,6 +31,9 @@ const EmployeeDashboard = () => {
   const [months, setMonths] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [role, setRole] = useState(null);
+  const [openAddBook, setOpenAddBook] = useState(false);
+  const [bookId, setBookId] = useState('');
+
 
   const apiRequests = new APIrequests();
 
@@ -138,20 +141,42 @@ const handleFetchMonthSummary = async () => {
   setLoadingSummary(false);
 };
 
-const handleFetchBookSummary = async () => {
-  if (!selectedBook) return;
-  setLoadingSummary(true);
+const handleAddBook = async () => {
+
+  const userData = localStorage.getItem("user");
+  const user = JSON.parse(userData);
+  const employeeId = user?.employee_id;
+  const bookClickUpId = bookId;
   try {
-    const userData = localStorage.getItem("user");
-    const user = JSON.parse(userData);
-    const url = `/summary/byBook/${user.employee_id}?bookId=${selectedBook}`;
-    const summary = await apiRequests.getRequest(url);
-    setBookSummary(summary);
-  } catch {
-    setError("Failed to load summary");
+    const url = `/book-assignments`;
+    const body = {
+      bookClickUpId,
+      employeeId,
+    };
+    await apiRequests.postRequest(url, body);
+    onSuccess?.();
+    onClose();
+  } catch (err) {
+    alert("Failed to add book assignment");
   }
-  setLoadingSummary(false);
 };
+
+
+
+// const handleFetchBookSummary = async () => {
+//   if (!selectedBook) return;
+//   setLoadingSummary(true);
+//   try {
+//     const userData = localStorage.getItem("user");
+//     const user = JSON.parse(userData);
+//     const url = `/summary/byBook/${user.employee_id}?bookId=${selectedBook}`;
+//     const summary = await apiRequests.getRequest(url);
+//     setBookSummary(summary);
+//   } catch {
+//     setError("Failed to load summary");
+//   }
+//   setLoadingSummary(false);
+// };
 
   
 
@@ -166,6 +191,10 @@ const handleFetchBookSummary = async () => {
       </Box>
 
       <Box mt={2} display="flex" gap={2}>
+      <Button variant="contained" onClick={() => setOpenAddBook(true)}>
+  הוספת ספר שאני עובד עליו
+</Button>
+
   <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
     סיכום שעות לפי חודש
   </Button>
@@ -218,6 +247,31 @@ const handleFetchBookSummary = async () => {
           <Button onClick={() => setOpen(false)} color="secondary">ביטול</Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog open={openAddBook} onClose={() => setOpenAddBook(false)}>
+  <DialogTitle>הוספת ספר</DialogTitle>
+  <DialogContent>
+    <TextField
+      label="Book ID"
+      value={bookId}
+      onChange={(e) => setBookId(e.target.value)}
+      fullWidth
+    />
+    {/* <FormControl fullWidth margin="normal">
+      <InputLabel>Role</InputLabel>
+      <Select value={roleId} onChange={(e) => setRoleId(e.target.value)}>
+        {roles.map(role => (
+          <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>
+        ))}
+      </Select>
+    </FormControl> */}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenAddBook(false)}>ביטול</Button>
+    <Button onClick={handleAddBook} variant="contained" color="primary">שמור</Button>
+  </DialogActions>
+</Dialog>
+
 
 <SummaryDialog
       open={openMonthSummary}
