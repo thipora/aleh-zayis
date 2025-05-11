@@ -70,9 +70,11 @@ const [selectedRoles, setSelectedRoles] = useState([]);
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
       const employeeId = user?.employee_id;
+      const roleId = user?.roles[0];
       const currentDate = new Date().toISOString().split('T')[0];
 
       await apiRequests.postRequest(`/workEntries/${employeeId}`, {
+        roleId,
         book_id,
         book_name,
         quantity,

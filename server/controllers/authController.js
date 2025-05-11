@@ -1,6 +1,6 @@
 import { UserService } from '../services/userService.js';
 // import { createToken } from "../utils/tokenUtils.js";
-import { createToken } from "../until/tokenUtils.js";
+import { createToken } from "../util/tokenUtils.js";
 import { userSchema } from '../validations/userValidations.js';
 
 export class AuthController {

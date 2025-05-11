@@ -29,7 +29,7 @@ export class RolesService {
 
     const placeholders = ids.map(() => '?').join(', ');
     const query = `
-      SELECT id_role, role_name, uses_special_quantity, special_unit
+      SELECT *
       FROM alehZayis.roles
       WHERE id_role IN (${placeholders})
     `;

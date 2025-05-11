@@ -4,10 +4,10 @@ import { loginUserQuery, registerUserQuery } from '../queries/userQueries.js';
 import { GeneryQuery } from "../queries/generyQueries.js";
 import { EmployeeService } from "./employeesService.js";
 import { findUserByEmailInClickUp } from './clickup/clickupEmployeeService.js';
-import { sendMail } from '../until/mailer.js';
-import { welcomeEmailTemplate } from '../until/emailTemplates.js';
+import { sendMail } from '../util/mailer.js';
+import { welcomeEmailTemplate } from '../util/emailTemplates.js';
 // import { generateRandomPassword } from "../utils/passwordUtils.js";
-import { generateRandomPassword } from "../until/passwordUtils.js";
+import { generateRandomPassword } from "../util/passwordUtils.js";
 
 
 export class UserService {
