@@ -121,46 +121,165 @@ export class BookAssignmentsService {
 
 
 
-  async assignEmployeeToBookByAZId(employeeId, AZ_book_id) {
-    const book = await this.getOrCreateBookByAZId(AZ_book_id);
-    const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
+  // async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
+  //   const book = await this.getOrCreateBookByAZId(AZ_book_id);
+  //   const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
   
-    const task = await this.clickUpService.getTaskById(book.clickup_id);
-    if (!task) throw new Error('Book task not found in ClickUp');
+  //   const task = await this.clickUpService.getTaskById(book.clickup_id);
+  //   if (!task) throw new Error('Book task not found in ClickUp');
   
-    const role = await this.getEmployeeRoleInBook(task, employeeClickUpId);
+  //   const role = await this.getEmployeeRoleInBook(task, employeeClickUpId);
   
-    if (!role) {
-      return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
-    }
+  //   if (!role) {
+  //     return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
+  //   }
 
-    const [roleRow] = await executeQuery(
-      'SELECT id_role FROM roles WHERE role_name = ?',
-      [role]
-    );
+  //   const [roleRow] = await executeQuery(
+  //     'SELECT id_role FROM roles WHERE role_name = ?',
+  //     [role]
+  //   );
     
-    if (!roleRow) throw new Error(`Role "${matchedRole}" not found in DB`);
+  //   if (!roleRow) throw new Error(`Role "${matchedRole}" not found in DB`);
 
-  const roleId = roleRow.id_role;
+  // const roleId = roleRow.id_role;
 
+  // const [empRole] = await executeQuery(
+  //   'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
+  //   [employeeId, roleId]
+  // );
+  // if (!empRole) throw new Error('Employee does not have this role');
+
+  // const employeeRoleId = empRole.id_employee_role;
+
+  //   await executeQuery(
+  //     'INSERT IGNORE INTO book_assignments (book_id, employee_role_id) VALUES (?, ?)',
+  //     [book.id_book, employeeRoleId]
+  //   );
+  
+  //   return {
+  //     inserted: true,
+  //     message: `Employee assigned to book as ${role}`,
+  //     bookId: book.id_book
+  //   };
+  // }
+    
+
+//   async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
+//   const book = await this.getOrCreateBookByAZId(AZ_book_id);
+//   const bookClickUpId = book.clickup_id;
+
+//   const roleIdsToInsert = [];
+
+//   // אם נשלחו selectedRoleIds מהקליינט
+//   if (selectedRoleIds.length > 0) {
+//     for (const roleId of selectedRoleIds) {
+//       const [empRole] = await executeQuery(
+//         'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
+//         [employeeId, roleId]
+//       );
+//       if (empRole) {
+//         roleIdsToInsert.push(empRole.id_employee_role);
+//       }
+//     }
+//   } else {
+//     // לא נשלחו תפקידים — מקרה ישן: נזהה תפקיד אחד מתוך ClickUp
+//     const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
+//     const task = await this.clickUpService.getTaskById(bookClickUpId);
+//     if (!task) throw new Error('Book task not found in ClickUp');
+
+//     const role = await this.getEmployeeRoleInBook(task, employeeClickUpId);
+//     if (!role) {
+//       return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
+//     }
+
+//     const [roleRow] = await executeQuery(
+//       'SELECT id_role FROM roles WHERE role_name = ?',
+//       [role]
+//     );
+//     if (!roleRow) throw new Error(`Role "${role}" not found in DB`);
+
+//     const roleId = roleRow.id_role;
+//     const [empRole] = await executeQuery(
+//       'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
+//       [employeeId, roleId]
+//     );
+//     if (!empRole) throw new Error('Employee does not have this role');
+
+//     roleIdsToInsert.push(empRole.id_employee_role);
+//   }
+
+//   for (const employeeRoleId of roleIdsToInsert) {
+//     await executeQuery(
+//       'INSERT IGNORE INTO book_assignments (book_id, employee_role_id) VALUES (?, ?)',
+//       [book.id_book, employeeRoleId]
+//     );
+//   }
+
+//   return {
+//     inserted: true,
+//     message: `Employee assigned to book`,
+//     bookId: book.id_book
+//   };
+// }
+
+async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
+  const book = await this.getOrCreateBookByAZId(AZ_book_id);
+  const bookClickUpId = book.clickup_id;
+  const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
+  const task = await this.clickUpService.getTaskById(bookClickUpId);
+  if (!task) throw new Error('Book task not found in ClickUp');
+
+  const roleIdsToInsert = [];
+
+  // תמיד בודקים את התפקיד האמיתי של העובד בספר לפי ClickUp
+  const roleFromClickUp = await this.getEmployeeRoleInBook(task, employeeClickUpId);
+  if (!roleFromClickUp) {
+    return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
+  }
+
+  // נביא את id_role של התפקיד שמוחזר מ-ClickUp
+  const [roleRow] = await executeQuery(
+    'SELECT id_role FROM roles WHERE role_name = ?',
+    [roleFromClickUp]
+  );
+  if (!roleRow) throw new Error(`Role "${roleFromClickUp}" not found in DB`);
+
+  const matchedRoleId = roleRow.id_role;
+
+  // אם נשלחו selectedRoleIds – נוודא שהוא נמצא בתוכם
+  if (selectedRoleIds.length > 0) {
+    if (!selectedRoleIds.includes(matchedRoleId)) {
+      return {
+        inserted: false,
+        message: 'Selected roles do not match ClickUp role'
+      };
+    }
+  }
+
+  // בדוק אם יש הרשאה בתפקיד הזה בטבלת employee_roles
   const [empRole] = await executeQuery(
     'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
-    [employeeId, roleId]
+    [employeeId, matchedRoleId]
   );
-  if (!empRole) throw new Error('Employee does not have this role');
+  if (!empRole) {
+    return { inserted: false, message: 'Employee does not have this role in DB' };
+  }
 
-  const employeeRoleId = empRole.id_employee_role;
+  roleIdsToInsert.push(empRole.id_employee_role);
 
+  // הכנסת הרשומה
+  for (const employeeRoleId of roleIdsToInsert) {
     await executeQuery(
       'INSERT IGNORE INTO book_assignments (book_id, employee_role_id) VALUES (?, ?)',
       [book.id_book, employeeRoleId]
     );
-  
-    return {
-      inserted: true,
-      message: `Employee assigned to book as ${role}`,
-      bookId: book.id_book
-    };
   }
-    
+
+  return {
+    inserted: true,
+    message: `Employee assigned to book`,
+    bookId: book.id_book
+  };
+}
+
 }

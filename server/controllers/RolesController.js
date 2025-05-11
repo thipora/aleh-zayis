@@ -49,4 +49,19 @@ export class RolesController {
       next(err);
     }
   }
+
+  async getRoleNamesByIds(req, res, next) {
+    try {
+      const ids = req.query.ids?.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
+      if (!ids || ids.length === 0) {
+        return res.status(400).json({ message: 'No valid role IDs provided' });
+      }
+
+      const roles = await RolesController.rolesService.getRoleNamesByIds(ids);
+      res.json(roles);
+    } catch (err) {
+            next(err);
+    }
+  };
+
 }

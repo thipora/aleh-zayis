@@ -36,4 +36,14 @@ export class RolesService {
     const result = await executeQuery(query, ids);
     return result;
   }
+
+  async getRoleNamesByIds(roleIds) {
+    if (!roleIds || roleIds.length === 0) return [];
+
+    const placeholders = roleIds.map(() => '?').join(',');
+    const query = `SELECT id_role, role_name FROM roles WHERE id_role IN (${placeholders})`;
+
+    const results = await executeQuery(query, roleIds);
+    return results;
+  }
 }

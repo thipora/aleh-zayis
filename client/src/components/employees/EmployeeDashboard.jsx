@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Select, InputLabel, FormControl, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
+import { Select, InputLabel, FormControl,FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
@@ -33,6 +33,9 @@ const EmployeeDashboard = () => {
   const [role, setRole] = useState(null);
   const [openAddBook, setOpenAddBook] = useState(false);
   const [bookId, setBookId] = useState('');
+  const [availableRoles, setAvailableRoles] = useState([]);
+const [selectedRoles, setSelectedRoles] = useState([]);
+
 
 
   const apiRequests = new APIrequests();
@@ -141,24 +144,74 @@ const handleFetchMonthSummary = async () => {
   setLoadingSummary(false);
 };
 
-const handleAddBook = async () => {
+// const handleAddBook = async () => {
 
-  const userData = localStorage.getItem("user");
-  const user = JSON.parse(userData);
+//   const userData = localStorage.getItem("user");
+//   const user = JSON.parse(userData);
+//   const employeeId = user?.employee_id;
+//   const bookClickUpId = bookId;
+//   try {
+//     const url = `/book-assignments`;
+//     const body = {
+//       bookClickUpId,
+//       employeeId,
+//     };
+//     await apiRequests.postRequest(url, body);
+//     onSuccess?.();
+//     onClose();
+//   } catch (err) {
+//     alert("Failed to add book assignment");
+//   }
+// };
+
+const handleAddBook = async () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const employeeId = user?.employee_id;
   const bookClickUpId = bookId;
+
+  const selectedRoleIds = availableRoles.length === 1
+    ? [availableRoles[0].id_role]
+    : selectedRoles;
+
+  if (!bookId) return alert("אנא הזן Book ID");
+  if (selectedRoleIds.length === 0) return alert("בחר לפחות תפקיד אחד");
+
   try {
-    const url = `/book-assignments`;
-    const body = {
+    await apiRequests.postRequest(`/book-assignments`, {
       bookClickUpId,
       employeeId,
-    };
-    await apiRequests.postRequest(url, body);
-    onSuccess?.();
-    onClose();
+      selectedRoleIds
+    });
+
+    setOpenAddBook(false);
+    setSelectedRoles([]);
+    setBookId("");
   } catch (err) {
-    alert("Failed to add book assignment");
+    alert("שגיאה בהוספת הספר");
   }
+};
+
+
+const handleOpenAddBookDialog = async () => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const roleIds = user.roles || [];
+
+  setBookId("");
+  setSelectedRoles([]);
+  setAvailableRoles([]);
+
+  if (roleIds.length > 1) {
+    try {
+      const response = await apiRequests.getRequest(`/roles?ids=${roleIds.join(',')}`);
+      setAvailableRoles(response); // [{ id_role, role_name }]
+    } catch (err) {
+      console.error("Failed to fetch role names", err);
+    }
+  } else if (roleIds.length === 1) {
+    setAvailableRoles([{ id_role: roleIds[0], role_name: "תפקיד יחיד" }]);
+  }
+
+  setOpenAddBook(true);
 };
 
 
@@ -191,7 +244,8 @@ const handleAddBook = async () => {
       </Box>
 
       <Box mt={2} display="flex" gap={2}>
-      <Button variant="contained" onClick={() => setOpenAddBook(true)}>
+      {/* <Button variant="contained" onClick={() => setOpenAddBook(true)}> */}
+            <Button variant="contained" onClick={handleOpenAddBookDialog}>
   הוספת ספר שאני עובד עליו
 </Button>
 
@@ -257,14 +311,30 @@ const handleAddBook = async () => {
       onChange={(e) => setBookId(e.target.value)}
       fullWidth
     />
-    {/* <FormControl fullWidth margin="normal">
-      <InputLabel>Role</InputLabel>
-      <Select value={roleId} onChange={(e) => setRoleId(e.target.value)}>
-        {roles.map(role => (
-          <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>
-        ))}
-      </Select>
-    </FormControl> */}
+    {availableRoles.length > 1 && (
+  <>
+    <Typography sx={{ mt: 2 }}>בחר תפקידים:</Typography>
+    {availableRoles.map(role => (
+      <FormControlLabel
+        key={role.id_role}
+        control={
+          <Checkbox
+            checked={selectedRoles.includes(role.id_role)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedRoles(prev => [...prev, role.id_role]);
+              } else {
+                setSelectedRoles(prev => prev.filter(id => id !== role.id_role));
+              }
+            }}
+          />
+        }
+        label={role.role_name}
+      />
+    ))}
+  </>
+)}
+
   </DialogContent>
   <DialogActions>
     <Button onClick={() => setOpenAddBook(false)}>ביטול</Button>

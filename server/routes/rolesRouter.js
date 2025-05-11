@@ -16,5 +16,7 @@ const rolesController = new RolesController();
 
 router.get('/:roleId', rolesController.getRoleById); // שמור קיים
 router.get('/', rolesController.getRolesByIds);      // חדש – תמיכה ב-?ids=1,2,3
+router.get('/names', rolesController.getRoleNamesByIds);
+
 
 export default router;

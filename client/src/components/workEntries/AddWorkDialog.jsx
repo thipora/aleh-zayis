@@ -135,7 +135,7 @@ const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
           <InputLabel>Choose Book</InputLabel>
           <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
             {books.map(book => (
-              <MenuItem key={book.id_book} value={book.id_book}>{book.title}</MenuItem>
+              <MenuItem key={book.id_book} value={book.id_book}>{book.AZ_book_id} - {book.title}</MenuItem>
             ))}
           </Select>
           {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}

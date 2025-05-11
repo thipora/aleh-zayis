@@ -42,7 +42,7 @@ export class BooksService {
         const validSortOrder = sortOrder?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
       
         const query = `
-          SELECT DISTINCT books.id_book, books.name AS title
+          SELECT DISTINCT books.id_book, books.AZ_book_id, books.name AS title
           FROM books
           JOIN book_assignments ON books.id_book = book_assignments.book_id
           JOIN employee_roles ON book_assignments.employee_role_id = employee_roles.id_employee_role
