@@ -5,9 +5,9 @@ import { calculateWorkQuantityFromTimes } from '../util/timeUtils.js'
 export class WorkEntriesService {
   static table = "work_entries";
 
-  async getWorkEntriesByEmployee(employeeId, { month, year, projectId, sort = 'date DESC', start = 0, range = 10 } = {}) {
+  async getWorkEntriesByEmployee(employeeId, { month, year, projectId, start = 0, range = 10 } = {}) {
     const conditions = ['er.employee_id = ?'];
-    const values = [employeeId];
+    const values = [Number(employeeId)];
 
     if (month && year) {
       conditions.push('MONTH(we.date) = ?');
@@ -32,18 +32,21 @@ export class WorkEntriesService {
         b.id_book,
         b.name AS book_name,
         b.clickup_id,
-        r.role_name
+        r.role_name,
+        r.special_unit
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN employees e ON er.employee_id = e.id_employee
       JOIN roles r ON er.role_id = r.id_role
       JOIN books b ON we.book_id = b.id_book
       WHERE ${conditions.join(' AND ')}
-      ORDER BY ${sort}
-      LIMIT ?, ?
     `;
 
-    values.push(start, range);
+                // LIMIT ?, ?
+
+
+
+    // values.push(start, range);
     return await executeQuery(query, values);
   }
 
@@ -93,7 +96,7 @@ export class WorkEntriesService {
   //   };
   // }
 
-  async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
+  async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time, is_special_work }) {
     const [empRole] = await executeQuery(
       'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
       [employeeId, roleId]
@@ -108,10 +111,10 @@ export class WorkEntriesService {
     }
     const query = `
       INSERT INTO ${WorkEntriesService.table}
-      (employee_role_id, date, quantity, description, notes, book_id, start_time, end_time)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      (employee_role_id, date, quantity, description, notes, book_id, start_time, end_time, is_special_work)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [employeeRoleId, date, quantity, description, notes, book_id, start_time, end_time];
+    const values = [employeeRoleId, date, quantity, description, notes, book_id, start_time, end_time, is_special_work];
     const result = await executeQuery(query, values);
     return {
       id_work_entries: result.insertId,

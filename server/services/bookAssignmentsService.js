@@ -1,6 +1,6 @@
 import { executeQuery } from "../config/db.js";
 import { ClickUpService } from "./clickup/clickUpService.js";
-import {getFreelancersFromClickUp} from "./clickup/clickupEmployeeService.js"
+import { fetchBooksFromClickUp } from './bookSyncService.js';
 
 export class BookAssignmentsService {
   constructor() {
@@ -16,18 +16,24 @@ export class BookAssignmentsService {
     );
   
     if (book) return book;
-  
-    const task = await this.clickUpService.getTaskByCustomId(AZ_book_id);
-    if (!task) throw new Error('Book not found in ClickUp');
+
+    const books = await fetchBooksFromClickUp(AZ_book_id);
+
+    const my_book = books.find(b => b.AZ_book_id === AZ_book_id);
+
+
+    if (!my_book) throw new Error('Book not found in ClickUp');
+
+    const {clickup_id, project_manager_clickup_id, name} = my_book;
   
     const result = await executeQuery(
-      'INSERT INTO books (clickup_id, AZ_book_id, name) VALUES (?, ?, ?)',
-      [task.id, task.custom_id, task.name || 'Untitled']
+      'INSERT INTO books (clickup_id, AZ_book_id, project_manager_clickup_id, name) VALUES (?, ?, ?, ?)',
+      [clickup_id, AZ_book_id, project_manager_clickup_id, name]
     );
   
     return {
       id_book: result.insertId,
-      clickup_id: task.id
+      clickup_id: clickup_id
     };
   }
 

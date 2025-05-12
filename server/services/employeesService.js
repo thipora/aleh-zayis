@@ -14,6 +14,8 @@ export class EmployeeService {
             'Editors': 'Editor',
             'Typists': 'Typist',
             'Transcribers': 'Transcriber',
+            'graphics': 'Graphics',
+            'layout': 'Layout',
             'Project Management': 'Project Manager'
         };
 

@@ -49,10 +49,10 @@ export class WorkEntriesController {
     async createWorkEntry(req, res, next) {
         try {
             const { employeeId } = req.params;
-            const { roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time } = req.body;
+            const { roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time, is_special_work } = req.body;
 
             const newEntry = await WorkEntriesController.workEntriesService.createWorkEntry(employeeId, {
-                roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time });
+                roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time, is_special_work });
 
             res.status(201).json(newEntry);
         } catch (ex) {

@@ -66,7 +66,7 @@ const [selectedRoles, setSelectedRoles] = useState([]);
 
   const handleAddWork = async (newWorkData) => {
     try {
-      const { book_id, book_name, quantity, description, notes, specialWork, date, start_time, end_time } = newWorkData;
+      const { book_id, book_name, quantity, description, notes, is_special_work, date, start_time, end_time } = newWorkData;
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
       const employeeId = user?.employee_id;
@@ -81,13 +81,13 @@ const [selectedRoles, setSelectedRoles] = useState([]);
         description,
         notes,
         date,
-        specialWork,
+        is_special_work,
         start_time,
         end_time
       });
 
-      setWorkEntries((prevWorkEntries) => [...prevWorkEntries, { ...newWorkData, specialWork }]);
-      setNewWork({ book_id: "", quantity: "", description: "", notes: "", specialWork: false, date: currentDate });
+      setWorkEntries((prevWorkEntries) => [...prevWorkEntries, { ...newWorkData, is_special_work }]);
+      setNewWork({ book_id: "", quantity: "", description: "", notes: "", is_special_work: false, date: currentDate });
       setOpen(false);
       fetchWorkEntries();
     } catch (err) {
