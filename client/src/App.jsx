@@ -15,6 +15,7 @@ import ChangePassword from "./components/auth/ChangePassword.jsx";
 // import "react-datepicker/dist/react-datepicker.css";
 import ReportsDashboard from "./components/reports/ReportsDashboard.jsx"; // מיקום הקובץ
 import MonthlyEmployeesSummary from "./components/reports/MonthlyEmployeesSummary.jsx"; // מיקום הקובץ
+import RateManagement from "./components/Admin/RateManagement.jsx"
 
 
 
@@ -29,26 +30,19 @@ const App = () => {
       </nav> */}
 
       <Routes>
-        {/* <Route path="/login" element={<LoginPage />} />
-        <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
-        <Route path="/manager-dashboard" element={<ManagerPage />} />
-        <Route path="/client-dashboard" element={<ClientPage />} />
-        <Route path="/add-work-log" element={<AddWorkEntrie />} /> */}
 
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
-        {/* <Route path="/dashboard/manager" element={<DashboardManager />} />
-        <Route path="/dashboard/client" element={<DashboardClient />} /> */}
         <Route path="/workEntrie/add" element={<WorkEntries />} />
         <Route path="/manager" element={<ManagerPage />} />
         <Route path="/employee-list" element={<EmployeeList />} />
-        {/* <Route path="/add-employee" element={<AddEmployee />} /> */}
         <Route path="/client" element={<ClientPage />} />
         <Route path="/password" element={<ChangePassword />} />
         <Route path="/reports" element={<ReportsDashboard />} />
         <Route path="/reportss" element={<MonthlyEmployeesSummary />} />
+        <Route path="/admin" element={<RateManagement />} />
 
 
       </Routes>

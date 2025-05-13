@@ -103,46 +103,6 @@ const UpdateWorkDialog = ({ open, onClose, workData, onUpdate }) => {
           </Box>
         )}
 
-        {/* Work Amount group */}
-        <Box sx={{ mt: 2, mb: 2, border: '1px solid #eee', borderRadius: 2, p: 2, background: '#f8f8fc' }}>
-          <Typography variant="subtitle2" sx={{ mb: 1, color: "#6c3483" }}>
-            Work Amount
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <TextField
-              label="Hours"
-              name="hours"
-              type="number"
-              value={updatedWork.hours}
-              onChange={(e) =>
-                setUpdatedWork({ ...updatedWork, hours: e.target.value })
-              }
-              inputProps={{ min: 0 }}
-              error={!!errors.hours}
-              helperText={errors.hours}
-              fullWidth
-            />
-            <TextField
-              label="Minutes"
-              name="minutes"
-              type="number"
-              value={updatedWork.minutes}
-              onChange={(e) =>
-                setUpdatedWork({ ...updatedWork, minutes: e.target.value })
-              }
-              inputProps={{ min: 0, max: 59 }}
-              error={!!errors.minutes}
-              helperText={errors.minutes}
-              fullWidth
-            />
-          </Box>
-        </Box>
-
-        {/* Work Time Range group */}
-        <Box sx={{ mt: 1, mb: 2, border: "1px solid #eee", borderRadius: 2, p: 2, background: "#fafdff" }}>
-          <Typography variant="subtitle2" sx={{ mb: 1, color: "#2874a6" }}>
-            Work Time Range
-          </Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="Start Time"
@@ -172,7 +132,7 @@ const UpdateWorkDialog = ({ open, onClose, workData, onUpdate }) => {
               helperText={errors.end_time}
             />
           </Box>
-        </Box>
+        {/* </Box> */}
 
         <TextField
           label="Description"

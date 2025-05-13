@@ -34,6 +34,18 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
     setSelectedWork(null);
   };
 
+  const isToday = (dateString) => {
+    const entryDate = new Date(dateString);
+    const today = new Date();
+
+    return (
+      entryDate.getFullYear() === today.getFullYear() &&
+      entryDate.getMonth() === today.getMonth() &&
+      entryDate.getDate() === today.getDate()
+    );
+  };
+
+
   return (
     <div>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
@@ -42,6 +54,9 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
             <TableRow>
               <TableCell>
                 <Typography variant="subtitle1" fontWeight="bold">Date</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle1" fontWeight="bold">AZ-id</Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="subtitle1" fontWeight="bold">Book Title</Typography>
@@ -67,14 +82,21 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
             {workEntries.map((log) => (
               <TableRow key={log.id_work_entries}>
                 <TableCell>{new Date(log.date).toLocaleDateString()}</TableCell>
+                <TableCell>{log.AZ_book_id}</TableCell>
                 <TableCell>{log.book_name}</TableCell>
                 <TableCell>
-                  {decimalToDurationString(log.quantity)} {log.rate_type}
+                  {log.is_special_work
+                    ? `${log.special_unit} ${parseInt(log.quantity)}`
+                    : `${decimalToDurationString(log.quantity)}`}
                 </TableCell>
+
                 <TableCell>
-                  {(log.start_time && log.end_time)
-                    ? `${log.start_time.slice(0, 5)} - ${log.end_time.slice(0, 5)}`
-                    : ""}
+                  {
+                    (!log.is_special_work)
+                      ? `${log.start_time.slice(0, 5)} - ${log.end_time.slice(0, 5)}`
+                      : ""
+
+                  }
                 </TableCell>
                 <TableCell>{log.description}</TableCell>
                 <TableCell>{log.notes}</TableCell>
@@ -84,6 +106,7 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
                     variant="outlined"
                     color="primary"
                     onClick={() => handleUpdate(log)}
+                    disabled={!isToday(log.date)}
                   >
                     Update
                   </Button>

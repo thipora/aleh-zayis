@@ -32,8 +32,10 @@ export class WorkEntriesService {
         b.id_book,
         b.name AS book_name,
         b.clickup_id,
+        b.AZ_book_id,
         r.role_name,
-        r.special_unit
+        r.special_unit,
+        we.is_special_work
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN employees e ON er.employee_id = e.id_employee
@@ -42,7 +44,7 @@ export class WorkEntriesService {
       WHERE ${conditions.join(' AND ')}
     `;
 
-                // LIMIT ?, ?
+    // LIMIT ?, ?
 
 
 
@@ -96,7 +98,7 @@ export class WorkEntriesService {
   //   };
   // }
 
-  async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time, is_special_work }) {
+  async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
     const [empRole] = await executeQuery(
       'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
       [employeeId, roleId]
@@ -105,7 +107,9 @@ export class WorkEntriesService {
       throw new Error('Employee role not found');
     }
     const employeeRoleId = empRole.id_employee_role;
+    let is_special_work = true;
     if (quantity == 0) {
+      is_special_work = false;
       const calculated = calculateWorkQuantityFromTimes(start_time, end_time);
       if (calculated) quantity = calculated;
     }
@@ -263,39 +267,234 @@ export class WorkEntriesService {
     return await executeQuery(sql, params);
   }
 
+
+
   async getMonthlyWorkSummaryByEmployees({ month, year }) {
+    const workEntries = await this.getMonthlyWorkEntriesWithDetails(month, year);
+    return this.summarizeWorkEntriesWithRates(workEntries);
+  }
+
+  async getMonthlyWorkEntriesWithDetails(month, year) {
     const sql = `
-      SELECT
-        e.id_employee,
-        u.name AS employee_name,
-        SUM(we.quantity) AS total_quantity
-      FROM work_entries we
-      JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
-      JOIN employees e ON er.employee_id = e.id_employee
-      JOIN users u ON e.user_id = u.id_user
-      WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
-      GROUP BY e.id_employee, u.name
-      ORDER BY total_quantity DESC
-    `;
+SELECT
+  we.employee_role_id,
+  we.quantity,
+  we.is_special_work,
+  e.id_employee,
+  u.name AS employee_name,
+  u.email AS employee_email,
+  er.hourly_rate,
+  er.special_rate,
+  r.special_unit
+FROM work_entries we
+JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
+JOIN roles r ON er.role_id = r.id_role
+JOIN employees e ON er.employee_id = e.id_employee
+JOIN users u ON e.user_id = u.id_user
+WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
+`;
     return await executeQuery(sql, [month, year]);
   }
 
+  summarizeWorkEntriesWithRates(workEntries) {
+    const summary = {};
+
+    for (const entry of workEntries) {
+      const empId = entry.id_employee;
+      const name = entry.employee_name;
+      const email = entry.employee_email;
+      const isSpecial = entry.is_special_work === 1;
+      const unit = entry.special_unit || 'unit';
+
+      if (!summary[empId]) {
+        summary[empId] = {
+          employee_id: empId,
+          employee_name: name,
+          employee_email: email,
+          hours: 0,
+          hourly_rate: entry.hourly_rate || 0,
+          specials: {} // { "תווים": { quantity, rate } }
+        };
+      }
+
+      if (isSpecial) {
+        if (!summary[empId].specials[unit]) {
+          summary[empId].specials[unit] = {
+            quantity: 0,
+            rate: entry.special_rate || 0
+          };
+        }
+        summary[empId].specials[unit].quantity += parseFloat(entry.quantity);
+      } else {
+        summary[empId].hours += parseFloat(entry.quantity);
+      }
+    }
+
+    // הפיכת המידע לפלט מפורט
+    const result = [];
+    Object.values(summary).forEach(emp => {
+      if (emp.hours > 0) {
+        result.push({
+          employee_id: emp.employee_id,
+          employee_name: emp.employee_name,
+          employee_email: emp.employee_email,
+          type: 'hours',
+          quantity: emp.hours,
+          rate: emp.hourly_rate,
+          total: +(emp.hours * emp.hourly_rate).toFixed(2)
+        });
+      }
+
+      Object.entries(emp.specials).forEach(([unit, data]) => {
+        result.push({
+          employee_id: emp.employee_id,
+          employee_name: emp.employee_name,
+          employee_email: emp.employee_email,
+          type: 'special',
+          unit,
+          quantity: data.quantity,
+          rate: data.rate,
+          total: +(data.quantity * data.rate).toFixed(2)
+        });
+      });
+    });
+
+    return result;
+  }
+
+
+
+  // async getMonthlySummaryByEmployee(employeeId, { month, year }) {
+  //   const sql = `
+  //     SELECT
+  //       b.id_book,
+  //       b.name AS book_name,
+  //       SUM(we.quantity) AS quantity
+  //     FROM work_entries we
+  //     JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
+  //     JOIN employees e ON er.employee_id = e.id_employee
+  //     JOIN books b ON we.book_id = b.id_book
+  //     WHERE e.id_employee = ?
+  //       AND MONTH(we.date) = ?
+  //       AND YEAR(we.date) = ?
+  //     GROUP BY b.id_book, b.name
+  //     ORDER BY b.name
+  //   `;
+  //   return await executeQuery(sql, [employeeId, month, year]);
+  // }
   async getMonthlySummaryByEmployee(employeeId, { month, year }) {
+    const workEntries = await this.getWorkEntriesByEmployeeId(employeeId, month, year);
+    const summary = this.summarizeWorkEntriesByBook(workEntries);
+    return summary;
+  }
+
+  async getWorkEntriesByEmployeeId(employeeId, month, year) {
     const sql = `
-      SELECT
-        b.id_book,
-        b.name AS book_name,
-        SUM(we.quantity) AS quantity
-      FROM work_entries we
-      JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
-      JOIN employees e ON er.employee_id = e.id_employee
-      JOIN books b ON we.book_id = b.id_book
-      WHERE e.id_employee = ?
-        AND MONTH(we.date) = ?
-        AND YEAR(we.date) = ?
-      GROUP BY b.id_book, b.name
-      ORDER BY b.name
-    `;
+    SELECT
+      we.quantity,
+      we.is_special_work,
+      we.book_id,
+      b.name AS book_name,
+      b.AZ_book_id,
+      er.hourly_rate,
+      er.special_rate,
+      r.special_unit,
+      u_pm.name AS project_manager_name
+
+    FROM work_entries we
+    JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
+    JOIN roles r ON er.role_id = r.id_role
+    JOIN books b ON we.book_id = b.id_book
+
+    LEFT JOIN employees e_pm ON e_pm.clickup_id = b.project_manager_clickup_id
+LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
+
+    WHERE er.employee_id = ?
+      AND MONTH(we.date) = ?
+      AND YEAR(we.date) = ?
+  `;
+
     return await executeQuery(sql, [employeeId, month, year]);
   }
+
+
+
+  async summarizeWorkEntriesByBook(workEntries) {
+    const summary = {};
+
+    for (const entry of workEntries) {
+      const bookId = entry.book_id;
+      const AZ_book_id = entry.AZ_book_id
+      const bookName = entry.book_name;
+      const isSpecial = entry.is_special_work === 1;
+      const unit = entry.special_unit || 'unit';
+
+      if (!summary[bookId]) {
+        let projectManagerName = entry.project_manager_name;
+
+        if (!projectManagerName && entry.project_manager_clickup_id) {
+          try {
+            const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
+            projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
+          } catch (err) {
+            console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
+            projectManagerName = 'שגיאה בשליפה';
+          }
+        }
+
+
+        summary[bookId] = {
+          AZ_book_id: AZ_book_id,
+          book_name: bookName,
+          hours: 0,
+          hourly_rate: entry.hourly_rate || 0,
+          specials: {} // למשל: { "תווים": { quantity, rate } }
+        };
+      }
+
+      if (isSpecial) {
+        if (!summary[bookId].specials[unit]) {
+          summary[bookId].specials[unit] = {
+            quantity: 0,
+            rate: entry.special_rate || 0
+          };
+        }
+        summary[bookId].specials[unit].quantity += parseFloat(entry.quantity);
+      } else {
+        summary[bookId].hours += parseFloat(entry.quantity);
+      }
+    }
+
+    // הפקת פלט של רשימות לפי ספר
+    const result = [];
+
+    Object.values(summary).forEach(book => {
+      if (book.hours > 0) {
+        result.push({
+          AZ_book_id: book.AZ_book_id,
+          book_name: book.book_name,
+          type: 'hours',
+          quantity: book.hours,
+          rate: book.hourly_rate,
+          total: +(book.hours * book.hourly_rate).toFixed(2)
+        });
+      }
+
+      Object.entries(book.specials).forEach(([unit, data]) => {
+        result.push({
+          AZ_book_id: book.AZ_book_id,
+          book_name: book.book_name,
+          type: 'special',
+          unit,
+          quantity: data.quantity,
+          rate: data.rate,
+          total: +(data.quantity * data.rate).toFixed(2)
+        });
+      });
+    });
+
+    return result;
+  }
+
+
 }

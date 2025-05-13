@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Select, InputLabel, FormControl,FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
+import { Select, InputLabel, FormControl, FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
-import AddWorkDialog from "../workEntries/AddWorkDialog"; 
+import AddWorkDialog from "../workEntries/AddWorkDialog";
 // import ChangePasswordDialog from "./ChangePasswordzzzzDialog";
 import SummaryDialog from "../reports/SummaryDialog"; // תוסיפי למעלה
 
@@ -34,7 +34,7 @@ const EmployeeDashboard = () => {
   const [openAddBook, setOpenAddBook] = useState(false);
   const [bookId, setBookId] = useState('');
   const [availableRoles, setAvailableRoles] = useState([]);
-const [selectedRoles, setSelectedRoles] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState([]);
 
 
 
@@ -45,24 +45,24 @@ const [selectedRoles, setSelectedRoles] = useState([]);
     try {
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
-      
+
       const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
       setBooks(booksData);
-  
+
       const ids = user.roles.join(','); // יוצר מחרוזת "1,2,3"
       const roleData = await apiRequests.getRequest(`/roles?ids=${ids}`);
 
       setRole(roleData);
-  
+
       setOpen(true);
-  
+
     } catch (err) {
       setBooks([]);
       setError("Failed to load data.");
     }
     setLoadingBooks(false);
   };
-  
+
 
   const handleAddWork = async (newWorkData) => {
     try {
@@ -105,10 +105,10 @@ const [selectedRoles, setSelectedRoles] = useState([]);
   };
 
   const extractMonths = (entries) => {
-    const uniqueMonths = [...new Set(entries.map(e => e.date.substring(0,7)))];
+    const uniqueMonths = [...new Set(entries.map(e => e.date.substring(0, 7)))];
     return uniqueMonths.sort().reverse();
   };
-  
+
   const fetchWorkEntries = async () => {
     try {
       const userData = localStorage.getItem("user");
@@ -127,113 +127,74 @@ const [selectedRoles, setSelectedRoles] = useState([]);
   };
 
   const handleOpenMonthSummary = () => setOpenMonthSummary(true);
-const handleCloseMonthSummary = () => setOpenMonthSummary(false);
-// const handleOpenBookSummary = () => setOpenBookSummary(true);
-// const handleCloseBookSummary = () => setOpenBookSummary(false);
+  const handleCloseMonthSummary = () => setOpenMonthSummary(false);
+  // const handleOpenBookSummary = () => setOpenBookSummary(true);
+  // const handleCloseBookSummary = () => setOpenBookSummary(false);
 
-const handleFetchMonthSummary = async () => {
-  if (!selectedMonth) return;
-  setLoadingSummary(true);
-  try {
-    const userData = localStorage.getItem("user");
-    const user = JSON.parse(userData);
-    const url = `/summary/byMonth/${user.employee_id}?month=${selectedMonth}`;
-    const summary = await apiRequests.getRequest(url);
-    setMonthSummary(summary);
-  } catch {
-    setError("Failed to load summary");
-  }
-  setLoadingSummary(false);
-};
-
-// const handleAddBook = async () => {
-
-//   const userData = localStorage.getItem("user");
-//   const user = JSON.parse(userData);
-//   const employeeId = user?.employee_id;
-//   const bookClickUpId = bookId;
-//   try {
-//     const url = `/book-assignments`;
-//     const body = {
-//       bookClickUpId,
-//       employeeId,
-//     };
-//     await apiRequests.postRequest(url, body);
-//     onSuccess?.();
-//     onClose();
-//   } catch (err) {
-//     alert("Failed to add book assignment");
-//   }
-// };
-
-const handleAddBook = async () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const employeeId = user?.employee_id;
-  const bookClickUpId = bookId;
-
-  const selectedRoleIds = availableRoles.length === 1
-    ? [availableRoles[0].id_role]
-    : selectedRoles;
-
-  if (!bookId) return alert("אנא הזן Book ID");
-  if (selectedRoleIds.length === 0) return alert("בחר לפחות תפקיד אחד");
-
-  try {
-    await apiRequests.postRequest(`/book-assignments`, {
-      bookClickUpId,
-      employeeId,
-      selectedRoleIds
-    });
-
-    setOpenAddBook(false);
-    setSelectedRoles([]);
-    setBookId("");
-  } catch (err) {
-    alert("שגיאה בהוספת הספר");
-  }
-};
-
-
-const handleOpenAddBookDialog = async () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const roleIds = user.roles || [];
-
-  setBookId("");
-  setSelectedRoles([]);
-  setAvailableRoles([]);
-
-  if (roleIds.length > 1) {
+  const handleFetchMonthSummary = async () => {
+    if (!selectedMonth) return;
+    setLoadingSummary(true);
     try {
-      const response = await apiRequests.getRequest(`/roles?ids=${roleIds.join(',')}`);
-      setAvailableRoles(response); // [{ id_role, role_name }]
-    } catch (err) {
-      console.error("Failed to fetch role names", err);
+      const userData = localStorage.getItem("user");
+      const user = JSON.parse(userData);
+      const url = `/summary/byMonth/${user.employee_id}?month=${selectedMonth}`;
+      const summary = await apiRequests.getRequest(url);
+      setMonthSummary(summary);
+    } catch {
+      setError("Failed to load summary");
     }
-  } else if (roleIds.length === 1) {
-    setAvailableRoles([{ id_role: roleIds[0], role_name: "תפקיד יחיד" }]);
-  }
+    setLoadingSummary(false);
+  };
 
-  setOpenAddBook(true);
-};
+  const handleAddBook = async () => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const employeeId = user?.employee_id;
+    const bookClickUpId = bookId;
+
+    const selectedRoleIds = availableRoles.length === 1
+      ? [availableRoles[0].id_role]
+      : selectedRoles;
+
+    if (!bookId) return alert("אנא הזן Book ID");
+    if (selectedRoleIds.length === 0) return alert("בחר לפחות תפקיד אחד");
+
+    try {
+      await apiRequests.postRequest(`/book-assignments`, {
+        bookClickUpId,
+        employeeId,
+        selectedRoleIds
+      });
+
+      setOpenAddBook(false);
+      setSelectedRoles([]);
+      setBookId("");
+    } catch (err) {
+      alert("שגיאה בהוספת הספר");
+    }
+  };
 
 
+  const handleOpenAddBookDialog = async () => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const roleIds = user.roles || [];
 
-// const handleFetchBookSummary = async () => {
-//   if (!selectedBook) return;
-//   setLoadingSummary(true);
-//   try {
-//     const userData = localStorage.getItem("user");
-//     const user = JSON.parse(userData);
-//     const url = `/summary/byBook/${user.employee_id}?bookId=${selectedBook}`;
-//     const summary = await apiRequests.getRequest(url);
-//     setBookSummary(summary);
-//   } catch {
-//     setError("Failed to load summary");
-//   }
-//   setLoadingSummary(false);
-// };
+    setBookId("");
+    setSelectedRoles([]);
+    setAvailableRoles([]);
 
-  
+    if (roleIds.length > 1) {
+      try {
+        const response = await apiRequests.getRequest(`/roles?ids=${roleIds.join(',')}`);
+        setAvailableRoles(response); // [{ id_role, role_name }]
+      } catch (err) {
+        console.error("Failed to fetch role names", err);
+      }
+    } else if (roleIds.length === 1) {
+      setAvailableRoles([{ id_role: roleIds[0], role_name: "תפקיד יחיד" }]);
+    }
+
+    setOpenAddBook(true);
+  };
 
   useEffect(() => {
     fetchWorkEntries();
@@ -246,18 +207,15 @@ const handleOpenAddBookDialog = async () => {
       </Box>
 
       <Box mt={2} display="flex" gap={2}>
-      {/* <Button variant="contained" onClick={() => setOpenAddBook(true)}> */}
-            <Button variant="contained" onClick={handleOpenAddBookDialog}>
-  הוספת ספר שאני עובד עליו
-</Button>
+        {/* <Button variant="contained" onClick={() => setOpenAddBook(true)}> */}
+        <Button variant="contained" onClick={handleOpenAddBookDialog}>
+          הוספת ספר שאני עובד עליו
+        </Button>
 
-  <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
-    סיכום שעות לפי חודש
-  </Button>
-  {/* <Button variant="outlined" color="secondary" onClick={handleOpenBookSummary}>
-    סיכום שעות לפי ספר
-  </Button> */}
-</Box>
+        <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
+          סיכום שעות לפי חודש
+        </Button>
+      </Box>
 
 
       {/* הצגת שגיאה אם יש */}
@@ -282,20 +240,14 @@ const handleOpenAddBookDialog = async () => {
               <CircularProgress color="primary" />
             </Box>
           ) : (
-            // <AddWorkDialog
-            //   open={open}
-            //   onClose={() => setOpen(false)}
-            //   onAdd={handleAddWork}
-            //   books={books} // books עוברים כ-prop
-            // />
 
             <AddWorkDialog
-  open={open}
-  onClose={() => setOpen(false)}
-  onAdd={handleAddWork}
-  books={books}
-  role={role}
-/>
+              open={open}
+              onClose={() => setOpen(false)}
+              onAdd={handleAddWork}
+              books={books}
+              role={role}
+            />
 
           )}
         </DialogContent>
@@ -305,72 +257,58 @@ const handleOpenAddBookDialog = async () => {
       </Dialog>
 
       <Dialog open={openAddBook} onClose={() => setOpenAddBook(false)}>
-  <DialogTitle>הוספת ספר</DialogTitle>
-  <DialogContent>
-    <TextField
-      label="Book ID"
-      value={bookId}
-      onChange={(e) => setBookId(e.target.value)}
-      fullWidth
-    />
-    {availableRoles.length > 1 && (
-  <>
-    <Typography sx={{ mt: 2 }}>בחר תפקידים:</Typography>
-    {availableRoles.map(role => (
-      <FormControlLabel
-        key={role.id_role}
-        control={
-          <Checkbox
-            checked={selectedRoles.includes(role.id_role)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                setSelectedRoles(prev => [...prev, role.id_role]);
-              } else {
-                setSelectedRoles(prev => prev.filter(id => id !== role.id_role));
-              }
-            }}
+        <DialogTitle>הוספת ספר</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Book ID"
+            value={bookId}
+            onChange={(e) => setBookId(e.target.value)}
+            fullWidth
           />
-        }
-        label={role.role_name}
+          {availableRoles.length > 1 && (
+            <>
+              <Typography sx={{ mt: 2 }}>בחר תפקידים:</Typography>
+              {availableRoles.map(role => (
+                <FormControlLabel
+                  key={role.id_role}
+                  control={
+                    <Checkbox
+                      checked={selectedRoles.includes(role.id_role)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedRoles(prev => [...prev, role.id_role]);
+                        } else {
+                          setSelectedRoles(prev => prev.filter(id => id !== role.id_role));
+                        }
+                      }}
+                    />
+                  }
+                  label={role.role_name}
+                />
+              ))}
+            </>
+          )}
+
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAddBook(false)}>ביטול</Button>
+          <Button onClick={handleAddBook} variant="contained" color="primary">שמור</Button>
+        </DialogActions>
+      </Dialog>
+
+
+      <SummaryDialog
+        open={openMonthSummary}
+        type="month"
+        options={months}
+        selected={selectedMonth}
+        onSelect={setSelectedMonth}
+        onFetch={handleFetchMonthSummary}
+        summary={monthSummary}
+        loading={loadingSummary}
+        onClose={handleCloseMonthSummary}
+        label="בחר חודש"
       />
-    ))}
-  </>
-)}
-
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setOpenAddBook(false)}>ביטול</Button>
-    <Button onClick={handleAddBook} variant="contained" color="primary">שמור</Button>
-  </DialogActions>
-</Dialog>
-
-
-<SummaryDialog
-      open={openMonthSummary}
-      type="month"
-      options={months}
-      selected={selectedMonth}
-      onSelect={setSelectedMonth}
-      onFetch={handleFetchMonthSummary}
-      summary={monthSummary}
-      loading={loadingSummary}
-      onClose={handleCloseMonthSummary}
-      label="בחר חודש"
-    />
-
-    {/* <SummaryDialog
-      open={openBookSummary}
-      type="book"
-      options={books}
-      selected={selectedBook}
-      onSelect={setSelectedBook}
-      onFetch={handleFetchBookSummary}
-      summary={bookSummary}
-      loading={loadingSummary}
-      onClose={handleCloseBookSummary}
-      label="בחר ספר"
-    /> */}
-
     </Container>
   );
 };

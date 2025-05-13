@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, Typography, Box, Container, InputAdornment, IconButton } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
-// import CryptoJS from 'crypto-js';
 import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -14,10 +13,6 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const apiRequests = new APIrequests();
-
-  // const generatePasswordHash = (password) => {
-  //   return CryptoJS.SHA256(password).toString();
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,115 +1,52 @@
-// import React, { useEffect, useState } from "react";
-// import {
-//   Box, Typography, Paper, CircularProgress, Table,
-//   TableBody, TableCell, TableHead, TableRow, FormControl,
-//   InputLabel, Select, MenuItem
-// } from "@mui/material";
-// import { APIrequests } from "../../APIrequests";
-
-// const BookPivotReport = () => {
-//   const [books, setBooks] = useState([]);
-//   const [selectedBookId, setSelectedBookId] = useState("");
-//   const [report, setReport] = useState([]);
-//   const [loading, setLoading] = useState(false);
-
-//   const api = new APIrequests();
-
-//   useEffect(() => {
-//     const fetchBooks = async () => {
-//       try {
-//         const data = await api.getRequest("/books");
-//         setBooks(data);
-//       } catch (err) {
-//         console.error("Failed to load books", err);
-//       }
-//     };
-//     fetchBooks();
-//   }, []);
-
-//   useEffect(() => {
-//     const fetchReport = async () => {
-//       if (!selectedBookId) return;
-//       setLoading(true);
-//       try {
-//         const data = await api.getRequest(`/reports/books/${selectedBookId}/pivot-summary`);
-//         setReport(data);
-//       } catch (err) {
-//         console.error("Failed to load report", err);
-//       }
-//       setLoading(false);
-//     };
-//     fetchReport();
-//   }, [selectedBookId]);
-
-//   // בניית שמות עמודות מתוך כל סוגי התפקידים שמופיעים בנתונים
-//   const allRoles = Array.from(new Set(report.flatMap(r => Object.keys(r.roles || {}))));
-
-//   return (
-//     <Box mt={4} maxWidth={1100} mx="auto">
-//       <Paper sx={{ p: 3 }}>
-//         <Typography variant="h5" gutterBottom>
-//           דוח תשלום לפי תפקידים לעובדים עבור ספר
-//         </Typography>
-
-//         <FormControl fullWidth sx={{ mb: 3 }}>
-//           <InputLabel>בחר ספר</InputLabel>
-//           <Select
-//             value={selectedBookId}
-//             onChange={(e) => setSelectedBookId(e.target.value)}
-//           >
-//             {books.map(book => (
-//               <MenuItem key={book.id_book} value={book.id_book}>
-//                 {book.title} - {book.id_book}
-//               </MenuItem>
-//             ))}
-//           </Select>
-//         </FormControl>
-
-//         {loading ? (
-//           <CircularProgress />
-//         ) : (
-//           <Table>
-//             <TableHead>
-//               <TableRow>
-//                 <TableCell>שם עובד</TableCell>
-//                 {allRoles.map(role => (
-//                   <TableCell key={role} align="center">{role}</TableCell>
-//                 ))}
-//               </TableRow>
-//             </TableHead>
-//             <TableBody>
-//               {report.map((row, i) => (
-//                 <TableRow key={i}>
-//                   <TableCell>{row.employee_name}</TableCell>
-//                   {allRoles.map(role => (
-//                     <TableCell key={role} align="center">
-//                       {row.roles?.[role]?.toFixed(2) || ""}
-//                     </TableCell>
-//                   ))}
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//           </Table>
-//         )}
-//       </Paper>
-//     </Box>
-//   );
-// };
-
-// export default BookPivotReport;
-
-
 import React, { useEffect, useState } from "react";
 import {
   Box, Typography, Paper, CircularProgress, Table,
-  TableBody, TableCell, TableHead, TableRow, TextField, Button
+  TableBody, TableCell, TableHead, TableRow,
+  TextField, Button
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 
-const BookPivotReport = () => {
+// מעבד את הנתונים לפורמט מטריצה: שורות = עובדים, עמודות = תפקידים
+function transformToMatrix(dataFromServer) {
+  const employeeMap = {};
+  const rolesSet = new Set();
+
+  dataFromServer.forEach(({ role_name, employees }) => {
+    rolesSet.add(role_name);
+    employees.forEach(emp => {
+      if (!employeeMap[emp.employee_id]) {
+        employeeMap[emp.employee_id] = {
+          employee_id: emp.employee_id,
+          employee_name: emp.employee_name,
+          roles: {}
+        };
+      }
+      employeeMap[emp.employee_id].roles[role_name] = emp.total;
+    });
+  });
+
+  const roles = Array.from(rolesSet);
+  const employees = Object.values(employeeMap);
+
+  // מחשב סה"כ לכל עובד
+  employees.forEach(emp => {
+    emp.total = roles.reduce((sum, role) => sum + (emp.roles[role] || 0), 0);
+  });
+
+  // מחשב סה"כ לכל תפקיד
+  const totalsByRole = {};
+  roles.forEach(role => {
+    totalsByRole[role] = employees.reduce((sum, emp) => sum + (emp.roles[role] || 0), 0);
+  });
+  const grandTotal = employees.reduce((sum, emp) => sum + emp.total, 0);
+
+  return { roles, employees, totalsByRole, grandTotal };
+}
+
+const BookMatrixReport = () => {
   const [bookIdInput, setBookIdInput] = useState("");
   const [selectedBookId, setSelectedBookId] = useState("");
-  const [report, setReport] = useState([]);
+  const [matrixData, setMatrixData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const api = new APIrequests();
@@ -120,7 +57,8 @@ const BookPivotReport = () => {
       setLoading(true);
       try {
         const data = await api.getRequest(`/reports/book-summary/${selectedBookId}`);
-        setReport(data);
+        const transformed = transformToMatrix(data);
+        setMatrixData(transformed);
       } catch (err) {
         console.error("Failed to load report", err);
       }
@@ -135,14 +73,11 @@ const BookPivotReport = () => {
     }
   };
 
-  // בניית כל סוגי התפקידים מהתוצאה
-  const allRoles = Array.from(new Set(report.flatMap(r => Object.keys(r.roles || {}))));
-
   return (
-    <Box mt={4} maxWidth={1100} mx="auto">
+    <Box mt={4} maxWidth={1200} mx="auto">
       <Paper sx={{ p: 3 }}>
         <Typography variant="h5" gutterBottom>
-          דוח תשלום לפי תפקידים לעובדים עבור ספר
+          דוח תשלום מטריציוני לפי ספר
         </Typography>
 
         <Box display="flex" gap={2} mb={3}>
@@ -160,27 +95,40 @@ const BookPivotReport = () => {
         {loading ? (
           <CircularProgress />
         ) : (
-          selectedBookId && report.length > 0 && (
+          matrixData && (
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>שם עובד</TableCell>
-                  {allRoles.map(role => (
+                  {matrixData.roles.map(role => (
                     <TableCell key={role} align="center">{role}</TableCell>
                   ))}
+                  <TableCell align="center"><strong>Total</strong></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {report.map((row, i) => (
+                {matrixData.employees.map((emp, i) => (
                   <TableRow key={i}>
-                    <TableCell>{row.employee_name}</TableCell>
-                    {allRoles.map(role => (
+                    <TableCell>{emp.employee_name}</TableCell>
+                    {matrixData.roles.map(role => (
                       <TableCell key={role} align="center">
-                        {row.roles?.[role]?.toFixed(2) || ""}
+                        {emp.roles[role] ? emp.roles[role].toFixed(2) : ""}
                       </TableCell>
                     ))}
+                    <TableCell align="center"><strong>{emp.total.toFixed(2)}</strong></TableCell>
                   </TableRow>
                 ))}
+                <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                  <TableCell sx={{ fontWeight: "bold" }}>סה"כ לכל תפקיד</TableCell>
+                  {matrixData.roles.map(role => (
+                    <TableCell key={role} align="center" sx={{ fontWeight: "bold" }}>
+                      {matrixData.totalsByRole[role].toFixed(2)}
+                    </TableCell>
+                  ))}
+                  <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                    {matrixData.grandTotal.toFixed(2)}
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           )
@@ -190,4 +138,4 @@ const BookPivotReport = () => {
   );
 };
 
-export default BookPivotReport;
+export default BookMatrixReport;

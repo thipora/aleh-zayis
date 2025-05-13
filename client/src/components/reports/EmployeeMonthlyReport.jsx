@@ -29,6 +29,18 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
 
   const totalQuantity = rows.reduce((sum, row) => sum + Number(row.quantity), 0);
   const totalPayment = rows.reduce((sum, row) => sum + Number(row.total_payment), 0);
+  const formatHours = (quantity) => {
+    const q = parseFloat(quantity);
+    if (isNaN(q)) return "";
+    const hours = Math.floor(q);
+    const minutes = Math.round((q - hours) * 60);
+    let str = "";
+    if (hours > 0) str += `${hours} שעות`;
+    if (minutes > 0) str += (hours > 0 ? " ו-" : "") + `${minutes} דקות`;
+    if (!str) str = "0 דקות";
+    return str;
+  };
+
 
   const exportToExcel = () => {
     const wsData = rows.map(row => ({
@@ -37,7 +49,7 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
       "מנהל פרויקט": row.project_manager,
       "שעות": Math.floor(row.quantity),
       "דקות": Math.round((row.quantity % 1) * 60),
-    //   "תעריף לשעה": row.rate,
+      //   "תעריף לשעה": row.rate,
       "סה\"כ לתשלום": row.total_payment
     }));
     wsData.push({
@@ -46,7 +58,7 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
       "מנהל פרויקט": "",
       "שעות": Math.floor(totalQuantity),
       "דקות": Math.round((totalQuantity % 1) * 60),
-    //   "תעריף לשעה": "",
+      //   "תעריף לשעה": "",
       "סה\"כ לתשלום": totalPayment
     });
     const worksheet = XLSX.utils.json_to_sheet(wsData);
@@ -63,7 +75,9 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
       <Typography variant="h6" gutterBottom>
         דוח חודשי עבור {employeeName} - {month}/{year}
       </Typography>
-      <Button onClick={exportToExcel} variant="outlined" sx={{ mb: 2 }}>הורד ל-Excel</Button>
+      <Button onClick={exportToExcel} variant="outlined" sx={{ mb: 2 }}>
+        הורד ל-Excel
+      </Button>
       <Paper>
         {loading ? <CircularProgress /> : (
           <Table>
@@ -71,30 +85,28 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
               <TableRow>
                 <TableCell>AZ</TableCell>
                 <TableCell>שם פרויקט</TableCell>
-                <TableCell>מנהל פרויקט</TableCell>
-                <TableCell>שעות</TableCell>
-                <TableCell>דקות</TableCell>
-                {/* <TableCell>תעריף לשעה</TableCell> */}
+                <TableCell>כמות</TableCell>
+                <TableCell>תעריף</TableCell>
                 <TableCell>סה"כ לתשלום</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row, idx) => (
                 <TableRow key={idx}>
-                  <TableCell>{row.book_id}</TableCell>
+                  <TableCell>{row.AZ_book_id}</TableCell>
                   <TableCell>{row.book_name}</TableCell>
-                  <TableCell>{row.project_manager}</TableCell>
-                  <TableCell>{Math.floor(row.quantity)}</TableCell>
-                  <TableCell>{Math.round((row.quantity % 1) * 60)}</TableCell>
-                  {/* <TableCell>{row.rate}</TableCell> */}
-                  <TableCell>{row.total_payment}</TableCell>
+                  <TableCell align="center">
+                    {row.type === "hours"
+                      ? formatHours(row.quantity)
+                      : `${Math.floor(row.quantity)} ${row.unit}`}
+                  </TableCell>
+                  <TableCell>{row.rate}</TableCell>
+                  <TableCell>{row.total}</TableCell>
                 </TableRow>
               ))}
               <TableRow sx={{ backgroundColor: '#f0f0f0' }}>
                 <TableCell sx={{ fontWeight: 'bold' }}>סה"כ</TableCell>
-                <TableCell colSpan={2} />
-                <TableCell sx={{ fontWeight: 'bold' }}>{Math.floor(totalQuantity)}</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>{Math.round((totalQuantity % 1) * 60)}</TableCell>
+                <TableCell colSpan={3} />
                 <TableCell />
                 <TableCell sx={{ fontWeight: 'bold' }}>{totalPayment}</TableCell>
               </TableRow>
