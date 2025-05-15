@@ -30,7 +30,7 @@ const Login = ({ onLogin }) => {
 
       switch (data.user.account_type) {
         case "Employee":
-          navigate("/dashboard/employee");
+          navigate("/employee");
           break;
         case "Manager":
           navigate("/manager");

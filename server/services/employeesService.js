@@ -4,9 +4,30 @@ import { fetchClickUpAPI } from '../config/clickUpApiConfig.js';
 export class EmployeeService {
 
     async getAllEmployees() {
-        const query = 'SELECT emplors.email, roles.name AS role FROM alehzayis.employees JOIN alehzayis.users ON employees.user_id = users.id_user JOIN alehzayis.roles ON employees.role_id = roles.id_role';
+        const query = 'SELECT employees.id_employee, users.name, users.email, roles.role_name AS role FROM employees JOIN users ON employees.user_id = users.id_user JOIN employee_roles er ON er.employee_id = employees.id_employee JOIN roles ON er.role_id = roles.id_role';
         const result = await executeQuery(query);
-        return result;
+
+        const employeesMap = {};
+
+for (const row of result) {
+  const { id_employee, name, email, role } = row;
+
+  if (!employeesMap[id_employee]) {
+    employeesMap[id_employee] = {
+      id_employee,
+      name,
+      email,
+      roles: [role]
+    };
+  } else {
+    employeesMap[id_employee].roles.push(role);
+  }
+}
+
+// מחזיר מערך של עובדים, כל אחד עם מערך roles
+return Object.values(employeesMap);
+
+        // return result;
     }
 
     async createEmployee(params) {

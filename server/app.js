@@ -11,6 +11,8 @@ import reportsRouter from './routes/reportsRouter.js';
 import './cron/bookCron.js';
 import bookAssignmentsRouter from './routes/bookAssignmentsRouter.js';
 import employeeRolesRoutes from './routes/employeeRolesRoutes.js';
+import employeeRouter from './routes/employeeRoutes.js';
+
 
 
 
@@ -28,7 +30,7 @@ app.use(cors({
 app.use('/auth', authRouters);
 app.use('/workEntries', workEntrieRouter);
 app.use('/books', bookRouter);
-// app.use('/employees', employeeRoute);
+app.use('/employees', employeeRouter);
 app.use('/summary', summaryRouter);
 app.use('/roles', rolesRouter);
 app.use('/reports', reportsRouter);

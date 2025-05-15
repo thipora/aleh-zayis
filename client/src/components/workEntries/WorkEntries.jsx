@@ -20,7 +20,7 @@ function decimalToDurationString(quantity) {
   return str;
 }
 
-const WorkEntries = ({ workEntries, onUpdate }) => {
+const WorkEntries = ({ workEntries, onUpdate, allowUpdate = true }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedWork, setSelectedWork] = useState(null);
 
@@ -62,6 +62,9 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
                 <Typography variant="subtitle1" fontWeight="bold">Book Title</Typography>
               </TableCell>
               <TableCell>
+                <Typography variant="subtitle1" fontWeight="bold">Project Manager</Typography>
+              </TableCell>
+              <TableCell>
                 <Typography variant="subtitle1" fontWeight="bold">Work Amount</Typography>
               </TableCell>
               <TableCell>
@@ -73,9 +76,11 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
               <TableCell>
                 <Typography variant="subtitle1" fontWeight="bold">Notes</Typography>
               </TableCell>
-              <TableCell>
-                <Typography variant="subtitle1" fontWeight="bold">Update</Typography>
-              </TableCell>
+              {allowUpdate && (
+                <TableCell>
+                  <Typography variant="subtitle1" fontWeight="bold">Update</Typography>
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -84,6 +89,7 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
                 <TableCell>{new Date(log.date).toLocaleDateString()}</TableCell>
                 <TableCell>{log.AZ_book_id}</TableCell>
                 <TableCell>{log.book_name}</TableCell>
+                <TableCell>{log.project_manager_name || ''}</TableCell>
                 <TableCell>
                   {log.is_special_work
                     ? `${log.special_unit} ${parseInt(log.quantity)}`
@@ -101,15 +107,17 @@ const WorkEntries = ({ workEntries, onUpdate }) => {
                 <TableCell>{log.description}</TableCell>
                 <TableCell>{log.notes}</TableCell>
                 <TableCell>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => handleUpdate(log)}
-                    disabled={!isToday(log.date)}
-                  >
-                    Update
-                  </Button>
+                  {allowUpdate && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleUpdate(log)}
+                      disabled={!isToday(log.date)}
+                    >
+                      Update
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

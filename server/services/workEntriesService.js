@@ -1,6 +1,7 @@
 import { executeQuery } from '../config/db.js';
 // import { calculateWorkQuantityFromTimes } from '../utils/timeUtils.js';
 import { calculateWorkQuantityFromTimes } from '../util/timeUtils.js'
+import { getProjectManagerNameById } from './projectManagerService.js'
 
 export class WorkEntriesService {
   static table = "work_entries";
@@ -32,6 +33,7 @@ export class WorkEntriesService {
         b.id_book,
         b.name AS book_name,
         b.clickup_id,
+        b.project_manager_clickup_id,
         b.AZ_book_id,
         r.role_name,
         r.special_unit,
@@ -42,34 +44,49 @@ export class WorkEntriesService {
       JOIN roles r ON er.role_id = r.id_role
       JOIN books b ON we.book_id = b.id_book
       WHERE ${conditions.join(' AND ')}
+      ORDER BY we.date DESC, we.id_work_entries DESC
     `;
 
     // LIMIT ?, ?
 
-
-
     // values.push(start, range);
-    return await executeQuery(query, values);
+    const entries = await executeQuery(query, values);
+
+    // הוספת שם מנהל הפרויקט לכל רשומה לפי AZ_book_id
+    const entriesWithManager = await Promise.all(entries.map(async entry => {
+      const managerName = await getProjectManagerNameById(entry.project_manager_clickup_id);
+      return {
+        ...entry,
+        project_manager_name: managerName
+      };
+    }));
+
+    return entriesWithManager;
+    // return entries;
   }
 
+
+
+
+
   async updateWorkEntrie(workEntrieId, { date, quantity, description, notes }) {
-    const updateFields = [];
-    const values = [];
+  const updateFields = [];
+  const values = [];
 
-    if (date) updateFields.push("date = ?") && values.push(date);
-    if (quantity) updateFields.push("quantity = ?") && values.push(quantity);
-    if (description) updateFields.push("description = ?") && values.push(description);
-    if (notes) updateFields.push("notes = ?") && values.push(notes);
+  if (date) updateFields.push("date = ?") && values.push(date);
+  if (quantity) updateFields.push("quantity = ?") && values.push(quantity);
+  if (description) updateFields.push("description = ?") && values.push(description);
+  if (notes) updateFields.push("notes = ?") && values.push(notes);
 
-    const query = `
+  const query = `
       UPDATE ${WorkEntriesService.table}
       SET ${updateFields.join(", ")}
       WHERE id_work_entries = ?
     `;
 
-    values.push(workEntrieId);
-    return await executeQuery(query, values);
-  }
+  values.push(workEntrieId);
+  return await executeQuery(query, values);
+}
 
 
   // async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
@@ -99,37 +116,37 @@ export class WorkEntriesService {
   // }
 
   async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
-    const [empRole] = await executeQuery(
-      'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
-      [employeeId, roleId]
-    );
-    if (!empRole) {
-      throw new Error('Employee role not found');
-    }
-    const employeeRoleId = empRole.id_employee_role;
-    let is_special_work = true;
-    if (quantity == 0) {
-      is_special_work = false;
-      const calculated = calculateWorkQuantityFromTimes(start_time, end_time);
-      if (calculated) quantity = calculated;
-    }
-    const query = `
+  const [empRole] = await executeQuery(
+    'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
+    [employeeId, roleId]
+  );
+  if (!empRole) {
+    throw new Error('Employee role not found');
+  }
+  const employeeRoleId = empRole.id_employee_role;
+  let is_special_work = true;
+  if (quantity == 0) {
+    is_special_work = false;
+    const calculated = calculateWorkQuantityFromTimes(start_time, end_time);
+    if (calculated) quantity = calculated;
+  }
+  const query = `
       INSERT INTO ${WorkEntriesService.table}
       (employee_role_id, date, quantity, description, notes, book_id, start_time, end_time, is_special_work)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const values = [employeeRoleId, date, quantity, description, notes, book_id, start_time, end_time, is_special_work];
-    const result = await executeQuery(query, values);
-    return {
-      id_work_entries: result.insertId,
-      employee_role_id: employeeRoleId,
-      date, quantity, description, notes, book_id, start_time, end_time
-    };
-  }
+  const values = [employeeRoleId, date, quantity, description, notes, book_id, start_time, end_time, is_special_work];
+  const result = await executeQuery(query, values);
+  return {
+    id_work_entries: result.insertId,
+    employee_role_id: employeeRoleId,
+    date, quantity, description, notes, book_id, start_time, end_time
+  };
+}
 
 
   async getEditorWorkByMonth(employeeId, { month, year }) {
-    const sql = `
+  const sql = `
       SELECT
         we.date,
         we.quantity,
@@ -150,11 +167,11 @@ export class WorkEntriesService {
         AND YEAR(we.date) = ?
       ORDER BY b.name, we.date
     `;
-    return await executeQuery(sql, [employeeId, month, year]);
-  }
+  return await executeQuery(sql, [employeeId, month, year]);
+}
 
   async getProjectWorkByMonth(bookId, { month, year }) {
-    const sql = `
+  const sql = `
       SELECT 
         u.name AS editor_name,
         we.date,
@@ -172,11 +189,11 @@ export class WorkEntriesService {
         AND MONTH(we.date) = ?
       ORDER BY editor_name, we.date
     `;
-    return await executeQuery(sql, [bookId, year, month]);
-  }
+  return await executeQuery(sql, [bookId, year, month]);
+}
 
   async getEditorsSummaryByMonth({ month, year }) {
-    const sql = `
+  const sql = `
       SELECT 
         u.name AS editor_name,
         e.id_employee AS editor_id,
@@ -189,20 +206,20 @@ export class WorkEntriesService {
       GROUP BY e.id_employee, u.name
       ORDER BY total_hours DESC
     `;
-    return await executeQuery(sql, [year, month]);
-  }
+  return await executeQuery(sql, [year, month]);
+}
 
   async getBooksSummary({ month, year } = {}) {
-    const where = [];
-    const params = [];
+  const where = [];
+  const params = [];
 
-    if (month && year) {
-      where.push('YEAR(we.date) = ?');
-      where.push('MONTH(we.date) = ?');
-      params.push(year, month);
-    }
+  if (month && year) {
+    where.push('YEAR(we.date) = ?');
+    where.push('MONTH(we.date) = ?');
+    params.push(year, month);
+  }
 
-    const sql = `
+  const sql = `
       SELECT 
         b.id_book,
         b.name AS book_name,
@@ -213,20 +230,20 @@ export class WorkEntriesService {
       GROUP BY b.id_book, b.name
       ORDER BY total_hours DESC
     `;
-    return await executeQuery(sql, params);
-  }
+  return await executeQuery(sql, params);
+}
 
   async getBookEmployeesSummary(bookId, { month, year } = {}) {
-    const where = ['we.book_id = ?'];
-    const params = [bookId];
+  const where = ['we.book_id = ?'];
+  const params = [bookId];
 
-    if (month && year) {
-      where.push('YEAR(we.date) = ?');
-      where.push('MONTH(we.date) = ?');
-      params.push(year, month);
-    }
+  if (month && year) {
+    where.push('YEAR(we.date) = ?');
+    where.push('MONTH(we.date) = ?');
+    params.push(year, month);
+  }
 
-    const sql = `
+  const sql = `
       SELECT 
         u.name AS employee_name,
         e.id_employee AS employee_id,
@@ -239,20 +256,20 @@ export class WorkEntriesService {
       GROUP BY e.id_employee, u.name
       ORDER BY total_hours DESC
     `;
-    return await executeQuery(sql, params);
-  }
+  return await executeQuery(sql, params);
+}
 
   async getBookEmployeeDetails(bookId, employeeId, { month, year } = {}) {
-    const where = ['we.book_id = ?', 'e.id_employee = ?'];
-    const params = [bookId, employeeId];
+  const where = ['we.book_id = ?', 'e.id_employee = ?'];
+  const params = [bookId, employeeId];
 
-    if (month && year) {
-      where.push('YEAR(we.date) = ?');
-      where.push('MONTH(we.date) = ?');
-      params.push(year, month);
-    }
+  if (month && year) {
+    where.push('YEAR(we.date) = ?');
+    where.push('MONTH(we.date) = ?');
+    params.push(year, month);
+  }
 
-    const sql = `
+  const sql = `
       SELECT
         we.date,
         we.quantity,
@@ -264,18 +281,18 @@ export class WorkEntriesService {
       WHERE ${where.join(' AND ')}
       ORDER BY we.date
     `;
-    return await executeQuery(sql, params);
-  }
+  return await executeQuery(sql, params);
+}
 
 
 
   async getMonthlyWorkSummaryByEmployees({ month, year }) {
-    const workEntries = await this.getMonthlyWorkEntriesWithDetails(month, year);
-    return this.summarizeWorkEntriesWithRates(workEntries);
-  }
+  const workEntries = await this.getMonthlyWorkEntriesWithDetails(month, year);
+  return this.summarizeWorkEntriesWithRates(workEntries);
+}
 
   async getMonthlyWorkEntriesWithDetails(month, year) {
-    const sql = `
+  const sql = `
 SELECT
   we.employee_role_id,
   we.quantity,
@@ -293,74 +310,74 @@ JOIN employees e ON er.employee_id = e.id_employee
 JOIN users u ON e.user_id = u.id_user
 WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
 `;
-    return await executeQuery(sql, [month, year]);
-  }
+  return await executeQuery(sql, [month, year]);
+}
 
-  summarizeWorkEntriesWithRates(workEntries) {
-    const summary = {};
+summarizeWorkEntriesWithRates(workEntries) {
+  const summary = {};
 
-    for (const entry of workEntries) {
-      const empId = entry.id_employee;
-      const name = entry.employee_name;
-      const email = entry.employee_email;
-      const isSpecial = entry.is_special_work === 1;
-      const unit = entry.special_unit || 'unit';
+  for (const entry of workEntries) {
+    const empId = entry.id_employee;
+    const name = entry.employee_name;
+    const email = entry.employee_email;
+    const isSpecial = entry.is_special_work === 1;
+    const unit = entry.special_unit || 'unit';
 
-      if (!summary[empId]) {
-        summary[empId] = {
-          employee_id: empId,
-          employee_name: name,
-          employee_email: email,
-          hours: 0,
-          hourly_rate: entry.hourly_rate || 0,
-          specials: {} // { "תווים": { quantity, rate } }
-        };
-      }
-
-      if (isSpecial) {
-        if (!summary[empId].specials[unit]) {
-          summary[empId].specials[unit] = {
-            quantity: 0,
-            rate: entry.special_rate || 0
-          };
-        }
-        summary[empId].specials[unit].quantity += parseFloat(entry.quantity);
-      } else {
-        summary[empId].hours += parseFloat(entry.quantity);
-      }
+    if (!summary[empId]) {
+      summary[empId] = {
+        employee_id: empId,
+        employee_name: name,
+        employee_email: email,
+        hours: 0,
+        hourly_rate: entry.hourly_rate || 0,
+        specials: {} // { "תווים": { quantity, rate } }
+      };
     }
 
-    // הפיכת המידע לפלט מפורט
-    const result = [];
-    Object.values(summary).forEach(emp => {
-      if (emp.hours > 0) {
-        result.push({
-          employee_id: emp.employee_id,
-          employee_name: emp.employee_name,
-          employee_email: emp.employee_email,
-          type: 'hours',
-          quantity: emp.hours,
-          rate: emp.hourly_rate,
-          total: +(emp.hours * emp.hourly_rate).toFixed(2)
-        });
+    if (isSpecial) {
+      if (!summary[empId].specials[unit]) {
+        summary[empId].specials[unit] = {
+          quantity: 0,
+          rate: entry.special_rate || 0
+        };
       }
+      summary[empId].specials[unit].quantity += parseFloat(entry.quantity);
+    } else {
+      summary[empId].hours += parseFloat(entry.quantity);
+    }
+  }
 
-      Object.entries(emp.specials).forEach(([unit, data]) => {
-        result.push({
-          employee_id: emp.employee_id,
-          employee_name: emp.employee_name,
-          employee_email: emp.employee_email,
-          type: 'special',
-          unit,
-          quantity: data.quantity,
-          rate: data.rate,
-          total: +(data.quantity * data.rate).toFixed(2)
-        });
+  // הפיכת המידע לפלט מפורט
+  const result = [];
+  Object.values(summary).forEach(emp => {
+    if (emp.hours > 0) {
+      result.push({
+        employee_id: emp.employee_id,
+        employee_name: emp.employee_name,
+        employee_email: emp.employee_email,
+        type: 'hours',
+        quantity: emp.hours,
+        rate: emp.hourly_rate,
+        total: +(emp.hours * emp.hourly_rate).toFixed(2)
+      });
+    }
+
+    Object.entries(emp.specials).forEach(([unit, data]) => {
+      result.push({
+        employee_id: emp.employee_id,
+        employee_name: emp.employee_name,
+        employee_email: emp.employee_email,
+        type: 'special',
+        unit,
+        quantity: data.quantity,
+        rate: data.rate,
+        total: +(data.quantity * data.rate).toFixed(2)
       });
     });
+  });
 
-    return result;
-  }
+  return result;
+}
 
 
 
@@ -383,13 +400,13 @@ WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
   //   return await executeQuery(sql, [employeeId, month, year]);
   // }
   async getMonthlySummaryByEmployee(employeeId, { month, year }) {
-    const workEntries = await this.getWorkEntriesByEmployeeId(employeeId, month, year);
-    const summary = this.summarizeWorkEntriesByBook(workEntries);
-    return summary;
-  }
+  const workEntries = await this.getWorkEntriesByEmployeeId(employeeId, month, year);
+  const summary = this.summarizeWorkEntriesByBook(workEntries);
+  return summary;
+}
 
   async getWorkEntriesByEmployeeId(employeeId, month, year) {
-    const sql = `
+  const sql = `
     SELECT
       we.quantity,
       we.is_special_work,
@@ -414,87 +431,87 @@ LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
       AND YEAR(we.date) = ?
   `;
 
-    return await executeQuery(sql, [employeeId, month, year]);
-  }
+  return await executeQuery(sql, [employeeId, month, year]);
+}
 
 
 
   async summarizeWorkEntriesByBook(workEntries) {
-    const summary = {};
+  const summary = {};
 
-    for (const entry of workEntries) {
-      const bookId = entry.book_id;
-      const AZ_book_id = entry.AZ_book_id
-      const bookName = entry.book_name;
-      const isSpecial = entry.is_special_work === 1;
-      const unit = entry.special_unit || 'unit';
+  for (const entry of workEntries) {
+    const bookId = entry.book_id;
+    const AZ_book_id = entry.AZ_book_id
+    const bookName = entry.book_name;
+    const isSpecial = entry.is_special_work === 1;
+    const unit = entry.special_unit || 'unit';
 
-      if (!summary[bookId]) {
-        let projectManagerName = entry.project_manager_name;
+    if (!summary[bookId]) {
+      let projectManagerName = entry.project_manager_name;
 
-        if (!projectManagerName && entry.project_manager_clickup_id) {
-          try {
-            const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
-            projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
-          } catch (err) {
-            console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
-            projectManagerName = 'שגיאה בשליפה';
-          }
+      if (!projectManagerName && entry.project_manager_clickup_id) {
+        try {
+          const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
+          projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
+        } catch (err) {
+          console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
+          projectManagerName = 'שגיאה בשליפה';
         }
-
-
-        summary[bookId] = {
-          AZ_book_id: AZ_book_id,
-          book_name: bookName,
-          hours: 0,
-          hourly_rate: entry.hourly_rate || 0,
-          specials: {} // למשל: { "תווים": { quantity, rate } }
-        };
       }
 
-      if (isSpecial) {
-        if (!summary[bookId].specials[unit]) {
-          summary[bookId].specials[unit] = {
-            quantity: 0,
-            rate: entry.special_rate || 0
-          };
-        }
-        summary[bookId].specials[unit].quantity += parseFloat(entry.quantity);
-      } else {
-        summary[bookId].hours += parseFloat(entry.quantity);
-      }
+
+      summary[bookId] = {
+        AZ_book_id: AZ_book_id,
+        book_name: bookName,
+        hours: 0,
+        hourly_rate: entry.hourly_rate || 0,
+        specials: {} // למשל: { "תווים": { quantity, rate } }
+      };
     }
 
-    // הפקת פלט של רשימות לפי ספר
-    const result = [];
-
-    Object.values(summary).forEach(book => {
-      if (book.hours > 0) {
-        result.push({
-          AZ_book_id: book.AZ_book_id,
-          book_name: book.book_name,
-          type: 'hours',
-          quantity: book.hours,
-          rate: book.hourly_rate,
-          total: +(book.hours * book.hourly_rate).toFixed(2)
-        });
+    if (isSpecial) {
+      if (!summary[bookId].specials[unit]) {
+        summary[bookId].specials[unit] = {
+          quantity: 0,
+          rate: entry.special_rate || 0
+        };
       }
+      summary[bookId].specials[unit].quantity += parseFloat(entry.quantity);
+    } else {
+      summary[bookId].hours += parseFloat(entry.quantity);
+    }
+  }
 
-      Object.entries(book.specials).forEach(([unit, data]) => {
-        result.push({
-          AZ_book_id: book.AZ_book_id,
-          book_name: book.book_name,
-          type: 'special',
-          unit,
-          quantity: data.quantity,
-          rate: data.rate,
-          total: +(data.quantity * data.rate).toFixed(2)
-        });
+  // הפקת פלט של רשימות לפי ספר
+  const result = [];
+
+  Object.values(summary).forEach(book => {
+    if (book.hours > 0) {
+      result.push({
+        AZ_book_id: book.AZ_book_id,
+        book_name: book.book_name,
+        type: 'hours',
+        quantity: book.hours,
+        rate: book.hourly_rate,
+        total: +(book.hours * book.hourly_rate).toFixed(2)
+      });
+    }
+
+    Object.entries(book.specials).forEach(([unit, data]) => {
+      result.push({
+        AZ_book_id: book.AZ_book_id,
+        book_name: book.book_name,
+        type: 'special',
+        unit,
+        quantity: data.quantity,
+        rate: data.rate,
+        total: +(data.quantity * data.rate).toFixed(2)
       });
     });
+  });
 
-    return result;
-  }
+  return result;
+}
 
 
 }

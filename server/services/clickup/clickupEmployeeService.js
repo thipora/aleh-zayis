@@ -63,6 +63,7 @@ export async function getOfficeWorkersFromClickUp() {
       id: task.id,
       name: task.name,
       email: task.custom_fields.find(field => field.name === 'Email')?.value,
+      AZ_id_employee: task.custom_id,
       role: roleName
     };
   });

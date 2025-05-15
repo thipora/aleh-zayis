@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import DatePicker from "react-datepicker";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress, Box, Typography, Paper } from "@mui/material";
-import { he } from 'date-fns/locale';
 import MonthNavigator from "../common/MonthNavigator";
 
 const SummaryDialog = ({
