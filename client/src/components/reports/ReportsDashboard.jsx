@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MonthlyEmployeesSummary from "./MonthlyEmployeesSummary";
+import EmployeesReport from "./EmployeesReport";
 import BookPivotReport from "./BookPivotReport";
 import { Box, Button, Typography } from "@mui/material";
 
@@ -25,7 +25,7 @@ const ReportsDashboard = () => {
       {report === "employees" && (
         <>
           <Button onClick={handleBack} sx={{ mt: 2 }}>⬅ חזור</Button>
-          <MonthlyEmployeesSummary />
+          <EmployeesReport />
         </>
       )}
       {report === "books" && (

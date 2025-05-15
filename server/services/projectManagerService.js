@@ -31,13 +31,5 @@ export async function  getProjectManagerNameById(clickup_id_employee) {
 
 
   const employee = await clickUpService.getTaskById(clickup_id_employee);
-  console.log(employee);
   return employee.name || "";
-    // const allOfficeWorkers = await getOfficeWorkersFromClickUp();
-
-    // const projectManagers = allOfficeWorkers.filter(worker => worker.role === 'Project Management');
-
-    // const manager = projectManagers.find(manager => manager.AZ_id_employee === AZ_id_employee);
-
-    // return manager ? manager.name : null;
   }

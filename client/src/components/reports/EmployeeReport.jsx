@@ -7,7 +7,7 @@ import { APIrequests } from "../../APIrequests";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }) => {
+const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const api = new APIrequests();
@@ -28,7 +28,8 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
   }, [employeeId, month, year]);
 
   const totalQuantity = rows.reduce((sum, row) => sum + Number(row.quantity), 0);
-  const totalPayment = rows.reduce((sum, row) => sum + Number(row.total_payment), 0);
+  // const totalPayment = rows.reduce((sum, row) => sum + Number(row.total), 0);
+  const totalPayment = +rows.reduce((sum, row) => sum + Number(row.total), 0).toFixed(2);
   const formatHours = (quantity) => {
     const q = parseFloat(quantity);
     if (isNaN(q)) return "";
@@ -50,7 +51,7 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
       "שעות": Math.floor(row.quantity),
       "דקות": Math.round((row.quantity % 1) * 60),
       //   "תעריף לשעה": row.rate,
-      "סה\"כ לתשלום": row.total_payment
+      "סה\"כ לתשלום": row.total
     }));
     wsData.push({
       "AZ": "סה\"כ",
@@ -85,6 +86,7 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
               <TableRow>
                 <TableCell>AZ</TableCell>
                 <TableCell>שם פרויקט</TableCell>
+                <TableCell>מנהל פרויקט</TableCell>
                 <TableCell>כמות</TableCell>
                 <TableCell>תעריף</TableCell>
                 <TableCell>סה"כ לתשלום</TableCell>
@@ -95,6 +97,7 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
                 <TableRow key={idx}>
                   <TableCell>{row.AZ_book_id}</TableCell>
                   <TableCell>{row.book_name}</TableCell>
+                  <TableCell>{row.projectManagerName}</TableCell>
                   <TableCell align="center">
                     {row.type === "hours"
                       ? formatHours(row.quantity)
@@ -118,4 +121,4 @@ const EmployeeMonthlyReport = ({ employeeId, employeeName, month, year, onBack }
   );
 };
 
-export default EmployeeMonthlyReport;
+export default EmployeeReport;

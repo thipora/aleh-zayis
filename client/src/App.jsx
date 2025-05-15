@@ -14,7 +14,7 @@ import ClientPage from "./components/Admin/ClientPage.jsx"; // עדכון אם �
 import ChangePassword from "./components/auth/ChangePassword.jsx";
 // import "react-datepicker/dist/react-datepicker.css";
 import ReportsDashboard from "./components/reports/ReportsDashboard.jsx"; // מיקום הקובץ
-import MonthlyEmployeesSummary from "./components/reports/MonthlyEmployeesSummary.jsx"; // מיקום הקובץ
+import EmployeesReport from "./components/reports/EmployeesReport.jsx"; // מיקום הקובץ
 import RateManagement from "./components/manager/RateManagement.jsx"
 import ManagerDashboard from "./components/manager/ManagerDashboard.jsx";
 import EmployeeList from "./components/manager/EmployeesList.jsx"

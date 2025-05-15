@@ -6,7 +6,7 @@ import {
 import { APIrequests } from "../../APIrequests";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import EmployeeMonthlyReport from "./EmployeeMonthlyReport";
+import EmployeeReport from "./EmployeeReport";
 
 const monthNames = [
   "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
@@ -25,7 +25,7 @@ const formatHours = (quantity) => {
   return str;
 };
 
-const MonthlyEmployeesSummary = () => {
+const EmployeesReport = () => {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
@@ -81,7 +81,7 @@ const MonthlyEmployeesSummary = () => {
 
   if (selectedEmployee) {
     return (
-      <EmployeeMonthlyReport
+      <EmployeeReport
         employeeId={selectedEmployee.employee_id}
         employeeName={selectedEmployee.employee_name}
         month={month}
@@ -115,6 +115,7 @@ const MonthlyEmployeesSummary = () => {
               <TableRow>
                 <TableCell>שם עובד</TableCell>
                 <TableCell>מייל עובד</TableCell>
+                <TableCell>תפקיד</TableCell>
                 <TableCell align="center">תעריף (₪)</TableCell>
                 <TableCell align="center">סה"כ עבודה</TableCell>
                 <TableCell align="center">סה"כ תשלום (₪)</TableCell>
@@ -130,6 +131,7 @@ const MonthlyEmployeesSummary = () => {
                 >
                   <TableCell>{emp.employee_name}</TableCell>
                   <TableCell>{emp.employee_email}</TableCell>
+                  <TableCell>{emp.role_name}</TableCell>
                   <TableCell align="center">{emp.rate}</TableCell>
                   <TableCell align="center">
                     {emp.type === "hours"
@@ -141,6 +143,8 @@ const MonthlyEmployeesSummary = () => {
               ))}
               <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                 <TableCell sx={{ fontWeight: "bold" }} align="center">סה"כ</TableCell>
+                <TableCell />
+                <TableCell />
                 <TableCell />
                 <TableCell />
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>
@@ -155,4 +159,4 @@ const MonthlyEmployeesSummary = () => {
   );
 };
 
-export default MonthlyEmployeesSummary;
+export default EmployeesReport;

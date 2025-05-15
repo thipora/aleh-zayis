@@ -296,6 +296,7 @@ export class WorkEntriesService {
 SELECT
   we.employee_role_id,
   we.quantity,
+  r.role_name,
   we.is_special_work,
   e.id_employee,
   u.name AS employee_name,
@@ -330,7 +331,8 @@ summarizeWorkEntriesWithRates(workEntries) {
         employee_email: email,
         hours: 0,
         hourly_rate: entry.hourly_rate || 0,
-        specials: {} // { "תווים": { quantity, rate } }
+        specials: {},
+        role_name: entry.role_name
       };
     }
 
@@ -358,7 +360,8 @@ summarizeWorkEntriesWithRates(workEntries) {
         type: 'hours',
         quantity: emp.hours,
         rate: emp.hourly_rate,
-        total: +(emp.hours * emp.hourly_rate).toFixed(2)
+        total: +(emp.hours * emp.hourly_rate).toFixed(2),
+        role_name: emp.role_name
       });
     }
 
@@ -371,7 +374,8 @@ summarizeWorkEntriesWithRates(workEntries) {
         unit,
         quantity: data.quantity,
         rate: data.rate,
-        total: +(data.quantity * data.rate).toFixed(2)
+        total: +(data.quantity * data.rate).toFixed(2),
+        role_name: emp.role_name
       });
     });
   });
@@ -381,24 +385,6 @@ summarizeWorkEntriesWithRates(workEntries) {
 
 
 
-  // async getMonthlySummaryByEmployee(employeeId, { month, year }) {
-  //   const sql = `
-  //     SELECT
-  //       b.id_book,
-  //       b.name AS book_name,
-  //       SUM(we.quantity) AS quantity
-  //     FROM work_entries we
-  //     JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
-  //     JOIN employees e ON er.employee_id = e.id_employee
-  //     JOIN books b ON we.book_id = b.id_book
-  //     WHERE e.id_employee = ?
-  //       AND MONTH(we.date) = ?
-  //       AND YEAR(we.date) = ?
-  //     GROUP BY b.id_book, b.name
-  //     ORDER BY b.name
-  //   `;
-  //   return await executeQuery(sql, [employeeId, month, year]);
-  // }
   async getMonthlySummaryByEmployee(employeeId, { month, year }) {
   const workEntries = await this.getWorkEntriesByEmployeeId(employeeId, month, year);
   const summary = this.summarizeWorkEntriesByBook(workEntries);
@@ -410,9 +396,11 @@ summarizeWorkEntriesWithRates(workEntries) {
     SELECT
       we.quantity,
       we.is_special_work,
+      r.role_name,
       we.book_id,
       b.name AS book_name,
       b.AZ_book_id,
+      b.project_manager_clickup_id,
       er.hourly_rate,
       er.special_rate,
       r.special_unit,
@@ -431,7 +419,21 @@ LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
       AND YEAR(we.date) = ?
   `;
 
-  return await executeQuery(sql, [employeeId, month, year]);
+  const rows = await executeQuery(sql, [employeeId, month, year]);
+
+  // נעבור על כל שורה ונוסיף project_manager_name אם חסר
+  for (const row of rows) {
+    if (!row.project_manager_name && row.project_manager_clickup_id) {
+      try {
+        row.project_manager_name = await getProjectManagerNameById(row.project_manager_clickup_id);
+      } catch (err) {
+        console.error('שגיאה בשליפת שם מנהל מפרויקט:', err.message);
+        row.project_manager_name = 'שגיאה בשליפה';
+      }
+    }
+  }
+
+  return rows;
 }
 
 
@@ -465,7 +467,8 @@ LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
         book_name: bookName,
         hours: 0,
         hourly_rate: entry.hourly_rate || 0,
-        specials: {} // למשל: { "תווים": { quantity, rate } }
+        specials: {},
+        projectManagerName
       };
     }
 
@@ -493,7 +496,8 @@ LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
         type: 'hours',
         quantity: book.hours,
         rate: book.hourly_rate,
-        total: +(book.hours * book.hourly_rate).toFixed(2)
+        total: +(book.hours * book.hourly_rate).toFixed(2),
+        projectManagerName: book.projectManagerName
       });
     }
 
@@ -505,7 +509,8 @@ LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
         unit,
         quantity: data.quantity,
         rate: data.rate,
-        total: +(data.quantity * data.rate).toFixed(2)
+        total: +(data.quantity * data.rate).toFixed(2),
+        projectManagerName: book.projectManagerName
       });
     });
   });
