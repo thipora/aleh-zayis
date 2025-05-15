@@ -9,10 +9,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { APIrequests } from "../../APIrequests";
 
+
 const Register = () => {
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [loading, setLoading] = useState(false); // ⬅️ משתנה לטעינה
   const navigate = useNavigate();
 
   const apiRequests = new APIrequests();
@@ -26,17 +28,24 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading) return; // ⬅️ אם כבר יש בקשה – אל תמשיך
+    setLoading(true);     // ⬅️ מתחילים שליחה
+
     setError("");
     setSuccessMsg("");
 
     try {
       await apiRequests.postRequest("/auth/register", formData);
       setSuccessMsg("Registration successful! Check your email for your password.");
-      setTimeout(() => navigate("/login"), 3000); // הפנייה ל-login אחרי 3 שניות
+      setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed, please try again.");
+    } finally {
+      setLoading(false); // ⬅️ סיום הבקשה – מחזיר ללחיץ
     }
   };
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -85,15 +94,15 @@ const Register = () => {
             margin="normal"
             required
           />
-
           <Button
             type="submit"
             variant="contained"
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
+            disabled={loading} // ⬅️ חסימה בזמן טעינה
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </Button>
         </form>
 

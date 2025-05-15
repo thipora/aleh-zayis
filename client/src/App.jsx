@@ -6,7 +6,7 @@ import Register from "./components/auth/Register.jsx";   // עדכון אם שי
 import EmployeeDashboard from "./components/employees/EmployeeDashboard.jsx"; // עדכון אם שינית את השם או המיקום
 // import DashboardManager from "./components/DashboardManager"; // עדכון אם שינית את השם או המיקום
 // import DashboardClient from "./components/DashboardClient"; // עדכון אם שינית את השם או המיקום
-import WorkEntries from "./components/workEntries/WorkEntries.jsx"; // עדכון אם שינית את השם או המיקום
+// import WorkEntries from "./components/workEntries/WorkEntries.jsx"; // עדכון אם שינית את השם או המיקום
 import ManagerPage from "./components/manager/ManagerDashboard.jsx"; // עדכון אם שינית את השם או המיקום
 import ClientPage from "./components/Admin/ClientPage.jsx"; // עדכון אם שינית את השם או המיקום
 // import EmployeeList from "./components/employees/EmployeeList.jsx";
@@ -18,6 +18,7 @@ import MonthlyEmployeesSummary from "./components/reports/MonthlyEmployeesSummar
 import RateManagement from "./components/manager/RateManagement.jsx"
 import ManagerDashboard from "./components/manager/ManagerDashboard.jsx";
 import EmployeeList from "./components/manager/EmployeesList.jsx"
+import EmployeeWorkPage from "./components/manager/EmployeeWorkPage.jsx";
 
 
 
@@ -46,6 +47,7 @@ const App = () => {
 
         <Route path="/manager/reports" element={<ReportsDashboard />} />
         <Route path="/manager/employees" element={<EmployeeList />} />
+        <Route path="/manager/employee/:id/work" element={<EmployeeWorkPage />} />
 
 
         <Route path="/client" element={<ClientPage />} />
