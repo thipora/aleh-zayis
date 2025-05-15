@@ -145,8 +145,8 @@ const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
         {(role[0].is_hourly_primary === 1 && !isSpecialWork) ||
         (role[0].is_hourly_primary === 0 && isSpecialWork) ? (
           <Box sx={{ display: "flex", gap: 2 }}>
-            <TextField label="Start Time" name="start_time" type="time" value={newWork.start_time} onChange={handleInputChange} fullWidth error={!!errors.start_time} />
-            <TextField label="End Time" name="end_time" type="time" value={newWork.end_time} onChange={handleInputChange} fullWidth error={!!errors.end_time} helperText={errors.end_time} />
+            <TextField label="Start Time" name="start_time" type="time" value={newWork.start_time} onChange={handleInputChange} fullWidth error={!!errors.start_time} InputLabelProps={{ shrink: true }}/>
+            <TextField label="End Time" name="end_time" type="time" value={newWork.end_time} onChange={handleInputChange} fullWidth error={!!errors.end_time} helperText={errors.end_time} InputLabelProps={{ shrink: true }}/>
           </Box>
         ) : (
           <TextField

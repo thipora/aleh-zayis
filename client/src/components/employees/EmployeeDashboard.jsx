@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Select, InputLabel, FormControl, FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
+import { MenuItem, Select, InputLabel, FormControl, FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
 import AddWorkDialog from "../workEntries/AddWorkDialog";
-// import ChangePasswordDialog from "./ChangePasswordzzzzDialog";
 import SummaryDialog from "../reports/SummaryDialog"; // תוסיפי למעלה
+import AssignedBooksList from "./AssignedBooksList.jsx"
 
 
 const EmployeeDashboard = () => {
@@ -35,10 +35,66 @@ const EmployeeDashboard = () => {
   const [bookId, setBookId] = useState('');
   const [availableRoles, setAvailableRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
+  const [availabilityStatus, setAvailabilityStatus] = useState(null);
+  // const [showAssignedBooks, setShowAssignedBooks] = useState(false);
+  const [openAssignedBooksDialog, setOpenAssignedBooksDialog] = useState(false);
 
 
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+const employeeId = user.employee_id;
+
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      const user = JSON.parse(userData);
+      if (user.availability_status) {
+        setAvailabilityStatus(user.availability_status);
+      }
+    }
+  }, []);
+
+
+  // const availabilityOptions = {
+  //   available: "זמין",
+  //   not_available: "לא זמין",
+  //   partial: "זמין חלקי"
+  // };
 
   const apiRequests = new APIrequests();
+
+
+  // const handleAvailabilityChange = (newStatus) => {
+  //   setAvailabilityStatus(newStatus);
+
+  //   const user = JSON.parse(localStorage.getItem("user") || "[]");
+  //   if (user.length > 0) {
+  //     user[0].availability_status = newStatus;
+  //     localStorage.setItem("user", JSON.stringify(user));
+  //   }
+  // };
+const handleAvailabilityChange = async (newStatus) => {
+  setAvailabilityStatus(newStatus);
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  user.availability_status = newStatus;
+  localStorage.setItem("user", JSON.stringify(user));
+
+  const employeeId = user?.employee_id;
+  if (!employeeId) return alert("לא נמצאה מזהה עובד");
+
+  try {
+    await apiRequests.putRequest(`/employees/${employeeId}/availability`, {
+      availability_status: newStatus
+    });
+    console.log("Availability status updated");
+  } catch (err) {
+    alert("שגיאה בעדכון הסטטוס");
+  }
+};
+
+
 
   const handleOpenAddWork = async () => {
     setLoadingBooks(true);
@@ -206,6 +262,19 @@ const EmployeeDashboard = () => {
         <Typography variant="h4">Employee Dashboard</Typography>
       </Box>
 
+{/* <Button variant="outlined" onClick={() => setShowAssignedBooks(prev => !prev)}>
+  {showAssignedBooks ? "הסתר ספרים שאני עובד עליהם" : "הצג ספרים שאני עובד עליהם"}
+</Button>
+{showAssignedBooks && (
+  <Box mt={3}>
+<AssignedBooksList employeeId={employeeId} initialBooks={books} />
+  </Box>
+)} */}
+<Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
+  הצג ספרים שאני עובד עליהם
+</Button>
+
+
       <Box mt={2} display="flex" gap={2}>
         {/* <Button variant="contained" onClick={() => setOpenAddBook(true)}> */}
         <Button variant="contained" onClick={handleOpenAddBookDialog}>
@@ -216,6 +285,24 @@ const EmployeeDashboard = () => {
           סיכום שעות לפי חודש
         </Button>
       </Box>
+
+
+      <FormControl fullWidth sx={{ mt: 3 }}>
+        <InputLabel id="availability-status-label" shrink>
+          סטטוס זמינות
+        </InputLabel>
+        <Select
+          labelId="availability-status-label"
+          value={availabilityStatus}
+          label="סטטוס זמינות"
+          onChange={(e) => handleAvailabilityChange(e.target.value)}
+        >
+          <MenuItem value="available">זמין</MenuItem>
+          <MenuItem value="not_available">לא זמין</MenuItem>
+          <MenuItem value="partial">זמין חלקית</MenuItem>
+        </Select>
+      </FormControl>
+
 
 
       {/* הצגת שגיאה אם יש */}
@@ -297,6 +384,19 @@ const EmployeeDashboard = () => {
       </Dialog>
 
 
+  <Dialog open={openAssignedBooksDialog} onClose={() => setOpenAssignedBooksDialog(false)} maxWidth="sm" fullWidth>
+  <DialogTitle>הספרים שאתה עובד עליהם</DialogTitle>
+  <DialogContent>
+    <AssignedBooksList
+      employeeId={employeeId}
+      initialBooks={books}
+      dense
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenAssignedBooksDialog(false)}>סגור</Button>
+  </DialogActions>
+</Dialog>
       <SummaryDialog
         open={openMonthSummary}
         type="month"
@@ -310,7 +410,11 @@ const EmployeeDashboard = () => {
         label="בחר חודש"
       />
     </Container>
+
+    
   );
+
+
 };
 
 export default EmployeeDashboard;

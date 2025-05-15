@@ -14,6 +14,9 @@ const router = express.Router();
 
 // router.post('/', BookAssignmentsController.addAssignment);
 router.post('/', BookAssignmentsController.assignEditor);
+router.post('/complete', BookAssignmentsController.markBookCompleted);
+router.post('/by-employee/:employeeId', BookAssignmentsController.getBooksByEmployee);
+
 
 
 export default router;

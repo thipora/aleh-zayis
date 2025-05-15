@@ -6,6 +6,7 @@ const employeeController = new EmployeeController();
 
 employeeRouter.post('/', employeeController.createEmployee);
 employeeRouter.get('/', employeeController.getAllEmployees);
+employeeRouter.put('/:employeeId/availability', employeeController.putStatusAvailability);
 
 export default employeeRouter;
 

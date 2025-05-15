@@ -36,6 +36,7 @@ export class UserService {
             // שליפת פרטי עובד
             const employee = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
             users[0].employee_id = employee?.id_employee || null;
+            users[0].availability_status = employee.availability_status;
     
             // שליפת כל התפקידים של העובדD
             if (users[0].employee_id) {
@@ -51,13 +52,6 @@ export class UserService {
             }
         }
     
-
-        // if (users[0].account_type === "Employee") {
-        //     const employee = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
-        //     users[0].employee_id = employee.id_employee || null; // אם לא נמצא, שים null
-        //     users[0].role_id = employee.role_id
-        // }
-
         return users[0];
     }
 

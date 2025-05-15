@@ -1,5 +1,4 @@
 // services/ProjectManagerService.js
-import { getOfficeWorkersFromClickUp } from './clickup/clickupEmployeeService.js';
 import { executeQuery } from '../config/db.js';
 import { ClickUpService } from './clickup/clickUpService.js';
 

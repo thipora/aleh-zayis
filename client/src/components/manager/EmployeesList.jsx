@@ -146,6 +146,7 @@ const EmployeeList = () => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
+              <TableCell>Availability Status</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Roles</TableCell>
               <TableCell align="center">Actions</TableCell>
@@ -155,6 +156,7 @@ const EmployeeList = () => {
             {employees.map(emp => (
               <TableRow key={emp.id_employee}>
                 <TableCell>{emp.name}</TableCell>
+                <TableCell>{emp.availability_status}</TableCell>
                 <TableCell>{emp.email}</TableCell>
                 <TableCell>{emp.roles.join(", ")}</TableCell>
                 <TableCell align="center">

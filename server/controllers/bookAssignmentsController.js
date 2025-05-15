@@ -20,4 +20,29 @@ export class BookAssignmentsController {
   }
 }
 
+static async markBookCompleted(req, res) {
+  const { bookId, employeeId } = req.body;
+
+  try {
+    await BookAssignmentsController.bookAssignmentsService.markBookAsCompleted(employeeId, bookId);
+    res.status(200).json({ message: 'Book marked as completed' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to mark book as completed' });
+  }
+}
+
+static async getBooksByEmployee(req, res) {
+  const { employeeId } = req.params;
+  try {
+    const books = await bookAssignmentsService.getBooksForEmployee(employeeId);
+    res.json(books);
+  } catch (err) {
+    console.error("Error getting books for employee", err);
+    res.status(500).json({ error: "Failed to fetch books" });
+  }
+}
+
+
+
 }
