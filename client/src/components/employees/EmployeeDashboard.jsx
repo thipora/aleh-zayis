@@ -4,8 +4,10 @@ import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
 import AddWorkDialog from "../workEntries/AddWorkDialog";
-import SummaryDialog from "../reports/SummaryDialog"; // תוסיפי למעלה
+// import SummaryDialog from "../reports/SummaryDialog";
 import AssignedBooksList from "./AssignedBooksList.jsx"
+import EmployeeReport from "../reports/EmployeeReport";
+import AddBookDialog from "./AddBookDialog.jsx";
 
 
 const EmployeeDashboard = () => {
@@ -21,13 +23,9 @@ const EmployeeDashboard = () => {
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
-  const [isPasswordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [openMonthSummary, setOpenMonthSummary] = useState(false);
-  // const [openBookSummary, setOpenBookSummary] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedBook, setSelectedBook] = useState("");
   const [monthSummary, setMonthSummary] = useState([]);
-  const [bookSummary, setBookSummary] = useState([]);
   const [months, setMonths] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [role, setRole] = useState(null);
@@ -38,6 +36,9 @@ const EmployeeDashboard = () => {
   const [availabilityStatus, setAvailabilityStatus] = useState(null);
   // const [showAssignedBooks, setShowAssignedBooks] = useState(false);
   const [openAssignedBooksDialog, setOpenAssignedBooksDialog] = useState(false);
+  const [showEmployeeReport, setShowEmployeeReport] = useState(false);
+  const now = new Date();
+
 
 
 
@@ -55,25 +56,9 @@ const employeeId = user.employee_id;
     }
   }, []);
 
-
-  // const availabilityOptions = {
-  //   available: "זמין",
-  //   not_available: "לא זמין",
-  //   partial: "זמין חלקי"
-  // };
-
   const apiRequests = new APIrequests();
 
 
-  // const handleAvailabilityChange = (newStatus) => {
-  //   setAvailabilityStatus(newStatus);
-
-  //   const user = JSON.parse(localStorage.getItem("user") || "[]");
-  //   if (user.length > 0) {
-  //     user[0].availability_status = newStatus;
-  //     localStorage.setItem("user", JSON.stringify(user));
-  //   }
-  // };
 const handleAvailabilityChange = async (newStatus) => {
   setAvailabilityStatus(newStatus);
 
@@ -182,7 +167,8 @@ const handleAvailabilityChange = async (newStatus) => {
     }
   };
 
-  const handleOpenMonthSummary = () => setOpenMonthSummary(true);
+  const handleOpenMonthSummary = () => setShowEmployeeReport(true);
+
   const handleCloseMonthSummary = () => setOpenMonthSummary(false);
   // const handleOpenBookSummary = () => setOpenBookSummary(true);
   // const handleCloseBookSummary = () => setOpenBookSummary(false);
@@ -229,6 +215,11 @@ const handleAvailabilityChange = async (newStatus) => {
     }
   };
 
+  const handleOpenAssignedBooksDialog = async () => {
+  await handleOpenAddBookDialog(); // טוען roles וכו'
+  setOpenAssignedBooksDialog(true);
+};
+
 
   const handleOpenAddBookDialog = async () => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -261,18 +252,21 @@ const handleAvailabilityChange = async (newStatus) => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4">Employee Dashboard</Typography>
       </Box>
+{/* <AddBookDialog
+  open={openAddBook}
+  onClose={() => setOpenAddBook(false)}
+  employeeId={employeeId}
+  onSuccess={fetchWorkEntries} // אפשרי: תעדכני לפי הצורך
+/> */}
 
-{/* <Button variant="outlined" onClick={() => setShowAssignedBooks(prev => !prev)}>
-  {showAssignedBooks ? "הסתר ספרים שאני עובד עליהם" : "הצג ספרים שאני עובד עליהם"}
-</Button>
-{showAssignedBooks && (
-  <Box mt={3}>
-<AssignedBooksList employeeId={employeeId} initialBooks={books} />
-  </Box>
-)} */}
+
 <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
   הצג ספרים שאני עובד עליהם
 </Button>
+{/* <Button variant="outlined" onClick={handleOpenAssignedBooksDialog}>
+  הצג ספרים שאני עובד עליהם
+</Button> */}
+
 
 
       <Box mt={2} display="flex" gap={2}>
@@ -281,6 +275,7 @@ const handleAvailabilityChange = async (newStatus) => {
           הוספת ספר שאני עובד עליו
         </Button>
 
+ 
         <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
           סיכום שעות לפי חודש
         </Button>
@@ -343,7 +338,7 @@ const handleAvailabilityChange = async (newStatus) => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openAddBook} onClose={() => setOpenAddBook(false)}>
+      {/* <Dialog open={openAddBook} onClose={() => setOpenAddBook(false)}>
         <DialogTitle>הוספת ספר</DialogTitle>
         <DialogContent>
           <TextField
@@ -382,7 +377,7 @@ const handleAvailabilityChange = async (newStatus) => {
           <Button onClick={handleAddBook} variant="contained" color="primary">שמור</Button>
         </DialogActions>
       </Dialog>
-
+ */}
 
   <Dialog open={openAssignedBooksDialog} onClose={() => setOpenAssignedBooksDialog(false)} maxWidth="sm" fullWidth>
   <DialogTitle>הספרים שאתה עובד עליהם</DialogTitle>
@@ -397,18 +392,24 @@ const handleAvailabilityChange = async (newStatus) => {
     <Button onClick={() => setOpenAssignedBooksDialog(false)}>סגור</Button>
   </DialogActions>
 </Dialog>
-      <SummaryDialog
-        open={openMonthSummary}
-        type="month"
-        options={months}
-        selected={selectedMonth}
-        onSelect={setSelectedMonth}
-        onFetch={handleFetchMonthSummary}
-        summary={monthSummary}
-        loading={loadingSummary}
-        onClose={handleCloseMonthSummary}
-        label="בחר חודש"
-      />
+
+
+<Dialog open={showEmployeeReport} onClose={() => setShowEmployeeReport(false)} maxWidth="md" fullWidth>
+  <DialogTitle>סיכום לפי חודש</DialogTitle>
+  <DialogContent>
+    <EmployeeReport
+      employeeId={employeeId}
+      employeeName={user.name}
+      month={String(now.getMonth() + 1).padStart(2, '0')}
+      year={String(now.getFullYear())}
+      onBack={() => setShowEmployeeReport(false)}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setShowEmployeeReport(false)} color="primary">סגור</Button>
+  </DialogActions>
+</Dialog>
+
     </Container>
 
     
@@ -418,6 +419,3 @@ const handleAvailabilityChange = async (newStatus) => {
 };
 
 export default EmployeeDashboard;
-
-
-

@@ -240,14 +240,14 @@ async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
 
       return {
         inserted: true,
-        message: 'Book assignment reactivated (was previously completed)',
+        message: 'New book assignment inserted',
         bookId: book.id_book
       };
     } else {
       // כבר קיים ולא הושלם – לא נעשה כלום
       return {
         inserted: false,
-        message: 'Book assignment already exists and is active',
+        message: 'Book assignment already exists',
         bookId: book.id_book
       };
     }

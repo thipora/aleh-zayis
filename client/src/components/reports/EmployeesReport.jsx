@@ -7,11 +7,12 @@ import { APIrequests } from "../../APIrequests";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import EmployeeReport from "./EmployeeReport";
+import MonthSelector from "../common/MonthSelector";
 
-const monthNames = [
-  "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
-  "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
-];
+// const monthNames = [
+//   "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
+//   "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
+// ];
 
 const formatHours = (quantity) => {
   const q = parseFloat(quantity);
@@ -95,12 +96,20 @@ const EmployeesReport = () => {
     <Box mt={3} maxWidth={1000} mx="auto">
       <Paper elevation={2} sx={{ p: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6">
+          {/* <Typography variant="h6">
             סיכום חודשי לעובדים – {monthNames[month - 1]} {year}
-          </Typography>
+          </Typography> */}
+          <MonthSelector
+  month={month}
+  year={year}
+  onChange={(newMonth, newYear) => {
+    setMonth(newMonth);
+    setYear(newYear);
+  }}
+/>
           <Box display="flex" gap={1}>
-            <Button onClick={() => setMonth(month === 1 ? 12 : month - 1)}>&lt;</Button>
-            <Button onClick={() => setMonth(month === 12 ? 1 : month + 1)}>&gt;</Button>
+            {/* <Button onClick={() => setMonth(month === 1 ? 12 : month - 1)}>&lt;</Button>
+            <Button onClick={() => setMonth(month === 12 ? 1 : month + 1)}>&gt;</Button> */}
             <Button onClick={exportToExcel} variant="outlined" size="small">
               הורד ל-Excel
             </Button>
