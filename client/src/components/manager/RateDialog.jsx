@@ -64,27 +64,53 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
                 ) : roles.length === 0 ? (
                     <Typography>No roles found for this employee.</Typography>
                 ) : (
+                    // roles.map((role, index) => (
+                    //     <Box key={role.id_employee_role} sx={{ mb: 2 }}>
+                    //         <Typography variant="subtitle1">{role.role_name}</Typography>
+                    //         <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                    //             <TextField
+                    //                 label="Hourly Rate"
+                    //                 type="number"
+                    //                 value={cleanNumber(role.hourly_rate)}
+                    //                 onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
+                    //                 fullWidth
+                    //             />
+                    //             <TextField
+                    //                 label={role.special_unit ? `${role.special_unit} Rate` : "Special Rate"}
+                    //                 type="number"
+                    //                 value={cleanNumber(role.special_rate)}
+                    //                 onChange={(e) => handleChange(index, "special_rate", e.target.value)}
+                    //                 fullWidth
+                    //             />
+                    //         </Box>
+                    //     </Box>
+                    // ))
                     roles.map((role, index) => (
-                        <Box key={role.id_employee_role} sx={{ mb: 2 }}>
-                            <Typography variant="subtitle1">{role.role_name}</Typography>
-                            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-                                <TextField
-                                    label="Hourly Rate"
-                                    type="number"
-                                    value={cleanNumber(role.hourly_rate)}
-                                    onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
-                                    fullWidth
-                                />
-                                <TextField
-                                    label={role.special_unit ? `${role.special_unit} Rate` : "Special Rate"}
-                                    type="number"
-                                    value={cleanNumber(role.special_rate)}
-                                    onChange={(e) => handleChange(index, "special_rate", e.target.value)}
-                                    fullWidth
-                                />
-                            </Box>
-                        </Box>
-                    ))
+  <Box key={role.id_employee_role} sx={{ mb: 2 }}>
+    <Typography variant="subtitle1">{role.role_name}</Typography>
+
+    <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+      <TextField
+        label="Hourly Rate"
+        type="number"
+        value={cleanNumber(role.hourly_rate)}
+        onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
+        fullWidth
+      />
+
+      {role.uses_special_quantity === 1 && (
+        <TextField
+          label={role.special_unit ? `${role.special_unit} Rate` : "Special Rate"}
+          type="number"
+          value={cleanNumber(role.special_rate)}
+          onChange={(e) => handleChange(index, "special_rate", e.target.value)}
+          fullWidth
+        />
+      )}
+    </Box>
+  </Box>
+))
+
                 )}
             </DialogContent>
             <DialogActions>

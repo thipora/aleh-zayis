@@ -34,7 +34,6 @@ const EmployeeDashboard = () => {
   const [availableRoles, setAvailableRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [availabilityStatus, setAvailabilityStatus] = useState(null);
-  // const [showAssignedBooks, setShowAssignedBooks] = useState(false);
   const [openAssignedBooksDialog, setOpenAssignedBooksDialog] = useState(false);
   const [showEmployeeReport, setShowEmployeeReport] = useState(false);
   const now = new Date();
@@ -248,70 +247,103 @@ const handleAvailabilityChange = async (newStatus) => {
   }, []);
 
   return (
-    <Container>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h4">Employee Dashboard</Typography>
-      </Box>
-{/* <AddBookDialog
-  open={openAddBook}
-  onClose={() => setOpenAddBook(false)}
-  employeeId={employeeId}
-  onSuccess={fetchWorkEntries} // אפשרי: תעדכני לפי הצורך
-/> */}
+//     <Container>
+//       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+//         <Typography variant="h4">Employee Dashboard</Typography>
+//       </Box>
 
 
-<Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
-  הצג ספרים שאני עובד עליהם
-</Button>
-{/* <Button variant="outlined" onClick={handleOpenAssignedBooksDialog}>
-  הצג ספרים שאני עובד עליהם
-</Button> */}
+// <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
+//   הצג ספרים שאני עובד עליהם
+// </Button>
 
 
 
-      <Box mt={2} display="flex" gap={2}>
-        {/* <Button variant="contained" onClick={() => setOpenAddBook(true)}> */}
-        <Button variant="contained" onClick={handleOpenAddBookDialog}>
-          הוספת ספר שאני עובד עליו
-        </Button>
 
+//       <Box mt={2} display="flex" gap={2}>
  
-        <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
-          סיכום שעות לפי חודש
-        </Button>
-      </Box>
+//         <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
+//           סיכום שעות לפי חודש
+//         </Button>
+//       </Box>
+
+//             {/* כפתור לפתיחת הדיאלוג */}
+//       <Box mt={2}>
+//         <Button variant="contained" color="primary" onClick={handleOpenAddWork}>
+//           Add New
+//         </Button>
+//       </Box>
 
 
-      <FormControl fullWidth sx={{ mt: 3 }}>
-        <InputLabel id="availability-status-label" shrink>
-          סטטוס זמינות
-        </InputLabel>
-        <Select
-          labelId="availability-status-label"
-          value={availabilityStatus}
-          label="סטטוס זמינות"
-          onChange={(e) => handleAvailabilityChange(e.target.value)}
-        >
-          <MenuItem value="available">זמין</MenuItem>
-          <MenuItem value="not_available">לא זמין</MenuItem>
-          <MenuItem value="partial">זמין חלקית</MenuItem>
-        </Select>
-      </FormControl>
+//       <FormControl fullWidth sx={{ mt: 3 }}>
+//         <InputLabel id="availability-status-label" shrink>
+//           סטטוס זמינות
+//         </InputLabel>
+//         <Select
+//           labelId="availability-status-label"
+//           value={availabilityStatus}
+//           label="סטטוס זמינות"
+//           onChange={(e) => handleAvailabilityChange(e.target.value)}
+//         >
+//           <MenuItem value="available">זמין</MenuItem>
+//           <MenuItem value="not_available">לא זמין</MenuItem>
+//           <MenuItem value="partial">זמין חלקית</MenuItem>
+//         </Select>
+//       </FormControl>
+
+
+<Container>
+      <Typography variant="h4">Employee Dashboard</Typography>
+
+  <Box
+    display="flex"
+    flexWrap="wrap"
+    alignItems="center"
+    justifyContent="flex-start"
+    gap={2}
+    mt={2}
+  >
+
+    <FormControl sx={{ minWidth: 150 }}>
+      <InputLabel id="availability-status-label" shrink>
+        סטטוס זמינות
+      </InputLabel>
+      <Select
+        labelId="availability-status-label"
+        value={availabilityStatus}
+        label="סטטוס זמינות"
+        onChange={(e) => handleAvailabilityChange(e.target.value)}
+        size="small"
+      >
+        <MenuItem value="available">זמין</MenuItem>
+        <MenuItem value="not_available">לא זמין</MenuItem>
+        <MenuItem value="partial">זמין חלקית</MenuItem>
+      </Select>
+    </FormControl>
+
+    <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
+      הצג ספרים שאני עובד עליהם
+    </Button>
+
+    <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
+      סיכום שעות לפי חודש
+    </Button>
+
+    <Button variant="contained" color="primary" onClick={handleOpenAddWork}>
+      Add New
+    </Button>
+
+  </Box>
 
 
 
-      {/* הצגת שגיאה אם יש */}
+
       <ErrorNotification error={error} />
 
       {/* רשימת העבודה של העובד */}
       <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} />
 
-      {/* כפתור לפתיחת הדיאלוג */}
-      <Box mt={2}>
-        <Button variant="contained" color="primary" onClick={handleOpenAddWork}>
-          Add New
-        </Button>
-      </Box>
+
 
       {/* דיאלוג (חלון קופץ) להוספת עבודה */}
       <Dialog open={open} onClose={() => setOpen(false)}>
@@ -337,47 +369,6 @@ const handleAvailabilityChange = async (newStatus) => {
           <Button onClick={() => setOpen(false)} color="secondary">ביטול</Button>
         </DialogActions>
       </Dialog>
-
-      {/* <Dialog open={openAddBook} onClose={() => setOpenAddBook(false)}>
-        <DialogTitle>הוספת ספר</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Book ID"
-            value={bookId}
-            onChange={(e) => setBookId(e.target.value)}
-            fullWidth
-          />
-          {availableRoles.length > 1 && (
-            <>
-              <Typography sx={{ mt: 2 }}>בחר תפקידים:</Typography>
-              {availableRoles.map(role => (
-                <FormControlLabel
-                  key={role.id_role}
-                  control={
-                    <Checkbox
-                      checked={selectedRoles.includes(role.id_role)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedRoles(prev => [...prev, role.id_role]);
-                        } else {
-                          setSelectedRoles(prev => prev.filter(id => id !== role.id_role));
-                        }
-                      }}
-                    />
-                  }
-                  label={role.role_name}
-                />
-              ))}
-            </>
-          )}
-
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenAddBook(false)}>ביטול</Button>
-          <Button onClick={handleAddBook} variant="contained" color="primary">שמור</Button>
-        </DialogActions>
-      </Dialog>
- */}
 
   <Dialog open={openAssignedBooksDialog} onClose={() => setOpenAssignedBooksDialog(false)} maxWidth="sm" fullWidth>
   <DialogTitle>הספרים שאתה עובד עליהם</DialogTitle>
