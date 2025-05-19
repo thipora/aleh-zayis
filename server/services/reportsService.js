@@ -2,6 +2,7 @@
 import { executeQuery } from "../config/db.js";
 
 export class ReportsService {
+  //משתמשים
   async getBookSummary(bookId) {
     const workEntries = await this.getWorkEntriesByBookId(bookId);
     const groupedByRole = this.groupWorkEntriesByRole(workEntries);
@@ -31,6 +32,8 @@ async getWorkEntriesByBookId(bookId) {
 
   return await executeQuery(sql, [bookId]);
 }
+
+  //משתמשים
 groupWorkEntriesByRole(workEntries) {
   const rolesMap = {};
 

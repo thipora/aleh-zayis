@@ -8,6 +8,7 @@ import { sendMail } from '../util/mailer.js';
 import { welcomeEmailTemplate } from '../util/emailTemplates.js';
 // import { generateRandomPassword } from "../utils/passwordUtils.js";
 import { generateRandomPassword } from "../util/passwordUtils.js";
+import {getDBConnection} from '../config/db.js';
 
 
 export class UserService {
@@ -37,7 +38,7 @@ export class UserService {
             const employee = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
             users[0].employee_id = employee?.id_employee || null;
             users[0].availability_status = employee.availability_status;
-    
+
             // שליפת כל התפקידים של העובדD
             if (users[0].employee_id) {
                 const rolesQuery = `
@@ -45,39 +46,53 @@ export class UserService {
                 FROM alehZayis.employee_roles
                 WHERE employee_id = ?
             `;
-            const roles = await executeQuery(rolesQuery, [users[0].employee_id]);
-            users[0].roles = roles.map(r => r.role_id); // מחזיר רק מערך של מזהים
-                        } else {
+                const roles = await executeQuery(rolesQuery, [users[0].employee_id]);
+                users[0].roles = roles.map(r => r.role_id); // מחזיר רק מערך של מזהים
+            } else {
                 users[0].roles = [];
             }
         }
-    
+
         return users[0];
     }
 
 
     async registerUser(params) {
-        const email = params.email;
-        const name = params.name;
-        await this.userExists(email);
-        const clickupUser = await this.validateClickUpUser(email);
-        const {userId, rawPassword} = await this.createUserEntry(params);
-        if (!userId) {
-            throw new Error("Failed to create user");
+        const connection = await getDBConnection();
+        try {
+            await connection.beginTransaction();
+
+            const email = params.email;
+            const name = params.name;
+            await this.userExists(email);
+            const clickupUser = await this.validateClickUpUser(email);
+            const { userId, rawPassword } = await this.createUserEntry(params, connection);
+            if (!userId) {
+                throw new Error("Failed to create user");
+            }
+
+            await UserService.EmployeeService.createEmployee({
+                user_id: userId,
+                clickup_id: clickupUser.id,
+                roles: clickupUser.roles
+            }, connection);
+
+            await connection.commit();
+
+            await sendMail({
+                to: "tz0556776105@gmail.com",
+                subject: 'Welcome to Aleh Zayis Website!',
+                html: welcomeEmailTemplate(name, rawPassword)
+            });
+
+            return userId;
+
+        } catch {
+            await connection.rollback();
+            throw err;
+        } finally {
+            connection.release();
         }
-
-        await UserService.EmployeeService.createEmployee({
-            user_id: userId,
-            clickup_id: clickupUser.id,
-            roles: clickupUser.roles
-        });
-        await sendMail({
-            to: "tz0556776105@gmail.com",
-            subject: 'Welcome to Aleh Zayis Website!',
-            html: welcomeEmailTemplate(name, rawPassword)
-        });
-
-        return userId;
     }
 
 
@@ -92,7 +107,7 @@ export class UserService {
             account_type: 'employee'
         };
         const userId = await this.addUser(newUser);
-        return {userId, rawPassword}
+        return { userId, rawPassword }
     }
 
 
@@ -125,16 +140,16 @@ export class UserService {
     async changePasswordByEmail(email, currentPassword, newPassword) {
         const userQuery = `SELECT id_user, password FROM users WHERE email = ?`;
         const users = await executeQuery(userQuery, [email]);
-    
+
         if (!users || users.length === 0) return false;
-    
+
         const isMatch = await bcrypt.compare(currentPassword, users[0].password);
         if (!isMatch) return false;
-    
+
         const hashed = await bcrypt.hash(newPassword, 10);
         const updateQuery = `UPDATE users SET password = ? WHERE id_user = ?`;
         await executeQuery(updateQuery, [hashed, users[0].id_user]);
-    
+
         return true;
     }
 }
