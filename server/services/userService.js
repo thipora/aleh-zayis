@@ -8,7 +8,8 @@ import { sendMail } from '../util/mailer.js';
 import { welcomeEmailTemplate } from '../util/emailTemplates.js';
 // import { generateRandomPassword } from "../utils/passwordUtils.js";
 import { generateRandomPassword } from "../util/passwordUtils.js";
-import {getDBConnection} from '../config/db.js';
+import { getDBConnection } from '../config/db.js';
+import { resetPasswordEmailTemplate } from "../util/emailTemplates.js";
 
 
 export class UserService {
@@ -137,9 +138,9 @@ export class UserService {
     }
 
 
-    async changePasswordByEmail(email, currentPassword, newPassword) {
-        const userQuery = `SELECT id_user, password FROM users WHERE email = ?`;
-        const users = await executeQuery(userQuery, [email]);
+    async changePasswordByEmail(id_user, currentPassword, newPassword) {
+        const userQuery = `SELECT password FROM users WHERE id_user = ?`;
+        const users = await executeQuery(userQuery, [id_user]);
 
         if (!users || users.length === 0) return false;
 
@@ -148,8 +149,51 @@ export class UserService {
 
         const hashed = await bcrypt.hash(newPassword, 10);
         const updateQuery = `UPDATE users SET password = ? WHERE id_user = ?`;
-        await executeQuery(updateQuery, [hashed, users[0].id_user]);
+        await executeQuery(updateQuery, [hashed, id_user]);
 
         return true;
     }
+
+    // async resetPasswordByEmail(email) {
+    //     const user = await this.getUserByEmail(email);
+    //     if (!user) return null;
+
+    //     const newPassword = Math.random().toString(36).slice(-8); // סיסמה רנדומלית
+    //     const hashed = await bcrypt.hash(newPassword, 10);
+
+    //     await executeQuery("UPDATE users SET password = ? WHERE id_user = ?", [hashed, user.id_user]);
+
+    //     // שליחת מייל עם הסיסמה החדשה
+    //     await sendMail({
+    //         to: email,
+    //         subject: "Password Reset - Aleh Zayis",
+    //         html: resetPasswordEmailTemplate(newPassword),
+    //     });
+
+    //     return newPassword;
+    // }
+
+
+    async resetPasswordByEmail(email) {
+    // יצירת סיסמה רנדומלית חדשה
+    const newPassword = Math.random().toString(36).slice(-8);
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    // ניסיון לעדכן סיסמה לפי אימייל
+    const result = await executeQuery("UPDATE users SET password = ? WHERE email = ?", [hashed, email]);
+
+    if (result.affectedRows === 0) {
+        throw new Error("No user found with that email");
+    }
+
+    // שליחת מייל עם הסיסמה החדשה
+    await sendMail({
+        to: email,
+        subject: "Password Reset - Aleh Zayis",
+        html: resetPasswordEmailTemplate(newPassword),
+    });
+
+    return true;
+}
+
 }

@@ -37,19 +37,19 @@ export class AuthController {
 
     async changePassword(req, res, next) {
         try {
-            const { email, currentPassword, newPassword } = req.body;
-    
-            if (!email || !currentPassword || !newPassword) {
+            const { userId, currentPassword, newPassword } = req.body;
+
+            if (!userId || !currentPassword || !newPassword) {
                 return res.status(400).json({ message: "Missing fields" });
             }
-    
+
             const userService = new UserService();
-            const success = await userService.changePasswordByEmail(email, currentPassword, newPassword);
-    
+            const success = await userService.changePasswordByEmail(userId, currentPassword, newPassword);
+
             if (!success) {
                 return res.status(401).json({ message: "Email or current password is incorrect" });
             }
-    
+
             res.status(200).json({ message: "Password updated successfully" });
         } catch (ex) {
             next({
@@ -58,4 +58,28 @@ export class AuthController {
             });
         }
     }
+
+    async forgotPassword(req, res, next) {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ message: "Email is required" });
+            }
+
+            const userService = new UserService();
+            const success = await userService.resetPasswordByEmail(email);
+
+
+            if (!success) {
+                return res.status(401).json({ message: "Email or current password is incorrect" });
+            }
+
+
+
+            res.status(200).json({ message: "Password reset and sent by email." });
+        } catch (err) {
+            next(err);
+        }
+    }
+
 }

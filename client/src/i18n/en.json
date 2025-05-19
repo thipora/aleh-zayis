@@ -37,6 +37,13 @@
     "actions": "Actions",
     "viewWork": "View Work",
     "editRates": "Edit Rates"
-  }
+  },
+ "forgot": {
+  "title": "Forgot Password",
+  "email": "Email",
+  "submit": "Send New Password",
+  "success": "A new password was sent to your email.",
+  "error": "Failed to reset password. Please try again."
+}
 
 }

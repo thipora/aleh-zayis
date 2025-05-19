@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-const ChangePassword = () => {
+const ChangePassword = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -16,7 +16,7 @@ const ChangePassword = () => {
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
   const [touched, setTouched] = useState({
-    email: false,
+    // email: false,
     currentPassword: false,
     newPassword: false,
     confirmPassword: false,
@@ -41,7 +41,7 @@ const ChangePassword = () => {
   };
 
   const hasError = Object.values(errors).some((msg) => !!msg)
-    || !email
+    // || !email
     || !currentPassword
     || !newPassword
     || !confirmPassword
@@ -52,64 +52,109 @@ const ChangePassword = () => {
     setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setServerError("");
+  //   setTouched({
+  //     email: true,
+  //     currentPassword: true,
+  //     newPassword: true,
+  //     confirmPassword: true,
+  //   });
+
+  //   if (hasError) return;
+
+  //   try {
+
+  //     const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  //     await apiRequests.postRequest("/auth/change-password", {
+  //       // email,
+  //       userId: user.id_user,
+  //       currentPassword,
+  //       newPassword,
+  //     });
+  //     setSuccess(true);
+  //   } catch (err) {
+  //     setServerError("Failed to change password. Please try again.");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setServerError("");
-    setTouched({
-      email: true,
-      currentPassword: true,
-      newPassword: true,
-      confirmPassword: true,
+  e.preventDefault();
+  setServerError("");
+  setTouched({
+    currentPassword: true,
+    newPassword: true,
+    confirmPassword: true,
+  });
+
+  if (hasError) return;
+
+  try {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    await apiRequests.putRequest("/auth/change-password", {
+      userId: user.id_user,
+      currentPassword,
+      newPassword,
     });
 
-    if (hasError) return;
+    setSuccess(true);
 
-    try {
-      await apiRequests.postRequest("/auth/change-password", {
-        email,
-        currentPassword,
-        newPassword,
-      });
-      setSuccess(true);
-    } catch (err) {
-      setServerError("Failed to change password. Please try again.");
-    }
-  };
+    // אחרי 2 שניות – סגירת הדיאלוג (אם יש prop)
+    setTimeout(() => {
+      if (typeof onClose === "function") {
+        onClose();
+      }
+    }, 2000);
+  } catch (err) {
+    setServerError("Failed to change password. Please try again.");
+  }
+};
 
-  const SuccessDialog = () => (
-    <Dialog open={success} onClose={() => navigate("/login")}>
-      <DialogTitle>Password Changed</DialogTitle>
-      <DialogContent>
-        <Typography>
-          Your password has been changed successfully.<br />
-          You can now log in with your new password.
-        </Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/login")}
-        >
-          Go to Login
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  // const SuccessDialog = () => (
+  //   <Dialog open={success} onClose={() => navigate("/login")}>
+  //     <DialogTitle>Password Changed</DialogTitle>
+  //     <DialogContent>
+  //       <Typography>
+  //         Your password has been changed successfully.<br />
+  //         You can now log in with your new password.
+  //       </Typography>
+  //     </DialogContent>
+  //     <DialogActions>
+  //       <Button
+  //         variant="contained"
+  //         color="primary"
+  //         onClick={() => navigate("/login")}
+  //       >
+  //         Go to Login
+  //       </Button>
+  //     </DialogActions>
+  //   </Dialog>
+  // );
 
   return (
-    <Container component="main" maxWidth="xs">
-      <SuccessDialog />
-      <Box sx={{
+    // <Container component="main" maxWidth="xs">
+      <Box sx={{ p: 3, mt: 2, mb: 2, width: '100%' }}>
+{success && (
+  <Typography color="success.main" sx={{ mb: 2 }}>
+    הסיסמה עודכנה בהצלחה!
+  </Typography>
+)}
+
+
+
+      {/* <SuccessDialog /> */}
+      {/* <Box sx={{
         display: "flex", flexDirection: "column", alignItems: "center", padding: 3, boxShadow: 3, borderRadius: 2
-      }}>
-        <Button
+      }}> */}
+        {/* <Button
           variant="text"
           onClick={() => navigate(-1)}
           sx={{ alignSelf: "flex-start", mb: 1 }}
         >
           ← Back
-        </Button>
+        </Button> */}
         <Typography variant="h5" gutterBottom>
           Change Password
         </Typography>
@@ -119,7 +164,7 @@ const ChangePassword = () => {
           </Typography>
         )}
         <form onSubmit={handleSubmit} style={{ width: "100%" }} noValidate>
-          <TextField
+          {/* <TextField
             fullWidth
             label="Email"
             value={email}
@@ -130,7 +175,7 @@ const ChangePassword = () => {
             helperText={errors.email}
             onBlur={() => handleBlur("email")}
             autoComplete="email"
-          />
+          /> */}
           <TextField
             fullWidth
             label="Current Password"
@@ -216,7 +261,6 @@ const ChangePassword = () => {
           </Button>
         </form>
       </Box>
-    </Container>
   );
 };
 

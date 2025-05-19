@@ -120,14 +120,12 @@ import { Routes, Route } from 'react-router-dom';
 
 import Login from "./components/auth/Login.jsx";
 import Register from "./components/auth/Register.jsx";
-import ChangePassword from "./components/auth/ChangePassword.jsx";
+import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 
 import EmployeeDashboard from "./components/employees/EmployeeDashboard.jsx";
 import ManagerDashboard from "./components/manager/ManagerDashboard.jsx";
 import ClientPage from "./components/Admin/ClientPage.jsx";
 import ReportsDashboard from "./components/reports/ReportsDashboard.jsx";
-import EmployeesReport from "./components/reports/EmployeesReport.jsx";
-import RateManagement from "./components/manager/RateManagement.jsx";
 import EmployeeList from "./components/manager/EmployeesList.jsx";
 import EmployeeWorkPage from "./components/manager/EmployeeWorkPage.jsx";
 import i18n from './i18n/i18n.js';
@@ -177,7 +175,7 @@ Complete publishing services for today’s Torah community
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/password" element={<ForgotPassword />} />
 
         <Route path="/employee" element={<EmployeeDashboard />} />
         <Route path="/manager" element={<ManagerDashboard />} />

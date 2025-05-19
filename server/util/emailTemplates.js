@@ -4,3 +4,9 @@ export const welcomeEmailTemplate = (name, password) => `
   <p><strong>Password:</strong> ${password}</p>
   <p>You can now log in using your email and this password.</p>
 `;
+
+export const resetPasswordEmailTemplate = (password) => `
+  <h2>Password Reset - Aleh Zayis</h2>
+  <p>Your password has been successfully reset.</p>
+  <p><strong>New Password:</strong> ${password}</p>
+`;
