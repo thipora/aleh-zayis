@@ -113,9 +113,10 @@
 // };
 
 // export default App;
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
+import { Routes, Route } from 'react-router-dom';
+
 
 import Login from "./components/auth/Login.jsx";
 import Register from "./components/auth/Register.jsx";
@@ -129,8 +130,15 @@ import EmployeesReport from "./components/reports/EmployeesReport.jsx";
 import RateManagement from "./components/manager/RateManagement.jsx";
 import EmployeeList from "./components/manager/EmployeesList.jsx";
 import EmployeeWorkPage from "./components/manager/EmployeeWorkPage.jsx";
+import i18n from './i18n/i18n.js';
+import LanguageSwitcher from './LanguageSwitcher.jsx'
+
 
 const App = () => {
+    useEffect(() => {
+    document.body.dir = i18n.language === 'he' ? 'rtl' : 'ltr';
+  }, [i18n.language]);
+
   return (
     <Box
       sx={{
@@ -140,6 +148,10 @@ const App = () => {
         py: { xs: 3, sm: 6 },
       }}
     >
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+  <LanguageSwitcher />
+</Box>
+
       <Typography
         variant="h2"
         align="center"

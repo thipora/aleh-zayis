@@ -1,0 +1,43 @@
+{
+      "login.title": "התחברות",
+  "login.email": "אימייל",
+  "login.password": "סיסמה",
+  "login.submit": "התחבר",
+  "login.error.requiredFields": "נא למלא את כל השדות",
+  "login.error.failed": "ההתחברות נכשלה, נסה שוב",
+  "login.forgot": "שכחת את הסיסמה?",
+  "login.noAccount": "אין לך חשבון?",
+  "login.signUp": "הרשמה",
+
+  "welcome": "ברוך הבא",
+  "login": "התחברות",
+  "logout": "התנתקות",
+    "register.title": "הרשמה",
+  "register.name": "שם",
+  "register.email": "אימייל",
+  "register.submit": "הרשם",
+  "register.loading": "נרשם...",
+  "register.success": "ההרשמה הצליחה! בדוק את האימייל שלך לסיסמה.",
+  "register.error": "ההרשמה נכשלה, נסה שוב.",
+  "register.alreadyAccount": "כבר יש לך חשבון?",
+  "register.login": "התחבר",
+    "employeeList": {
+    "title": "ניהול עובדים",
+    "searchName": "חיפוש לפי שם",
+    "availability": "זמינות",
+    "available": "זמין",
+    "partial": "חלקית",
+    "notAvailable": "לא זמין",
+    "all": "הכל",
+    "role": "תפקיד",
+    "name": "שם",
+    "availabilityStatus": "סטטוס זמינות",
+    "email": "אימייל",
+    "roles": "תפקידים",
+    "actions": "פעולות",
+    "viewWork": "צפייה בעבודות",
+    "editRates": "עריכת תעריפים"
+  }
+
+
+}

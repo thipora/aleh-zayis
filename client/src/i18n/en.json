@@ -1,0 +1,42 @@
+
+{
+      "welcome": "Welcome",
+  "login": "Login",
+  "logout": "Logout",
+  "login.title": "Login",
+  "login.email": "Email",
+  "login.password": "Password",
+  "login.submit": "Login",
+  "login.error.requiredFields": "Please fill in all fields",
+  "login.error.failed": "Login failed, please try again",
+  "login.forgot": "Forgot your password?",
+  "login.noAccount": "Don't have an account?",
+  "login.signUp": "Sign up",
+    "register.title": "Register",
+  "register.name": "Name",
+  "register.email": "Email",
+  "register.submit": "Register",
+  "register.loading": "Registering...",
+  "register.success": "Registration successful! Check your email for your password.",
+  "register.error": "Registration failed, please try again.",
+  "register.alreadyAccount": "Already have an account?",
+  "register.login": "Login",
+    "employeeList": {
+    "title": "Employee Management",
+    "searchName": "Search by Name",
+    "availability": "Availability",
+    "available": "Available",
+    "partial": "Partial",
+    "notAvailable": "Not Available",
+    "all": "All",
+    "role": "Role",
+    "name": "Name",
+    "availabilityStatus": "Availability Status",
+    "email": "Email",
+    "roles": "Roles",
+    "actions": "Actions",
+    "viewWork": "View Work",
+    "editRates": "Edit Rates"
+  }
+
+}
