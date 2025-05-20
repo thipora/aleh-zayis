@@ -9,6 +9,7 @@ import AssignedBooksList from "./AssignedBooksList.jsx"
 import EmployeeReport from "../reports/EmployeeReport";
 import AddBookDialog from "./AddBookDialog.jsx";
 import ChangePassword from "../auth/ChangePassword.jsx"; // או הנתיב הנכון אצלך
+import MonthlyCharges from "./MonthlyCharges.jsx";
 
 
 
@@ -39,6 +40,7 @@ const EmployeeDashboard = () => {
   const [openAssignedBooksDialog, setOpenAssignedBooksDialog] = useState(false);
   const [showEmployeeReport, setShowEmployeeReport] = useState(false);
   const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(false);
+  const [openMonthlyChargesDialog, setOpenMonthlyChargesDialog] = useState(false);
   const now = new Date();
 
 
@@ -289,6 +291,10 @@ const EmployeeDashboard = () => {
           סיכום שעות לפי חודש
         </Button>
 
+        <Button variant="outlined" onClick={() => setOpenMonthlyChargesDialog(true)}>
+          תשלומים חודשיים מיוחדים
+        </Button>
+
         <Button variant="outlined" onClick={() => setOpenChangePasswordDialog(true)}>
           שינוי סיסמה
         </Button>
@@ -389,6 +395,20 @@ const EmployeeDashboard = () => {
       >
         <ChangePassword onClose={() => setOpenChangePasswordDialog(false)} />
       </Dialog>
+<Dialog
+  open={openMonthlyChargesDialog}
+  onClose={() => setOpenMonthlyChargesDialog(false)}
+  maxWidth="sm"
+  fullWidth
+>
+  <DialogTitle>תשלומים חודשיים מיוחדים</DialogTitle>
+  <DialogContent>
+    <MonthlyCharges employeeId={employeeId} />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenMonthlyChargesDialog(false)}>סגור</Button>
+  </DialogActions>
+</Dialog>
 
 
 

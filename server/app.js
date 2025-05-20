@@ -12,6 +12,7 @@ import './cron/bookCron.js';
 import bookAssignmentsRouter from './routes/bookAssignmentsRouter.js';
 import employeeRolesRoutes from './routes/employeeRolesRoutes.js';
 import employeeRouter from './routes/employeeRoutes.js';
+import monthlyChargesRouter from './routes/monthlyChargesRouter.js';
 
 
 
@@ -36,6 +37,7 @@ app.use('/roles', rolesRouter);
 app.use('/reports', reportsRouter);
 app.use('/book-assignments', bookAssignmentsRouter);
 app.use('/employee-roles', employeeRolesRoutes);
+app.use('/monthly-charges', monthlyChargesRouter);
 
 
 app.use(logErrors);
