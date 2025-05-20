@@ -11,7 +11,7 @@ export class BookAssignmentsController {
       bookClickUpId,
       selectedRoleIds
     );
-    res.status(result.inserted ? 201 : 200).json(result);
+    res.status(200).json(result);
   } catch (err) {
     next({
       statusCode: err.errno || 500,

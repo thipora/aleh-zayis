@@ -65,40 +65,60 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
 
     if (hasError) return;
 
-    // try {
-    //   await api.postRequest(`/book-assignments`, {
+    //     try {
+    //   const response = await api.postRequest(`/book-assignments`, {
     //     bookClickUpId: bookId,
     //     employeeId,
     //     selectedRoleIds
     //   });
 
-    //   setBookId('');
-    //   setSelectedRoles([]);
-    //   setSuccess("הספר נוסף בהצלחה!");
-    //   onSuccess?.();
+    //   if (response?.inserted) {
+    //     setBookId('');
+    //     setSelectedRoles([]);
+    //     setSuccess("הספר נוסף בהצלחה!");
+    //     onSuccess?.();
+    //   } else {
+    //     setSystemError(response?.message || "הוספת הספר נכשלה");
+    //   }
     // } catch (err) {
     //   setSystemError("שגיאה בהוספת הספר");
     // }
-
     try {
-  const response = await api.postRequest(`/book-assignments`, {
-    bookClickUpId: bookId,
-    employeeId,
-    selectedRoleIds
-  });
+      const response = await api.postRequest(`/book-assignments`, {
+        bookClickUpId: bookId,
+        employeeId,
+        selectedRoleIds
+      });
 
-  if (response?.success) {
-    setBookId('');
-    setSelectedRoles([]);
-    setSuccess("הספר נוסף בהצלחה!");
-    onSuccess?.();
-  } else {
-    // במקרה שהשרת מחזיר success: false
-    setSystemError(response?.message || "הוספת הספר נכשלה");
-  }
-} catch (err) {
-  setSystemError("שגיאה בהוספת הספר");
-}
+      if (response?.inserted) {
+        // setSuccess("הספר נוסף בהצלחה!");
+        setBookId('');
+        setSelectedRoles([]);
+        onSuccess?.(response.book); // ⬅️ שליחה של הספר החדש לרשימה
+
+
+        // const addedBook = {
+        //   id_book: response.id_book || Math.random(), // תחליף ל-id אם אין
+        //   title: bookId,
+        //   role_name: availableRoles.length === 1
+        //     ? availableRoles[0].role_name
+        //     : availableRoles
+        //         .filter(r => selectedRoleIds.includes(r.id_role))
+        //         .map(r => r.role_name)
+        //         .join(", "),
+        //   is_completed: 0
+        // };
+
+        // setBookId('');
+        // setSelectedRoles([]);
+        // setSuccess("הספר נוסף בהצלחה!");
+        // onAddBook?.(addedBook); // ⬅️ עדכון מיידי לרשימה
+      } else {
+        setSystemError(response?.message || "הוספת הספר נכשלה");
+      }
+    } catch (err) {
+      setSystemError("שגיאה בהוספת הספר");
+    }
 
   };
 

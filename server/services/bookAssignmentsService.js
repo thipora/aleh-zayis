@@ -179,93 +179,108 @@ export class BookAssignmentsService {
   //     bookId: book.id_book
   //   };
   // }
-async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
-  const book = await this.getOrCreateBookByAZId(AZ_book_id);
-  const bookClickUpId = book.clickup_id;
-  const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
-  const task = await this.clickUpService.getTaskById(bookClickUpId);
-  if (!task) throw new Error('Book task not found in ClickUp');
+  async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
+    const book = await this.getOrCreateBookByAZId(AZ_book_id);
+    const bookClickUpId = book.clickup_id;
+    const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
+    const task = await this.clickUpService.getTaskById(bookClickUpId);
+    if (!task) throw new Error('Book task not found in ClickUp');
 
-  const roleIdsToInsert = [];
+    const roleIdsToInsert = [];
 
-  // קבלת התפקיד האמיתי מה-ClickUp
-  const roleFromClickUp = await this.getEmployeeRoleInBook(task, employeeClickUpId);
-  if (!roleFromClickUp) {
-    return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
-  }
+    // קבלת התפקיד האמיתי מה-ClickUp
+    const roleFromClickUp = await this.getEmployeeRoleInBook(task, employeeClickUpId);
+    if (!roleFromClickUp) {
+      return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
+    }
 
-  // שליפת id_role מה-DB
-  const [roleRow] = await executeQuery(
-    'SELECT id_role FROM roles WHERE role_name = ?',
-    [roleFromClickUp]
-  );
-  if (!roleRow) throw new Error(`Role "${roleFromClickUp}" not found in DB`);
-  const matchedRoleId = roleRow.id_role;
+    // שליפת id_role מה-DB
+    const [roleRow] = await executeQuery(
+      'SELECT id_role FROM roles WHERE role_name = ?',
+      [roleFromClickUp]
+    );
+    if (!roleRow) throw new Error(`Role "${roleFromClickUp}" not found in DB`);
+    const matchedRoleId = roleRow.id_role;
 
-  // אימות מול selectedRoleIds אם נשלחו
-  if (selectedRoleIds.length > 0 && !selectedRoleIds.includes(matchedRoleId)) {
-    return {
-      inserted: false,
-      message: 'Selected roles do not match ClickUp role'
-    };
-  }
-
-  // בדיקת הרשאה של העובד לתפקיד הזה
-  const [empRole] = await executeQuery(
-    'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
-    [employeeId, matchedRoleId]
-  );
-  if (!empRole) {
-    return { inserted: false, message: 'Employee does not have this role in DB' };
-  }
-
-  const employeeRoleId = empRole.id_employee_role;
-
-  // בדוק אם כבר קיימת שורה בטבלת book_assignments
-  const [existingAssignment] = await executeQuery(
-    `SELECT * FROM book_assignments 
-     WHERE book_id = ? AND employee_role_id = ?`,
-    [book.id_book, employeeRoleId]
-  );
-
-  if (existingAssignment) {
-    if (existingAssignment.is_completed === 1) {
-      // אם הושלם בעבר – נעדכן אותו ל-active
-      await executeQuery(
-        `UPDATE book_assignments 
-         SET is_completed = 0 
-         WHERE id_book_assignments = ?`,
-        [existingAssignment.id_book_assignments]
-      );
-
-      return {
-        inserted: true,
-        message: 'New book assignment inserted',
-        bookId: book.id_book
-      };
-    } else {
-      // כבר קיים ולא הושלם – לא נעשה כלום
+    // אימות מול selectedRoleIds אם נשלחו
+    if (selectedRoleIds.length > 0 && !selectedRoleIds.includes(matchedRoleId)) {
       return {
         inserted: false,
-        message: 'Book assignment already exists',
-        bookId: book.id_book
+        message: 'Selected roles do not match ClickUp role'
       };
     }
-  }
 
-  // אם לא קיים בכלל – ניצור חדש
-  await executeQuery(
-    `INSERT INTO book_assignments (book_id, employee_role_id) 
+    // בדיקת הרשאה של העובד לתפקיד הזה
+    const [empRole] = await executeQuery(
+      'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
+      [employeeId, matchedRoleId]
+    );
+    if (!empRole) {
+      return { inserted: false, message: 'Employee does not have this role in DB' };
+    }
+
+    const employeeRoleId = empRole.id_employee_role;
+
+    // בדוק אם כבר קיימת שורה בטבלת book_assignments
+    const [existingAssignment] = await executeQuery(
+      `SELECT * FROM book_assignments 
+     WHERE book_id = ? AND employee_role_id = ?`,
+      [book.id_book, employeeRoleId]
+    );
+
+    if (existingAssignment) {
+      if (existingAssignment.is_completed === 1) {
+        // אם הושלם בעבר – נעדכן אותו ל-active
+        await executeQuery(
+          `UPDATE book_assignments 
+         SET is_completed = 0 
+         WHERE id_book_assignments = ?`,
+          [existingAssignment.id_book_assignments]
+        );
+
+        return {
+          inserted: true,
+          book: {
+            id_book: book.id_book,
+            title: book.name || AZ_book_id, // או מה שהכנסת בשם
+            is_completed: 0,
+            role_name: roleFromClickUp
+          },
+          message: 'New book assignment inserted'
+        };
+      } else {
+        // כבר קיים ולא הושלם – לא נעשה כלום
+        return {
+          inserted: true,
+          book: {
+            id_book: book.id_book,
+            title: book.name || AZ_book_id, // או מה שהכנסת בשם
+            is_completed: 0,
+            role_name: roleFromClickUp
+          },
+          message: 'New book assignment inserted'
+        };
+      }
+    }
+
+    // אם לא קיים בכלל – ניצור חדש
+    await executeQuery(
+      `INSERT INTO book_assignments (book_id, employee_role_id) 
      VALUES (?, ?)`,
-    [book.id_book, employeeRoleId]
-  );
+      [book.id_book, employeeRoleId]
+    );
 
-  return {
-    inserted: true,
-    message: 'New book assignment inserted',
-    bookId: book.id_book
-  };
-}
+    return {
+      inserted: true,
+      book: {
+        id_book: book.id_book,
+        title: book.name || AZ_book_id, // או מה שהכנסת בשם
+        is_completed: 0,
+        role_name: roleFromClickUp
+      },
+      message: 'New book assignment inserted'
+    };
+  }
 
 
   async markBookAsCompleted(employeeId, bookId) {
