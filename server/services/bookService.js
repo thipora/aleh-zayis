@@ -26,7 +26,9 @@ SELECT DISTINCT
   books.id_book, 
   books.AZ_book_id, 
   books.name AS title,
-  roles.role_name
+  roles.role_name,
+  book_assignments.id_book_assignment,
+  book_assignments.custom_rate
 FROM books
 JOIN book_assignments ON books.id_book = book_assignments.book_id
 JOIN employee_roles ON book_assignments.employee_role_id = employee_roles.id_employee_role

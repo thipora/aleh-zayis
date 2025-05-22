@@ -90,10 +90,13 @@ export class WorkEntriesService {
 
 
   async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
-    const [empRole] = await executeQuery(
-      'SELECT id_employee_role, hourly_rate, special_rate FROM employee_roles WHERE employee_id = ? AND role_id = ?',
-      [employeeId, roleId]
-    );
+    const [empRole] = await executeQuery(`
+      SELECT er.id_employee_role, er.hourly_rate, er.special_rate, ba.custom_rate
+      FROM employee_roles er
+      LEFT JOIN book_assignments ba
+        ON ba.employee_role_id = er.id_employee_role AND ba.book_id = ?
+      WHERE er.employee_id = ? AND er.role_id = ?
+    `, [book_id, employeeId, roleId]);
     if (!empRole) {
       throw new Error('Employee role not found');
     }
@@ -105,7 +108,10 @@ export class WorkEntriesService {
       if (calculated) quantity = calculated;
     }
 
-    const applied_rate = is_special_work ? empRole.special_rate : empRole.hourly_rate;
+    const applied_rate =
+  empRole.custom_rate ??
+  (is_special_work ? empRole.special_rate : empRole.hourly_rate);
+    // applied_rate = is_special_work ? empRole.special_rate : empRole.hourly_rate;
 
     const query = `
       INSERT INTO ${WorkEntriesService.table}
@@ -409,144 +415,144 @@ LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
   // }
 
 
-//   async summarizeWorkEntriesByBook(workEntries) {
-//     const summary = {};
+  //   async summarizeWorkEntriesByBook(workEntries) {
+  //     const summary = {};
 
-//     for (const entry of workEntries) {
-//       const bookId = entry.book_id;
-//       const AZ_book_id = entry.AZ_book_id;
-//       const bookName = entry.book_name;
-//       const isSpecial = entry.is_special_work === 1;
-//       const unit = entry.special_unit || 'unit';
-//       const rate = parseFloat(entry.applied_rate);
-//       let projectManagerName = entry.project_manager_name;
+  //     for (const entry of workEntries) {
+  //       const bookId = entry.book_id;
+  //       const AZ_book_id = entry.AZ_book_id;
+  //       const bookName = entry.book_name;
+  //       const isSpecial = entry.is_special_work === 1;
+  //       const unit = entry.special_unit || 'unit';
+  //       const rate = parseFloat(entry.applied_rate);
+  //       let projectManagerName = entry.project_manager_name;
 
-//       if (!summary[bookId]) {
-//         // אם לא קיים, מוודאים שיש שם מנהל פרויקט
-//         if (!projectManagerName && entry.project_manager_clickup_id) {
-//           try {
-//             const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
-//             projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
-//           } catch (err) {
-//             console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
-//             projectManagerName = 'שגיאה בשליפה';
-//           }
-//         }
+  //       if (!summary[bookId]) {
+  //         // אם לא קיים, מוודאים שיש שם מנהל פרויקט
+  //         if (!projectManagerName && entry.project_manager_clickup_id) {
+  //           try {
+  //             const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
+  //             projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
+  //           } catch (err) {
+  //             console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
+  //             projectManagerName = 'שגיאה בשליפה';
+  //           }
+  //         }
 
-//         summary[bookId] = {
-//           AZ_book_id,
-//           book_name: bookName,
-//           hours: 0,
-//           specials: {},
-//           projectManagerName
-//         };
-//       }
+  //         summary[bookId] = {
+  //           AZ_book_id,
+  //           book_name: bookName,
+  //           hours: 0,
+  //           specials: {},
+  //           projectManagerName
+  //         };
+  //       }
 
-//       if (isSpecial) {
-//         if (!summary[bookId].specials[unit]) {
-//           summary[bookId].specials[unit] = {
-//             quantity: 0,
-//             rate: rate
-//           };
-//         }
-//         summary[bookId].specials[unit].quantity += parseFloat(entry.quantity);
-//       } else {
-//         summary[bookId].hours += parseFloat(entry.quantity);
-//         summary[bookId].hourly_rate = rate; // שמירה נפרדת לשעות
-//       }
-//     }
+  //       if (isSpecial) {
+  //         if (!summary[bookId].specials[unit]) {
+  //           summary[bookId].specials[unit] = {
+  //             quantity: 0,
+  //             rate: rate
+  //           };
+  //         }
+  //         summary[bookId].specials[unit].quantity += parseFloat(entry.quantity);
+  //       } else {
+  //         summary[bookId].hours += parseFloat(entry.quantity);
+  //         summary[bookId].hourly_rate = rate; // שמירה נפרדת לשעות
+  //       }
+  //     }
 
-//     // יצירת פלט מסוכם
-//     const result = [];
+  //     // יצירת פלט מסוכם
+  //     const result = [];
 
-//     Object.values(summary).forEach(book => {
-//       if (book.hours > 0) {
-//         result.push({
-//           AZ_book_id: book.AZ_book_id,
-//           book_name: book.book_name,
-//           type: 'hours',
-//           quantity: book.hours,
-//           rate: book.hourly_rate,
-//           total: +(book.hours * book.hourly_rate).toFixed(2),
-//           projectManagerName: book.projectManagerName
-//         });
-//       }
+  //     Object.values(summary).forEach(book => {
+  //       if (book.hours > 0) {
+  //         result.push({
+  //           AZ_book_id: book.AZ_book_id,
+  //           book_name: book.book_name,
+  //           type: 'hours',
+  //           quantity: book.hours,
+  //           rate: book.hourly_rate,
+  //           total: +(book.hours * book.hourly_rate).toFixed(2),
+  //           projectManagerName: book.projectManagerName
+  //         });
+  //       }
 
-//       Object.entries(book.specials).forEach(([unit, data]) => {
-//         result.push({
-//           AZ_book_id: book.AZ_book_id,
-//           book_name: book.book_name,
-//           type: 'special',
-//           unit,
-//           quantity: data.quantity,
-//           rate: data.rate,
-//           total: +(data.quantity * data.rate).toFixed(2),
-//           projectManagerName: book.projectManagerName
-//         });
-//       });
-//     });
+  //       Object.entries(book.specials).forEach(([unit, data]) => {
+  //         result.push({
+  //           AZ_book_id: book.AZ_book_id,
+  //           book_name: book.book_name,
+  //           type: 'special',
+  //           unit,
+  //           quantity: data.quantity,
+  //           rate: data.rate,
+  //           total: +(data.quantity * data.rate).toFixed(2),
+  //           projectManagerName: book.projectManagerName
+  //         });
+  //       });
+  //     });
 
-//     return result;
-//   }
+  //     return result;
+  //   }
 
-// }
-async summarizeWorkEntriesByBook(workEntries) {
-  const summary = {};
+  // }
+  async summarizeWorkEntriesByBook(workEntries) {
+    const summary = {};
 
-  for (const entry of workEntries) {
-    const bookId = entry.book_id;
-    const AZ_book_id = entry.AZ_book_id;
-    const bookName = entry.book_name;
-    const isSpecial = entry.is_special_work === 1;
-    const unit = entry.special_unit || 'unit';
-    const rate = parseFloat(entry.applied_rate);
-    const rateKey = rate.toFixed(2);
-    let projectManagerName = entry.project_manager_name;
+    for (const entry of workEntries) {
+      const bookId = entry.book_id;
+      const AZ_book_id = entry.AZ_book_id;
+      const bookName = entry.book_name;
+      const isSpecial = entry.is_special_work === 1;
+      const unit = entry.special_unit || 'unit';
+      const rate = parseFloat(entry.applied_rate);
+      const rateKey = rate.toFixed(2);
+      let projectManagerName = entry.project_manager_name;
 
-    // קבלת שם מנהל פרויקט אם חסר
-    if (!projectManagerName && entry.project_manager_clickup_id) {
-      try {
-        const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
-        projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
-      } catch (err) {
-        console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
-        projectManagerName = 'שגיאה בשליפה';
+      // קבלת שם מנהל פרויקט אם חסר
+      if (!projectManagerName && entry.project_manager_clickup_id) {
+        try {
+          const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
+          projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
+        } catch (err) {
+          console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:', err.message);
+          projectManagerName = 'שגיאה בשליפה';
+        }
       }
+
+      const key = isSpecial
+        ? `${bookId}_special_${unit}_${rateKey}`
+        : `${bookId}_hours_${rateKey}`;
+
+      if (!summary[key]) {
+        summary[key] = {
+          AZ_book_id,
+          book_name: bookName,
+          quantity: 0,
+          rate,
+          type: isSpecial ? 'special' : 'hours',
+          unit: isSpecial ? unit : null,
+          projectManagerName
+        };
+      }
+
+      summary[key].quantity += parseFloat(entry.quantity);
     }
 
-    const key = isSpecial
-      ? `${bookId}_special_${unit}_${rateKey}`
-      : `${bookId}_hours_${rateKey}`;
+    // יצירת הפלט
+    const result = Object.values(summary).map(entry => ({
+      AZ_book_id: entry.AZ_book_id,
+      book_name: entry.book_name,
+      type: entry.type,
+      unit: entry.unit,
+      quantity: entry.quantity,
+      rate: entry.rate,
+      total: +(entry.quantity * entry.rate).toFixed(2),
+      projectManagerName: entry.projectManagerName
+    }));
 
-    if (!summary[key]) {
-      summary[key] = {
-        AZ_book_id,
-        book_name: bookName,
-        quantity: 0,
-        rate,
-        type: isSpecial ? 'special' : 'hours',
-        unit: isSpecial ? unit : null,
-        projectManagerName
-      };
-    }
-
-    summary[key].quantity += parseFloat(entry.quantity);
+    return result;
   }
-
-  // יצירת הפלט
-  const result = Object.values(summary).map(entry => ({
-    AZ_book_id: entry.AZ_book_id,
-    book_name: entry.book_name,
-    type: entry.type,
-    unit: entry.unit,
-    quantity: entry.quantity,
-    rate: entry.rate,
-    total: +(entry.quantity * entry.rate).toFixed(2),
-    projectManagerName: entry.projectManagerName
-  }));
-
-  return result;
-}
 
 
   // async getEditorWorkByMonth(employeeId, { month, year }) {

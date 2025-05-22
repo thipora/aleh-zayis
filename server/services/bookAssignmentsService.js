@@ -234,8 +234,8 @@ export class BookAssignmentsService {
         await executeQuery(
           `UPDATE book_assignments 
          SET is_completed = 0 
-         WHERE id_book_assignments = ?`,
-          [existingAssignment.id_book_assignments]
+         WHERE id_book_assignment = ?`,
+          [existingAssignment.id_book_assignment]
         );
 
         return {
@@ -326,6 +326,15 @@ export class BookAssignmentsService {
     WHERE employee_roles.employee_id = ? AND book_assignments.completed = '0'
   `;
     return await executeQuery(sql, [employeeId]);
+  }
+
+  async updateCustomRate(id, rate) {
+    const query = `
+    UPDATE book_assignments
+    SET custom_rate = ?
+    WHERE id_book_assignment = ?
+  `;
+    await executeQuery(query, [rate, id]);
   }
 
 }

@@ -10,13 +10,14 @@
 import express from 'express';
 import { BookAssignmentsController } from '../controllers/bookAssignmentsController.js';
 
-const router = express.Router();
+const BookAssignmentsRouter = express.Router();
+const bookAssignmentsController = new BookAssignmentsController();
 
 // router.post('/', BookAssignmentsController.addAssignment);
-router.post('/', BookAssignmentsController.assignEditor);
-router.post('/complete', BookAssignmentsController.markBookCompleted);
-router.post('/by-employee/:employeeId', BookAssignmentsController.getBooksByEmployee);
+BookAssignmentsRouter.post('/', bookAssignmentsController.assignEditor);
+BookAssignmentsRouter.post('/complete', bookAssignmentsController.markBookCompleted);
+BookAssignmentsRouter.post('/by-employee/:employeeId', bookAssignmentsController.getBooksByEmployee);
+BookAssignmentsRouter.put("/custom-rate", bookAssignmentsController.updateCustomRate);
 
+export default BookAssignmentsRouter;
 
-
-export default router;

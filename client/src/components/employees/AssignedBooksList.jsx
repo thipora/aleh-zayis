@@ -1,13 +1,14 @@
-
 // import React, { useEffect, useState } from "react";
 // import { Box, Typography, Button, CircularProgress } from "@mui/material";
 // import { APIrequests } from "../../APIrequests";
-// import AddBookDialog from "./AddBookDialog.jsx"
+// import AddBookDialog from "./AddBookDialog.jsx";
+// import CustomRate from "./CustomRate";
 
 // const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
 //   const [books, setBooks] = useState(initialBooks);
 //   const [loading, setLoading] = useState(initialBooks.length === 0);
-//   const [bookToDelete, setBookToDelete] = useState(null);
+//   const [editDialogOpen, setEditDialogOpen] = useState(false);
+//   const [bookToEdit, setBookToEdit] = useState(null);
 //   const api = new APIrequests();
 
 //   useEffect(() => {
@@ -26,18 +27,39 @@
 //     }
 //   };
 
-//   const handleConfirmDelete = (book) => {
-//   setBookToDelete(book);
-// };
+//   const handleEditClick = (book) => {
+//     setBookToEdit(book);
+//     setEditDialogOpen(true);
+//   };
 
-
-
-//   const markAsCompleted = async (bookId) => {
+//   const handleSaveRate = async (data) => {
 //     try {
+//       await api.putRequest(`/book-assignments/custom-rate`, data);
+//       setBooks(prev => prev.map(b =>
+//         b.id_book_assignment === data.id_book_assignment
+//           ? { ...b, custom_rate: data.custom_rate, rate_type: data.rate_type }
+//           : b
+//       ));
+//     } catch (err) {
+//       alert("שגיאה בשמירת תשלום מותאם");
+//     } finally {
+//       setEditDialogOpen(false);
+//       setBookToEdit(null);
+//     }
+//   };
+
+
+//   const handleDelete = async (book) => {
+//     const confirmed = window.confirm(`האם את/ה בטוח/ה שברצונך לסיים עבודה על הספר "${book.title}"?`);
+//     if (!confirmed) return;
+
+//     try {
+//       const bookId = book.id_book;
 //       await api.postRequest(`/book-assignments/complete`, { bookId, employeeId });
-//       setBooks(prev => prev.map(b => b.id_book === bookId ? { ...b, is_completed: 1 } : b));
-//     } catch (error) {
-//       console.error("Failed to mark book as completed", error);
+//       setBooks(prev => prev.filter(b => b.id_book !== bookId));
+//     } catch (err) {
+//       console.error("שגיאה במחיקת הספר", err);
+//       alert("אירעה שגיאה במחיקה.");
 //     }
 //   };
 
@@ -45,90 +67,73 @@
 
 //   return (
 //     <Box>
-
-
-
 //       {books.length === 0 ? (
 //         <Typography>כרגע אין ספרים שאתה עובד עליהם</Typography>
 //       ) : (
 //         books.map((book) => (
-//           <Box key={book.id_book} display="flex" justifyContent="space-between" alignItems="center" mb={1} borderBottom="1px solid #ddd" pb={1}>
+//           <Box
+//             key={book.id_book}
+//             display="flex"
+//             justifyContent="space-between"
+//             alignItems="center"
+//             mb={1}
+//             borderBottom="1px solid #ddd"
+//             pb={1}
+//           >
 //             <Box>
 //               <Typography variant="subtitle1">{book.title}</Typography>
-//               <Typography variant="body2" color="textSecondary">תפקיד: {book.role_name}</Typography>
+//               <Typography variant="body2" color="textSecondary">
+//                 תפקיד: {book.role_name}
+//               </Typography>
 //             </Box>
-//             {/* <Button
-//               variant="outlined"
-//               color={book.is_completed ? "success" : "primary"}
-//               onClick={() => markAsCompleted(book.id_book)}
-//               disabled={book.is_completed}
-//             >
-//               {book.is_completed ? "✔ סומן" : "סמן כסיום"}
-//             </Button> */}
-//             <Button
-//   variant="outlined"
-//   color="error"
-//   size="small"
-//   onClick={() => handleConfirmDelete(book)}
-// >
-//   סיים עבודה
-// </Button>
 
+//             <Button
+//               variant="outlined"
+//               color="primary"
+//               size="small"
+//               onClick={() => handleEditClick(book)}
+//             >
+//               ערוך תשלום
+//             </Button>
+
+//             <Button
+//               variant="outlined"
+//               color="error"
+//               size="small"
+//               onClick={() => handleDelete(book)}
+//             >
+//               סיים עבודה
+//             </Button>
 //           </Box>
 //         ))
 //       )}
+//       <CustomRate
+//         open={editDialogOpen}
+//         book={bookToEdit}
+//         onClose={() => setEditDialogOpen(false)}
+//         onSave={handleSaveRate}
+//       />
 
-
-// <AddBookDialog
-//   employeeId={employeeId}
-//   onSuccess={(newBook) => setBooks(prev => [...prev, newBook])}
-//   // onAddBook={(newBook) => setBooks(prev => [...prev, newBook])}
-// />
-
-
-// <Dialog open={!!bookToDelete} onClose={() => setBookToDelete(null)}>
-//   <DialogTitle>אישור סיום עבודה</DialogTitle>
-//   <DialogContent>
-//     האם את/ה בטוח/ה שברצונך לסיים עבודה על הספר "{bookToDelete?.title}"?
-//   </DialogContent>
-//   <DialogActions>
-//     <Button onClick={() => setBookToDelete(null)} color="primary">
-//       ביטול
-//     </Button>
-//     <Button onClick={async () => {
-//       try {
-//         await api.deleteRequest(`/book-assignments/${bookToDelete.id_book}`);
-//         setBooks(prev => prev.filter(b => b.id_book !== bookToDelete.id_book));
-//       } catch (err) {
-//         console.error("שגיאה במחיקה", err);
-//         alert("אירעה שגיאה במחיקה.");
-//       } finally {
-//         setBookToDelete(null);
-//       }
-//     }} color="error">
-//       אישור
-//     </Button>
-//   </DialogActions>
-// </Dialog>
-
-
+//       <AddBookDialog
+//         employeeId={employeeId}
+//         onSuccess={(newBook) => setBooks(prev => [...prev, newBook])}
+//       />
 //     </Box>
-
-    
-    
 //   );
 // };
 
 // export default AssignedBooksList;
-
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import AddBookDialog from "./AddBookDialog.jsx";
+import CustomRate from "./CustomRate";
 
 const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
   const [books, setBooks] = useState(initialBooks);
   const [loading, setLoading] = useState(initialBooks.length === 0);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [bookToEdit, setBookToEdit] = useState(null);
   const api = new APIrequests();
 
   useEffect(() => {
@@ -144,6 +149,29 @@ const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
       console.error("Failed to fetch assigned books", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEditClick = (book) => {
+    setBookToEdit(book);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveRate = async (data) => {
+    try {
+      await api.putRequest(`/book-assignments/custom-rate`, data);
+      setBooks(prev =>
+        prev.map(b =>
+          b.id_book_assignment === data.id_book_assignment
+            ? { ...b, custom_rate: data.custom_rate, rate_type: data.rate_type }
+            : b
+        )
+      );
+    } catch (err) {
+      alert("שגיאה בשמירת תשלום מותאם");
+    } finally {
+      setEditDialogOpen(false);
+      setBookToEdit(null);
     }
   };
 
@@ -183,15 +211,37 @@ const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
               <Typography variant="body2" color="textSecondary">
                 תפקיד: {book.role_name}
               </Typography>
+
+              {book.custom_rate ? (
+                <Typography variant="body2" color="primary">
+                  תשלום מותאם: {book.custom_rate}
+                </Typography>
+              ) : (
+                <Typography variant="body2" color="textSecondary">
+                  אין תשלום מותאם
+                </Typography>
+              )}
             </Box>
-            <Button
-              variant="outlined"
-              color="error"
-              size="small"
-              onClick={() => handleDelete(book)}
-            >
-              סיים עבודה
-            </Button>
+
+            <Box display="flex" gap={1}>
+              <Button
+                variant="outlined"
+                color={book.custom_rate ? "primary" : "success"}
+                size="small"
+                onClick={() => handleEditClick(book)}
+              >
+                {book.custom_rate ? "ערוך תשלום" : "הוסף תשלום מותאם"}
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="error"
+                size="small"
+                onClick={() => handleDelete(book)}
+              >
+                סיים עבודה
+              </Button>
+            </Box>
           </Box>
         ))
       )}
@@ -199,6 +249,13 @@ const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
       <AddBookDialog
         employeeId={employeeId}
         onSuccess={(newBook) => setBooks(prev => [...prev, newBook])}
+      />
+
+      <CustomRate
+        open={editDialogOpen}
+        book={bookToEdit}
+        onClose={() => setEditDialogOpen(false)}
+        onSave={handleSaveRate}
       />
     </Box>
   );
