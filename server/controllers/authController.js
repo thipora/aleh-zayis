@@ -82,4 +82,16 @@ export class AuthController {
         }
     }
 
+    logout(req, res, next) {
+        try {
+            AuthController.userService.logoutUser(res);
+            res.status(200).json({ message: "Logged out successfully" });
+        } catch (err) {
+            next({
+                statusCode: 500,
+                message: err.message || "Logout failed"
+            });
+        }
+    }
+
 }

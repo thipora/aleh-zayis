@@ -4,6 +4,7 @@ import {
     Button, TextField, Typography, Box, CircularProgress
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
+import { useTranslation } from "react-i18next";
 
 const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
     const [roles, setRoles] = useState([]);
@@ -11,6 +12,7 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
     const [saving, setSaving] = useState(false);
 
     const api = new APIrequests();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (open) {
@@ -55,68 +57,96 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
     };
 
 
+    // return (
+    //     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    //         <DialogTitle>Update Rates – {employeeName}</DialogTitle>
+    //         <DialogContent dividers>
+    //             {loading ? (
+    //                 <CircularProgress />
+    //             ) : roles.length === 0 ? (
+    //                 <Typography>No roles found for this employee.</Typography>
+    //             ) : (
+    //                 roles.map((role, index) => (
+    //                     <Box key={role.id_employee_role} sx={{ mb: 2 }}>
+    //                         <Typography variant="subtitle1">{role.role_name}</Typography>
+
+    //                         <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+    //                             <TextField
+    //                                 label="Hourly Rate"
+    //                                 type="number"
+    //                                 value={cleanNumber(role.hourly_rate)}
+    //                                 onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
+    //                                 fullWidth
+    //                             />
+
+    //                             {role.uses_special_quantity === 1 && (
+    //                                 <TextField
+    //                                     label={role.special_unit ? `${role.special_unit} Rate` : "Special Rate"}
+    //                                     type="number"
+    //                                     value={cleanNumber(role.special_rate)}
+    //                                     onChange={(e) => handleChange(index, "special_rate", e.target.value)}
+    //                                     fullWidth
+    //                                 />
+    //                             )}
+    //                         </Box>
+    //                     </Box>
+    //                 ))
+    //             )}
+    //         </DialogContent>
+    //         <DialogActions>
+    //             <Button onClick={onClose} disabled={saving}>Cancel</Button>
+    //             <Button onClick={handleSave} variant="contained" disabled={saving}>
+    //                 {saving ? "Saving..." : "Save"}
+    //             </Button>
+    //         </DialogActions>
+    //     </Dialog>
+    // );
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-            <DialogTitle>Update Rates – {employeeName}</DialogTitle>
+            <DialogTitle>
+                {t("RateDialog.title", { name: employeeName })}
+            </DialogTitle>
             <DialogContent dividers>
                 {loading ? (
                     <CircularProgress />
                 ) : roles.length === 0 ? (
-                    <Typography>No roles found for this employee.</Typography>
+                    <Typography>{t("RateDialog.noRoles")}</Typography>
                 ) : (
-                    // roles.map((role, index) => (
-                    //     <Box key={role.id_employee_role} sx={{ mb: 2 }}>
-                    //         <Typography variant="subtitle1">{role.role_name}</Typography>
-                    //         <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-                    //             <TextField
-                    //                 label="Hourly Rate"
-                    //                 type="number"
-                    //                 value={cleanNumber(role.hourly_rate)}
-                    //                 onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
-                    //                 fullWidth
-                    //             />
-                    //             <TextField
-                    //                 label={role.special_unit ? `${role.special_unit} Rate` : "Special Rate"}
-                    //                 type="number"
-                    //                 value={cleanNumber(role.special_rate)}
-                    //                 onChange={(e) => handleChange(index, "special_rate", e.target.value)}
-                    //                 fullWidth
-                    //             />
-                    //         </Box>
-                    //     </Box>
-                    // ))
                     roles.map((role, index) => (
-  <Box key={role.id_employee_role} sx={{ mb: 2 }}>
-    <Typography variant="subtitle1">{role.role_name}</Typography>
+                        <Box key={role.id_employee_role} sx={{ mb: 2 }}>
+                            <Typography variant="subtitle1">
+                                {t(`roles.${role.role_name}`, role.role_name)}
+                            </Typography>
 
-    <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-      <TextField
-        label="Hourly Rate"
-        type="number"
-        value={cleanNumber(role.hourly_rate)}
-        onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
-        fullWidth
-      />
+                            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                                <TextField
+                                    label={t("RateDialog.hourly")}
+                                    type="number"
+                                    value={cleanNumber(role.hourly_rate)}
+                                    onChange={(e) => handleChange(index, "hourly_rate", e.target.value)}
+                                    fullWidth
+                                />
 
-      {role.uses_special_quantity === 1 && (
-        <TextField
-          label={role.special_unit ? `${role.special_unit} Rate` : "Special Rate"}
-          type="number"
-          value={cleanNumber(role.special_rate)}
-          onChange={(e) => handleChange(index, "special_rate", e.target.value)}
-          fullWidth
-        />
-      )}
-    </Box>
-  </Box>
-))
-
+                                {role.uses_special_quantity === 1 && (
+                                    <TextField
+                                        label={t("RateDialog.special", { unit: role.special_unit || t("RateDialog.defaultUnit") })}
+                                        type="number"
+                                        value={cleanNumber(role.special_rate)}
+                                        onChange={(e) => handleChange(index, "special_rate", e.target.value)}
+                                        fullWidth
+                                    />
+                                )}
+                            </Box>
+                        </Box>
+                    ))
                 )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} disabled={saving}>Cancel</Button>
+                <Button onClick={onClose} disabled={saving}>
+                    {t("RateDialog.cancel")}
+                </Button>
                 <Button onClick={handleSave} variant="contained" disabled={saving}>
-                    {saving ? "Saving..." : "Save"}
+                    {saving ? t("RateDialog.saving") : t("RateDialog.save")}
                 </Button>
             </DialogActions>
         </Dialog>

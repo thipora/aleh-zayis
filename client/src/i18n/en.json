@@ -1,6 +1,5 @@
-
 {
-      "welcome": "Welcome",
+  "welcome": "Welcome",
   "login": "Login",
   "logout": "Logout",
   "login.title": "Login",
@@ -12,7 +11,7 @@
   "login.forgot": "Forgot your password?",
   "login.noAccount": "Don't have an account?",
   "login.signUp": "Sign up",
-    "register.title": "Register",
+  "register.title": "Register",
   "register.name": "Name",
   "register.email": "Email",
   "register.submit": "Register",
@@ -21,29 +20,238 @@
   "register.error": "Registration failed, please try again.",
   "register.alreadyAccount": "Already have an account?",
   "register.login": "Login",
-    "employeeList": {
+  "employeeList": {
     "title": "Employee Management",
     "searchName": "Search by Name",
-    "availability": "Availability",
-    "available": "Available",
-    "partial": "Partial",
-    "notAvailable": "Not Available",
-    "all": "All",
     "role": "Role",
     "name": "Name",
-    "availabilityStatus": "Availability Status",
     "email": "Email",
     "roles": "Roles",
     "actions": "Actions",
     "viewWork": "View Work",
     "editRates": "Edit Rates"
   },
- "forgot": {
-  "title": "Forgot Password",
-  "email": "Email",
-  "submit": "Send New Password",
-  "success": "A new password was sent to your email.",
-  "error": "Failed to reset password. Please try again."
-}
-
+  "forgot": {
+    "title": "Forgot Password",
+    "email": "Email",
+    "submit": "Send New Password",
+    "success": "A new password was sent to your email.",
+    "error": "Failed to reset password. Please try again."
+  },
+  "EmployeeDashboard": {
+    "title": "Employee Dashboard",
+    "viewAssignedBooks": "View Assigned Books",
+    "monthlySummary": "Monthly Summary",
+    "monthlyCharges": "Special Monthly Charges",
+    "changePassword": "Change Password",
+    "addNew": "Add New",
+    "close": "Close",
+    "cancel": "Cancel"
+  },
+  "workEntries": {
+    "date": "Date",
+    "azId": "AZ-id",
+    "bookTitle": "Book Title",
+    "projectManager": "Project Manager",
+    "workAmount": "Work Amount",
+    "timeRange": "Time Range",
+    "description": "Description",
+    "notes": "Notes",
+    "update": "Update",
+    "workEntries": "workEntries"
+  },
+  "duration": {
+    "hours": "hours",
+    "minutes": "minutes",
+    "and": "and"
+  },
+  "updateWork": {
+    "title": "Update Work Entry",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "description": "Description",
+    "notes": "Notes",
+    "quantity": "Quantity",
+    "cancel": "Cancel",
+    "save": "Save Changes"
+  },
+  "monthlyCharges": {
+    "title": "Special Charges",
+    "name": "Charge Name",
+    "amount": "Amount",
+    "notes": "Notes",
+    "add": "Add Monthly Charge",
+    "delete": "Delete",
+    "dialogTitle": "New Monthly Charge",
+    "save": "Save",
+    "cancel": "Cancel",
+    "success": "Action completed successfully!"
+  },
+  "customRate": {
+    "title": "Edit Custom Rate",
+    "label": "Custom Rate",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "addBook": {
+    "title": "Add New Book",
+    "bookId": "Book ID",
+    "bookIdError": "Please enter a Book ID",
+    "save": "Save",
+    "selectRoles": "Select Roles:",
+    "roleError": "Please select at least one role"
+  },
+  "assignedBooksList": {
+    "noBooks": "You are not currently assigned to any books",
+    "role": "Role",
+    "customRate": "Custom Rate",
+    "noCustomRate": "No custom rate",
+    "editCustomRate": "Edit Rate",
+    "addCustomRate": "Add Custom Rate",
+    "complete": "Complete Work"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email address",
+    "submit": "Send New Password",
+    "success": "A new password was sent to your email.",
+    "error": "Failed to reset password. Please try again.",
+    "back": "Back"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "current": "Current Password",
+    "currentPlaceholder": "Enter current password",
+    "new": "New Password",
+    "newPlaceholder": "Enter new password",
+    "confirm": "Confirm New Password",
+    "confirmPlaceholder": "Confirm new password",
+    "submit": "Change Password",
+    "success": "Password updated successfully!",
+    "serverError": "Failed to change password. Please try again."
+  },
+  "roles": {
+    "Editor": "Editor",
+    "Transcriber": "Transcriber",
+    "Typist": "Typist",
+    "Graphics": "Graphics",
+    "Layout": "Layout",
+    "Project Manager": "Project Manager"
+  },
+  "availability": {
+    "availabilityStatus": "Availability Status",
+    "availability": "Availability",
+    "available": "Available",
+    "partial": "Partial",
+    "notAvailable": "Not Available",
+    "not_available": "Not Available",
+    "all": "All"
+  },
+  "AddWorkDialog": {
+    "title": "Add Work Entry",
+    "bookLabel": "Choose Book",
+    "byHours": "Work by hours",
+    "bySpecial": "Work by {{unit}}",
+    "start": "Start Time",
+    "end": "End Time",
+    "quantity": "Quantity",
+    "description": "Work Description",
+    "notes": "Notes",
+    "date": "Date",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "ManagerDashboard": {
+    "title": "Manager Dashboard",
+    "viewEmployees": "View Employee List",
+    "viewReports": "Go to Reports"
+  },
+  "RateManagement": {
+    "title": "Rate Management by Employee",
+    "employeeName": "Employee Name",
+    "roleName": "Role",
+    "hourlyRate": "Hourly Rate",
+    "specialRate": "Special Unit Rate",
+    "perUnit": "per {{unit}}",
+    "defaultUnit": "unit",
+    "action": "Action",
+    "edit": "Edit",
+    "dialogTitle": "Update Rates",
+    "specialRateWithUnit": "Rate per {{unit}}",
+    "cancel": "Cancel",
+    "update": "Update"
+  },
+  "RateDialog": {
+    "title": "Update Rates – {{name}}",
+    "noRoles": "No roles found for this employee.",
+    "hourly": "Hourly Rate",
+    "special": "{{unit}} Rate",
+    "defaultUnit": "special unit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving..."
+  },
+  "specialUnits": {
+    "characters": "Characters",
+    "hours": "Hours",
+    "items": "Items",
+    "pages": "Pages"
+  },
+  "MonthSelector": {
+    "months": {
+      "1": "January",
+      "2": "February",
+      "3": "March",
+      "4": "April",
+      "5": "May",
+      "6": "June",
+      "7": "July",
+      "8": "August",
+      "9": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December"
+    }
+  },
+  "reportsDashboard": {
+    "title": "Choose a report to view",
+    "employeesSummary": "Monthly summary by employees",
+    "booksSummary": "Hours summary by books",
+    "back": "Back"
+  },
+  "employeesReport": {
+    "employeeName": "Employee Name",
+    "employeeEmail": "Employee Email",
+    "role": "Role",
+    "rate": "Rate (₪)",
+    "totalWork": "Total Work",
+    "totalPayment": "Total Payment (₪)",
+    "total": "Total",
+    "downloadExcel": "Download Excel"
+  },
+  "employeeReport": {
+    "title": "Monthly Report for {{name}} - {{month}}/{{year}}",
+    "back": "Back",
+    "download": "Download Excel",
+    "az": "AZ",
+    "project": "Project Name",
+    "manager": "Project Manager",
+    "amount": "Amount",
+    "rate": "Rate",
+    "totalPay": "Total Payment",
+    "total": "Total",
+    "sheetName": "Monthly Report",
+    "fileName": "Report",
+    "hours": "hours",
+    "minutes": "minutes",
+    "and": "and"
+  },
+  "bookMatrixReport": {
+    "title": "Book Payment Matrix Report",
+    "bookId": "Book ID",
+    "showReport": "Show Report",
+    "employeeName": "Employee Name",
+    "totalByRole": "Total per Role"
+  }
 }

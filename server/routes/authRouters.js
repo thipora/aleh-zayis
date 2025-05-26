@@ -9,5 +9,6 @@ authRouters.post("/login", authLimiter, loginController.login);
 authRouters.post("/register", authLimiter, loginController.register);
 authRouters.put("/change-password", loginController.changePassword);
 authRouters.put("/forgot-password", loginController.forgotPassword);
+authRouters.post("/logout", loginController.logout);
 
 export { authRouters };

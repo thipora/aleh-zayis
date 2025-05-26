@@ -175,25 +175,33 @@ export class UserService {
 
 
     async resetPasswordByEmail(email) {
-    // יצירת סיסמה רנדומלית חדשה
-    const newPassword = Math.random().toString(36).slice(-8);
-    const hashed = await bcrypt.hash(newPassword, 10);
+        // יצירת סיסמה רנדומלית חדשה
+        const newPassword = Math.random().toString(36).slice(-8);
+        const hashed = await bcrypt.hash(newPassword, 10);
 
-    // ניסיון לעדכן סיסמה לפי אימייל
-    const result = await executeQuery("UPDATE users SET password = ? WHERE email = ?", [hashed, email]);
+        // ניסיון לעדכן סיסמה לפי אימייל
+        const result = await executeQuery("UPDATE users SET password = ? WHERE email = ?", [hashed, email]);
 
-    if (result.affectedRows === 0) {
-        throw new Error("No user found with that email");
+        if (result.affectedRows === 0) {
+            throw new Error("No user found with that email");
+        }
+
+        // שליחת מייל עם הסיסמה החדשה
+        await sendMail({
+            to: email,
+            subject: "Password Reset - Aleh Zayis",
+            html: resetPasswordEmailTemplate(newPassword),
+        });
+
+        return true;
     }
 
-    // שליחת מייל עם הסיסמה החדשה
-    await sendMail({
-        to: email,
-        subject: "Password Reset - Aleh Zayis",
-        html: resetPasswordEmailTemplate(newPassword),
-    });
-
-    return true;
-}
+    logoutUser(res) {
+        res.clearCookie("x-access-token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict"
+        });
+    }
 
 }

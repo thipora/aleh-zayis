@@ -1,5 +1,5 @@
 {
-      "login.title": "התחברות",
+  "login.title": "התחברות",
   "login.email": "אימייל",
   "login.password": "סיסמה",
   "login.submit": "התחבר",
@@ -8,11 +8,10 @@
   "login.forgot": "שכחת את הסיסמה?",
   "login.noAccount": "אין לך חשבון?",
   "login.signUp": "הרשמה",
-
   "welcome": "ברוך הבא",
   "login": "התחברות",
   "logout": "התנתקות",
-    "register.title": "הרשמה",
+  "register.title": "הרשמה",
   "register.name": "שם",
   "register.email": "אימייל",
   "register.submit": "הרשם",
@@ -21,23 +20,232 @@
   "register.error": "ההרשמה נכשלה, נסה שוב.",
   "register.alreadyAccount": "כבר יש לך חשבון?",
   "register.login": "התחבר",
-    "employeeList": {
+  "employeeList": {
     "title": "ניהול עובדים",
     "searchName": "חיפוש לפי שם",
-    "availability": "זמינות",
-    "available": "זמין",
-    "partial": "חלקית",
-    "notAvailable": "לא זמין",
     "all": "הכל",
     "role": "תפקיד",
     "name": "שם",
-    "availabilityStatus": "סטטוס זמינות",
     "email": "אימייל",
     "roles": "תפקידים",
     "actions": "פעולות",
     "viewWork": "צפייה בעבודות",
     "editRates": "עריכת תעריפים"
+  },
+  "EmployeeDashboard": {
+    "title": "לוח בקרה לעובד",
+    "viewAssignedBooks": "הצג ספרים שאני עובד עליהם",
+    "monthlySummary": "סיכום שעות לפי חודש",
+    "monthlyCharges": "תשלומים חודשיים מיוחדים",
+    "changePassword": "שינוי סיסמה",
+    "addNew": "הוסף עבודה חדשה",
+    "close": "סגור",
+    "cancel": "ביטול"
+  },
+  "workEntries": {
+    "date": "תאריך",
+    "azId": "מזהה AZ",
+    "bookTitle": "שם הספר",
+    "projectManager": "מנהל פרויקט",
+    "workAmount": "כמות עבודה",
+    "timeRange": "טווח שעות",
+    "description": "תיאור",
+    "notes": "הערות",
+    "update": "עדכון",
+    "workEntries": "דיווחי עבודה"
+  },
+  "duration": {
+    "hours": "שעות",
+    "minutes": "דקות",
+    "and": "ו-"
+  },
+  "updateWork": {
+    "title": "עדכון דיווח עבודה",
+    "startTime": "שעת התחלה",
+    "endTime": "שעת סיום",
+    "description": "תיאור",
+    "notes": "הערות",
+    "quantity": "כמות",
+    "cancel": "ביטול",
+    "save": "שמור שינויים"
+  },
+  "monthlyCharges": {
+    "title": "תשלומים מיוחדים",
+    "name": "שם תשלום",
+    "amount": "סכום",
+    "notes": "הערות",
+    "add": "הוסף תשלום חודשי",
+    "delete": "מחק",
+    "dialogTitle": "תשלום חודשי חדש",
+    "save": "שמור",
+    "cancel": "ביטול",
+    "success": "הפעולה בוצעה בהצלחה!"
+  },
+  "customRate": {
+    "title": "עריכת תשלום מותאם",
+    "label": "תשלום מותאם",
+    "save": "שמור",
+    "cancel": "ביטול"
+  },
+  "addBook": {
+    "title": "הוספת ספר חדש",
+    "bookId": "מזהה ספר",
+    "bookIdError": "יש להזין Book ID",
+    "save": "שמור",
+    "selectRoles": "בחר תפקידים:",
+    "roleError": "יש לבחור לפחות תפקיד אחד"
+  },
+  "assignedBooksList": {
+    "noBooks": "כרגע אין ספרים שאתה עובד עליהם",
+    "role": "תפקיד",
+    "customRate": "תשלום מותאם",
+    "noCustomRate": "אין תשלום מותאם",
+    "editCustomRate": "ערוך תשלום",
+    "addCustomRate": "הוסף תשלום מותאם",
+    "complete": "סיים עבודה"
+  },
+  "forgotPassword": {
+    "title": "שחזור סיסמה",
+    "email": "אימייל",
+    "emailPlaceholder": "הכנס את כתובת האימייל שלך",
+    "submit": "שלח סיסמה חדשה",
+    "success": "סיסמה חדשה נשלחה למייל שלך.",
+    "error": "שגיאה בשחזור הסיסמה. נסה שוב.",
+    "back": "חזרה"
+  },
+  "changePassword": {
+    "title": "שינוי סיסמה",
+    "current": "סיסמה נוכחית",
+    "currentPlaceholder": "הזן סיסמה נוכחית",
+    "new": "סיסמה חדשה",
+    "newPlaceholder": "הזן סיסמה חדשה",
+    "confirm": "אישור סיסמה חדשה",
+    "confirmPlaceholder": "הזן שוב את הסיסמה",
+    "submit": "שנה סיסמה",
+    "success": "הסיסמה עודכנה בהצלחה!",
+    "serverError": "שגיאה בעדכון הסיסמה. נסה שוב."
+  },
+  "roles": {
+    "Editor": "עורך",
+    "Transcriber": "מתמלל",
+    "Typist": "קלדן",
+    "Graphics": "גרפיקה",
+    "Layout": "מעמד",
+    "Project Manager": "מנהל פרויקט"
+  },
+  "availability": {
+    "availabilityStatus": "סטטוס זמינות",
+    "availability": "זמינות",
+    "available": "זמין",
+    "partial": "זמין חלקית",
+    "notAvailable": "לא זמין",
+    "not_available": "לא זמין",
+    "all": "הכל"
+  },
+  "AddWorkDialog": {
+    "title": "הוספת דיווח עבודה",
+    "bookLabel": "בחר ספר",
+    "byHours": "עבודה לפי שעות",
+    "bySpecial": "עבודה לפי {{unit}}",
+    "start": "שעת התחלה",
+    "end": "שעת סיום",
+    "quantity": "כמות",
+    "description": "תיאור העבודה",
+    "notes": "הערות",
+    "date": "תאריך",
+    "cancel": "ביטול",
+    "save": "שמור"
+  },
+  "ManagerDashboard": {
+    "title": "לוח מנהל",
+    "viewEmployees": "צפייה ברשימת עובדים",
+    "viewReports": "מעבר לדוחות"
+  },
+  "RateManagement": {
+    "title": "ניהול תעריפים לפי עובד",
+    "employeeName": "שם עובד",
+    "roleName": "תפקיד",
+    "hourlyRate": "תעריף לשעה",
+    "specialRate": "תעריף ליחידה מיוחדת",
+    "perUnit": "ל-{{unit}}",
+    "defaultUnit": "יחידה",
+    "action": "פעולה",
+    "edit": "ערוך",
+    "dialogTitle": "עדכון תעריפים",
+    "specialRateWithUnit": "תעריף ל-{{unit}}",
+    "cancel": "ביטול",
+    "update": "עדכן"
+  },
+  "RateDialog": {
+    "title": "עדכון תעריפים – {{name}}",
+    "noRoles": "לא נמצאו תפקידים לעובד זה.",
+    "hourly": "תעריף לשעה",
+    "special": "תעריף ל-{{unit}}",
+    "defaultUnit": "יחידה מיוחדת",
+    "cancel": "ביטול",
+    "save": "שמור",
+    "saving": "שומר..."
+  },
+  "specialUnits": {
+    "characters": "תווים",
+    "hours": "שעות",
+    "items": "פריטים",
+    "pages": "עמודים"
+  },
+  "MonthSelector": {
+    "months": {
+      "1": "ינואר",
+      "2": "פברואר",
+      "3": "מרץ",
+      "4": "אפריל",
+      "5": "מאי",
+      "6": "יוני",
+      "7": "יולי",
+      "8": "אוגוסט",
+      "9": "ספטמבר",
+      "10": "אוקטובר",
+      "11": "נובמבר",
+      "12": "דצמבר"
+    }
+  },
+  "reportsDashboard": {
+    "title": "בחר דוח להצגה",
+    "employeesSummary": "סיכום חודשי לפי עובדים",
+    "booksSummary": "סיכום שעות לפי ספרים",
+    "back": "חזור"
+  },
+  "employeesReport": {
+    "employeeName": "שם עובד",
+    "employeeEmail": "מייל עובד",
+    "role": "תפקיד",
+    "rate": "תעריף (₪)",
+    "totalWork": "סה\"כ עבודה",
+    "totalPayment": "סה\"כ תשלום (₪)",
+    "total": "סה\"כ",
+    "downloadExcel": "הורד ל-Excel"
+  },
+  "employeeReport": {
+    "title": "דוח חודשי עבור {{name}} - {{month}}/{{year}}",
+    "back": "חזור",
+    "download": "הורד ל-Excel",
+    "az": "AZ",
+    "project": "שם פרויקט",
+    "manager": "מנהל פרויקט",
+    "amount": "כמות",
+    "rate": "תעריף",
+    "totalPay": "סה\"כ לתשלום",
+    "total": "סה\"כ",
+    "sheetName": "דוח חודשי",
+    "fileName": "דוח",
+    "hours": "שעות",
+    "minutes": "דקות",
+    "and": "ו"
+  },
+  "bookMatrixReport": {
+    "title": "דוח תשלום מטריציוני לפי ספר",
+    "bookId": "מזהה ספר",
+    "showReport": "הצג דוח",
+    "employeeName": "שם עובד",
+    "totalByRole": "סה\"כ לכל תפקיד"
   }
-
-
 }

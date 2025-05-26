@@ -3,9 +3,12 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, TextField, MenuItem, FormControl, InputLabel, Select, Box
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
 
 const CustomRate = ({ open, onClose, book, onSave }) => {
   const [customRate, setCustomRate] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (book) {
@@ -19,13 +22,33 @@ const CustomRate = ({ open, onClose, book, onSave }) => {
       custom_rate: parseFloat(customRate),
     });
   };
+  // return (
+  //   <Dialog open={open} onClose={onClose}>
+  //     <DialogTitle>עריכת תשלום מותאם</DialogTitle>
+  //     <DialogContent>
+  //       <Box mt={1} display="flex" flexDirection="column" gap={2}>
+  //         <TextField
+  //           label="Custom Rate"
+  //           type="number"
+  //           value={customRate}
+  //           onChange={(e) => setCustomRate(e.target.value)}
+  //           fullWidth
+  //         />
+  //       </Box>
+  //     </DialogContent>
+  //     <DialogActions>
+  //       <Button onClick={onClose}>ביטול</Button>
+  //       <Button onClick={handleSave} color="primary" variant="contained">שמור</Button>
+  //     </DialogActions>
+  //   </Dialog>
+  // );
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>עריכת תשלום מותאם</DialogTitle>
+      <DialogTitle>{t("customRate.title")}</DialogTitle>
       <DialogContent>
         <Box mt={1} display="flex" flexDirection="column" gap={2}>
           <TextField
-            label="Custom Rate"
+            label={t("customRate.label")}
             type="number"
             value={customRate}
             onChange={(e) => setCustomRate(e.target.value)}
@@ -34,11 +57,14 @@ const CustomRate = ({ open, onClose, book, onSave }) => {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>ביטול</Button>
-        <Button onClick={handleSave} color="primary" variant="contained">שמור</Button>
+        <Button onClick={onClose}>{t("customRate.cancel")}</Button>
+        <Button onClick={handleSave} color="primary" variant="contained">
+          {t("customRate.save")}
+        </Button>
       </DialogActions>
     </Dialog>
   );
+
 };
 
 export default CustomRate;

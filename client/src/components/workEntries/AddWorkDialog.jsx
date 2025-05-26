@@ -4,6 +4,7 @@ import {
   TextField, Button, CircularProgress, MenuItem, Select,
   FormControl, InputLabel, Checkbox, FormControlLabel, FormHelperText, Box
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
   const [newWork, setNewWork] = useState({
@@ -24,6 +25,7 @@ const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
   const [isSpecialWork, setIsSpecialWork] = useState(false);
   const [quantity, setQuantity] = useState("");
   const [is_hourly_primary, set_is_hourly_primary] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!open) {
@@ -112,95 +114,201 @@ const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
     }
   };
 
+  // return (
+  //   <Dialog open={open} onClose={onClose}>
+  //     <DialogTitle>Add Work Entry</DialogTitle>
+  //     <DialogContent>
+  //       <FormControl fullWidth margin="normal" error={!!errors.book_id}>
+  //         <InputLabel>Choose Book</InputLabel>
+  //         <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
+  //           {books.map(book => (
+  //             <MenuItem key={book.id_book} value={book.id_book}>
+  //               {book.AZ_book_id} - {book.title}
+  //             </MenuItem>
+  //           ))}
+  //         </Select>
+  //         {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}
+  //       </FormControl>
+
+  //       {/* עבודה מיוחדת - תיבת סימון */}
+  //       {role[0].uses_special_quantity === 1 && (
+  //         <FormControlLabel
+  //           control={<Checkbox checked={isSpecialWork} onChange={handleCheckboxChange} />}
+  //           // label="עבודה לפי שעות"
+  //   label={
+  //     role[0].is_hourly_primary
+  //       ? `עבודה לפי ${role[0].special_unit}`
+  //       : `עבודה לפי שעות`
+  //   }
+  //         />
+  //       )}
+
+  //       {/* שעת התחלה וסיום או כמות */}
+  //       {(role[0].is_hourly_primary === 1 && !isSpecialWork) ||
+  //       (role[0].is_hourly_primary === 0 && isSpecialWork) ? (
+  //         <Box sx={{ display: "flex", gap: 2 }}>
+  //           <TextField label="Start Time" name="start_time" type="time" value={newWork.start_time} onChange={handleInputChange} fullWidth error={!!errors.start_time} InputLabelProps={{ shrink: true }}/>
+  //           <TextField label="End Time" name="end_time" type="time" value={newWork.end_time} onChange={handleInputChange} fullWidth error={!!errors.end_time} helperText={errors.end_time} InputLabelProps={{ shrink: true }}/>
+  //         </Box>
+  //       ) : (
+  //         <TextField
+  //           label={role[0].special_unit || "Quantity"}
+  //           type="text"
+  //           value={quantity}
+  //           onChange={(e) => setQuantity(e.target.value)}
+  //           fullWidth
+  //           margin="normal"
+  //           error={!!errors.quantity}
+  //           helperText={errors.quantity}
+  //         />
+  //       )}
+
+  //       <TextField
+  //         label="Work Description"
+  //         name="description"
+  //         value={newWork.description || ""}
+  //         onChange={handleInputChange}
+  //         fullWidth
+  //         margin="normal"
+  //         error={!!errors.description}
+  //         helperText={errors.description}
+  //       />
+
+  //       <TextField
+  //         label="Notes"
+  //         name="notes"
+  //         value={newWork.notes || ""}
+  //         onChange={handleInputChange}
+  //         fullWidth
+  //         margin="normal"
+  //       />
+
+  //       <TextField
+  //         label="Date"
+  //         name="date"
+  //         type="date"
+  //         value={newWork.date}
+  //         onChange={handleInputChange}
+  //         fullWidth
+  //         margin="normal"
+  //         error={!!errors.date}
+  //         helperText={errors.date}
+  //       />
+  //     </DialogContent>
+  //     <DialogActions>
+  //       <Button onClick={onClose} color="secondary">Cancel</Button>
+  //       <Button onClick={handleSave} color="primary" disabled={loading}>
+  //         {loading ? <CircularProgress size={24} /> : "Save"}
+  //       </Button>
+  //     </DialogActions>
+  //   </Dialog>
+  // );
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Work Entry</DialogTitle>
-      <DialogContent>
-        <FormControl fullWidth margin="normal" error={!!errors.book_id}>
-          <InputLabel>Choose Book</InputLabel>
-          <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
-            {books.map(book => (
-              <MenuItem key={book.id_book} value={book.id_book}>
-                {book.AZ_book_id} - {book.title}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}
-        </FormControl>
+  <Dialog open={open} onClose={onClose}>
+    <DialogTitle>{t("AddWorkDialog.title")}</DialogTitle>
+    <DialogContent>
+      <FormControl fullWidth margin="normal" error={!!errors.book_id}>
+        <InputLabel>{t("AddWorkDialog.bookLabel")}</InputLabel>
+        <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
+          {books.map(book => (
+            <MenuItem key={book.id_book} value={book.id_book}>
+              {book.AZ_book_id} - {book.title}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}
+      </FormControl>
 
-        {/* עבודה מיוחדת - תיבת סימון */}
-        {role[0].uses_special_quantity === 1 && (
-          <FormControlLabel
-            control={<Checkbox checked={isSpecialWork} onChange={handleCheckboxChange} />}
-            // label="עבודה לפי שעות"
-    label={
-      role[0].is_hourly_primary
-        ? `עבודה לפי ${role[0].special_unit}`
-        : `עבודה לפי שעות`
-    }
-          />
-        )}
+      {role[0].uses_special_quantity === 1 && (
+        <FormControlLabel
+          control={<Checkbox checked={isSpecialWork} onChange={handleCheckboxChange} />}
+          label={
+            role[0].is_hourly_primary
+              ? t("AddWorkDialog.bySpecial", { unit: role[0].special_unit })
+              : t("AddWorkDialog.byHours")
+          }
+        />
+      )}
 
-        {/* שעת התחלה וסיום או כמות */}
-        {(role[0].is_hourly_primary === 1 && !isSpecialWork) ||
-        (role[0].is_hourly_primary === 0 && isSpecialWork) ? (
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <TextField label="Start Time" name="start_time" type="time" value={newWork.start_time} onChange={handleInputChange} fullWidth error={!!errors.start_time} InputLabelProps={{ shrink: true }}/>
-            <TextField label="End Time" name="end_time" type="time" value={newWork.end_time} onChange={handleInputChange} fullWidth error={!!errors.end_time} helperText={errors.end_time} InputLabelProps={{ shrink: true }}/>
-          </Box>
-        ) : (
+      {(role[0].is_hourly_primary === 1 && !isSpecialWork) ||
+      (role[0].is_hourly_primary === 0 && isSpecialWork) ? (
+        <Box sx={{ display: "flex", gap: 2 }}>
           <TextField
-            label={role[0].special_unit || "Quantity"}
-            type="text"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
+            label={t("AddWorkDialog.start")}
+            name="start_time"
+            type="time"
+            value={newWork.start_time}
+            onChange={handleInputChange}
             fullWidth
-            margin="normal"
-            error={!!errors.quantity}
-            helperText={errors.quantity}
+            error={!!errors.start_time}
+            InputLabelProps={{ shrink: true }}
           />
-        )}
-
+          <TextField
+            label={t("AddWorkDialog.end")}
+            name="end_time"
+            type="time"
+            value={newWork.end_time}
+            onChange={handleInputChange}
+            fullWidth
+            error={!!errors.end_time}
+            helperText={errors.end_time}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
+      ) : (
         <TextField
-          label="Work Description"
-          name="description"
-          value={newWork.description || ""}
-          onChange={handleInputChange}
+          label={role[0].special_unit || t("AddWorkDialog.quantity")}
+          type="text"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
           fullWidth
           margin="normal"
-          error={!!errors.description}
-          helperText={errors.description}
+          error={!!errors.quantity}
+          helperText={errors.quantity}
         />
+      )}
 
-        <TextField
-          label="Notes"
-          name="notes"
-          value={newWork.notes || ""}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
+      <TextField
+        label={t("AddWorkDialog.description")}
+        name="description"
+        value={newWork.description || ""}
+        onChange={handleInputChange}
+        fullWidth
+        margin="normal"
+        error={!!errors.description}
+        helperText={errors.description}
+      />
 
-        <TextField
-          label="Date"
-          name="date"
-          type="date"
-          value={newWork.date}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-          error={!!errors.date}
-          helperText={errors.date}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">Cancel</Button>
-        <Button onClick={handleSave} color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "Save"}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+      <TextField
+        label={t("AddWorkDialog.notes")}
+        name="notes"
+        value={newWork.notes || ""}
+        onChange={handleInputChange}
+        fullWidth
+        margin="normal"
+      />
+
+      <TextField
+        label={t("AddWorkDialog.date")}
+        name="date"
+        type="date"
+        value={newWork.date}
+        onChange={handleInputChange}
+        fullWidth
+        margin="normal"
+        error={!!errors.date}
+        helperText={errors.date}
+      />
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={onClose} color="secondary">{t("AddWorkDialog.cancel")}</Button>
+      <Button onClick={handleSave} color="primary" disabled={loading}>
+        {loading ? <CircularProgress size={24} /> : t("AddWorkDialog.save")}
+      </Button>
+    </DialogActions>
+  </Dialog>
+);
+
 };
 
 export default AddWorkDialog;

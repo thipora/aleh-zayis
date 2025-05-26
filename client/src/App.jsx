@@ -132,6 +132,7 @@ import i18n from './i18n/i18n.js';
 import LanguageSwitcher from './LanguageSwitcher.jsx'
 
 
+
 const App = () => {
     useEffect(() => {
     document.body.dir = i18n.language === 'he' ? 'rtl' : 'ltr';
@@ -146,7 +147,7 @@ const App = () => {
         py: { xs: 3, sm: 6 },
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+      <Box dir="ltr" sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
   <LanguageSwitcher />
 </Box>
 
