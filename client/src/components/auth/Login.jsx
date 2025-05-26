@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField, Button, Typography, Box,
   InputAdornment, IconButton, Paper
@@ -9,6 +9,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
 import i18n from "i18next";
+import { useLocation } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
   const { t } = useTranslation();
@@ -20,13 +21,20 @@ const Login = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const apiRequests = new APIrequests();
 
+  const location = useLocation();
+
   useEffect(() => {
     const logout = async () => {
-      await apiRequests.postRequest("/auth/logout");
+      try {
+        await apiRequests.postRequest("/auth/logout");
+      } catch (err) {
+        console.error("Logout failed", err);
+      }
       localStorage.removeItem("user");
     };
+
     logout();
-  }, []);
+  }, [location.key]);
 
 
   const handleSubmit = async (e) => {

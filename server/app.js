@@ -13,6 +13,7 @@ import bookAssignmentsRouter from './routes/bookAssignmentsRouter.js';
 import employeeRolesRoutes from './routes/employeeRolesRoutes.js';
 import employeeRouter from './routes/employeeRoutes.js';
 import monthlyChargesRouter from './routes/monthlyChargesRouter.js';
+import cookieParser from "cookie-parser";
 
 
 
@@ -27,6 +28,7 @@ app.use(cors({
   origin: true,
   credentials: true // זה חשוב אם הבקשה מהקליינט כוללת cookies או כל מידע מזהה
 }));
+app.use(cookieParser());
 
 app.use('/auth', authRouters);
 app.use('/workEntries', workEntrieRouter);

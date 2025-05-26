@@ -5,12 +5,13 @@ import {
   getEmployeeRolesById,
   updateMultipleRatesForEmployeeRole
 } from '../controllers/employeeRolesController.js';
+import { verifyToken } from "../middleware/authenticateToken.js";
 
 const router = express.Router();
 
-router.get('/', getAllEmployeeRoles);
-router.get('/:id', getEmployeeRolesById);
-router.post('/', updateMultipleRatesForEmployeeRole);
-router.put('/:id/rates', updateRatesForEmployeeRole);
+router.get('/', verifyToken, getAllEmployeeRoles);
+router.get('/:id', verifyToken, getEmployeeRolesById);
+router.post('/', verifyToken, updateMultipleRatesForEmployeeRole);
+router.put('/:id/rates', verifyToken, updateRatesForEmployeeRole);
 
 export default router;

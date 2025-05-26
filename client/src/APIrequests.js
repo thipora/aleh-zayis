@@ -6,7 +6,7 @@ export class APIrequests {
         try {
             const response = await fetch(API_URL + url, {
                 method: 'POST',
-                // credentials: 'include',
+                credentials: 'include',
                 body: JSON.stringify(body),
                 headers: {
                     'Content-type': 'application/json',
@@ -30,6 +30,7 @@ export class APIrequests {
     async getRequest(url) {
         try {
             const response = await fetch(API_URL + url, {
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },

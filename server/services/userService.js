@@ -6,11 +6,12 @@ import { EmployeeService } from "./employeesService.js";
 import { findUserByEmailInClickUp } from './clickup/clickupEmployeeService.js';
 import { sendMail } from '../util/mailer.js';
 import { welcomeEmailTemplate } from '../util/emailTemplates.js';
-// import { generateRandomPassword } from "../utils/passwordUtils.js";
 import { generateRandomPassword } from "../util/passwordUtils.js";
 import { getDBConnection } from '../config/db.js';
 import { resetPasswordEmailTemplate } from "../util/emailTemplates.js";
+import jwt from "jsonwebtoken";
 
+const secret = process.env.ACCESS_TOKEN_SECRET || "mySuperSecretKey123";
 
 export class UserService {
     static table = "users";
@@ -202,6 +203,24 @@ export class UserService {
             secure: true,
             sameSite: "strict"
         });
+    }
+
+    async getUserById(idUser) {
+        const result = await executeQuery(
+            "SELECT id_user, name, email, account_type FROM users WHERE id_user = ?",
+            [idUser]
+        );
+        return result[0] || null;
+    }
+
+    async verifyAndGetUserFromToken(token) {
+        try {
+            const decoded = jwt.verify(token, secret);
+            const user = await this.getUserById(decoded.idUser);
+            return user;
+        } catch (err) {
+            return null;
+        }
     }
 
 }

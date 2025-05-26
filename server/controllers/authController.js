@@ -2,6 +2,7 @@ import { UserService } from '../services/userService.js';
 // import { createToken } from "../utils/tokenUtils.js";
 import { createToken } from "../util/tokenUtils.js";
 import { userSchema } from '../validations/userValidations.js';
+import jwt from 'jsonwebtoken';
 
 export class AuthController {
     static userService = new UserService();
@@ -91,6 +92,29 @@ export class AuthController {
                 statusCode: 500,
                 message: err.message || "Logout failed"
             });
+        }
+    }
+
+    async validateToken(req, res) {
+        try {
+            const token = req.cookies["x-access-token"];
+            if (!token) {
+                return res.status(401).json({ valid: false });
+            }
+
+            const user = await AuthController.userService.verifyAndGetUserFromToken(token);
+
+            if (!user) {
+                return res.status(401).json({ valid: false });
+            }
+
+            return res.status(200).json({
+                valid: true,
+                user
+            });
+        } catch (err) {
+            console.error("validateToken error:", err);
+            return res.status(401).json({ valid: false });
         }
     }
 

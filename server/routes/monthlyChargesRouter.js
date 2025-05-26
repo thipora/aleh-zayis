@@ -8,8 +8,8 @@ const monthlyChargesController = new MonthlyChargesController();
 
 
 // שימוש ב־static methods, אז אין צורך ב־bind
-monthlyChargesRouter.get("/:employeeId", monthlyChargesController.getChargesByEmployee);
-monthlyChargesRouter.post("/", monthlyChargesController.addCharge);
-monthlyChargesRouter.delete("/:chargeId", monthlyChargesController.deleteCharge);
+monthlyChargesRouter.get("/:employeeId", verifyToken, monthlyChargesController.getChargesByEmployee);
+monthlyChargesRouter.post("/", verifyToken, monthlyChargesController.addCharge);
+monthlyChargesRouter.delete("/:chargeId", verifyToken, monthlyChargesController.deleteCharge);
 
 export default monthlyChargesRouter;
