@@ -1,7 +1,8 @@
 import { ClickUpService } from "./clickUpService.js";
 const clickUpService = new ClickUpService();
-const spaceId = process.env.CLICKUP_TEAM_ID || '8601991';
-const folderName = 'Freelancer Database'
+// const spaceId = process.env.CLICKUP_TEAM_ID || '8601991';
+// const spaceId = '8601991';
+// const folderName = 'Freelancer Database'
 
 
 let clickupCache = null;

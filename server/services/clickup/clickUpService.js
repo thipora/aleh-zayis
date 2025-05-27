@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const API_TOKEN = process.env.CLICKUP_API_TOKEN || 'pk_88286379_SRSB6DJ1NC5MNT2BTD05MQ5ZYW32XQ1N';
+// const API_TOKEN = process.env.CLICKUP_API_TOKEN || 'pk_88286379_SRSB6DJ1NC5MNT2BTD05MQ5ZYW32XQ1N';
+const API_TOKEN = process.env.CLICKUP_API_TOKEN;
 const BASE_URL = 'https://api.clickup.com/api/v2';
 const teamId = '8601991'
 const spaceId = '12777054'

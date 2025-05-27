@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import { useTranslation } from "react-i18next";
+import WorkEntries from "../workEntries/WorkEntries"
 
 const EmployeeWorkPage = () => {
   const { id } = useParams();

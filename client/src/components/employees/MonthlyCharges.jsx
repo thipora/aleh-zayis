@@ -60,89 +60,9 @@ const MonthlyCharges = ({ employeeId }) => {
     }
   };
 
-  // return (
-  //   <Box sx={{ mt: 3 }}>
-  //     <Typography variant="h6">תשלומים מיוחדים</Typography>
-  //     <Table>
-  //       <TableHead>
-  //         <TableRow>
-  //           <TableCell>שם תשלום</TableCell>
-  //           <TableCell>סכום</TableCell>
-  //           <TableCell>הערות</TableCell>
-  //           <TableCell></TableCell>
-  //         </TableRow>
-  //       </TableHead>
-  //       <TableBody>
-  //         {charges.map((charge) => (
-  //           <TableRow key={charge.id_monthly_charges}>
-  //             <TableCell>{charge.charge_name}</TableCell>
-  //             <TableCell>{charge.amount} ₪</TableCell>
-  //             <TableCell>{charge.notes}</TableCell>
-  //             <TableCell>
-  //               <Button color="error" onClick={() => handleDelete(charge.id_monthly_charges)}>
-  //                 מחק
-  //               </Button>
-  //             </TableCell>
-  //           </TableRow>
-  //         ))}
-  //       </TableBody>
-  //     </Table>
-
-  //     <Button variant="contained" sx={{ mt: 2 }} onClick={() => setOpen(true)}>
-  //       הוסף תשלום חודשי
-  //     </Button>
-
-  //     <Dialog open={open} onClose={() => setOpen(false)}>
-  //       <DialogTitle>תשלום חודשי חדש</DialogTitle>
-  //       <DialogContent>
-  //         <TextField
-  //           label="שם התשלום"
-  //           name="charge_name"
-  //           fullWidth
-  //           value={newCharge.charge_name}
-  //           onChange={handleChange}
-  //           sx={{ my: 1 }}
-  //         />
-  //         <TextField
-  //           label="סכום"
-  //           name="amount"
-  //           type="number"
-  //           fullWidth
-  //           value={newCharge.amount}
-  //           onChange={handleChange}
-  //           sx={{ my: 1 }}
-  //         />
-  //         <TextField
-  //           label="הערות"
-  //           name="notes"
-  //           multiline
-  //           rows={3}
-  //           fullWidth
-  //           value={newCharge.notes}
-  //           onChange={handleChange}
-  //         />
-  //       </DialogContent>
-  //       <DialogActions>
-  //         <Button onClick={handleSubmit}>שמור</Button>
-  //         <Button onClick={() => setOpen(false)}>ביטול</Button>
-  //       </DialogActions>
-  //     </Dialog>
-
-  //     <Snackbar
-  //       open={successMessageOpen}
-  //       autoHideDuration={3000}
-  //       onClose={() => setSuccessMessageOpen(false)}
-  //       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-  //     >
-  //       <Alert onClose={() => setSuccessMessageOpen(false)} severity="success" sx={{ width: '100%' }}>
-  //         הפעולה בוצעה בהצלחה!
-  //       </Alert>
-  //     </Snackbar>
-  //   </Box>
-  // );
   return (
   <Box sx={{ mt: 3 }}>
-    <Typography variant="h6">{t("monthlyCharges.title")}</Typography>
+    {/* <Typography variant="h6">{t("monthlyCharges.title")}</Typography> */}
     <Table>
       <TableHead>
         <TableRow>

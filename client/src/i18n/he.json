@@ -36,7 +36,7 @@
     "title": "לוח בקרה לעובד",
     "viewAssignedBooks": "הצג ספרים שאני עובד עליהם",
     "monthlySummary": "סיכום שעות לפי חודש",
-    "monthlyCharges": "תשלומים חודשיים מיוחדים",
+    "monthlyCharges": "תשלומים מיוחדים",
     "changePassword": "שינוי סיסמה",
     "addNew": "הוסף עבודה חדשה",
     "close": "סגור",
@@ -242,7 +242,9 @@
     "fileName": "דוח",
     "hours": "שעות",
     "minutes": "דקות",
-    "and": "ו"
+    "and": "ו",
+    "fixedMonthlyCharges": "תשלומים קבועים",
+    "fixedPayments": "תשלומים קבועים"
   },
   "bookMatrixReport": {
     "title": "דוח תשלום מטריציוני לפי ספר",

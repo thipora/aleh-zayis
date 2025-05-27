@@ -42,7 +42,7 @@
     "title": "Employee Dashboard",
     "viewAssignedBooks": "View Assigned Books",
     "monthlySummary": "Monthly Summary",
-    "monthlyCharges": "Special Monthly Charges",
+    "monthlyCharges": "Special Charges",
     "changePassword": "Change Password",
     "addNew": "Add New",
     "close": "Close",
@@ -248,7 +248,9 @@
     "fileName": "Report",
     "hours": "hours",
     "minutes": "minutes",
-    "and": "and"
+    "and": "and",
+    "fixedMonthlyCharges": "Fixed Charges",
+    "fixedPayments": "Fixed Charges"
   },
   "bookMatrixReport": {
     "title": "Book Payment Matrix Report",

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-const secret = process.env.ACCESS_TOKEN_SECRET || 'mySuperSecretKey123';
+// const secret = process.env.ACCESS_TOKEN_SECRET || 'mySuperSecretKey123';
+const secret = process.env.ACCESS_TOKEN_SECRET;
 
 export const verifyToken = (req, res, next) => {
     const token = req?.query?.token || req?.cookies["x-access-token"];

@@ -11,7 +11,8 @@ import { getDBConnection } from '../config/db.js';
 import { resetPasswordEmailTemplate } from "../util/emailTemplates.js";
 import jwt from "jsonwebtoken";
 
-const secret = process.env.ACCESS_TOKEN_SECRET || "mySuperSecretKey123";
+// const secret = process.env.ACCESS_TOKEN_SECRET || "mySuperSecretKey123";
+const secret = process.env.ACCESS_TOKEN_SECRET;
 
 export class UserService {
     static table = "users";
