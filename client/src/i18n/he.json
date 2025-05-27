@@ -131,7 +131,8 @@
     "Typist": "קלדן",
     "Graphics": "גרפיקה",
     "Layout": "מעמד",
-    "Project Manager": "מנהל פרויקט"
+    "Project Manager": "מנהל פרויקט",
+    "All": "הכל"
   },
   "availability": {
     "availabilityStatus": "סטטוס זמינות",
@@ -190,7 +191,8 @@
     "characters": "תווים",
     "hours": "שעות",
     "items": "פריטים",
-    "pages": "עמודים"
+    "pages": "עמודים",
+    "minutes": "דקות"
   },
   "MonthSelector": {
     "months": {
@@ -222,7 +224,8 @@
     "totalWork": "סה\"כ עבודה",
     "totalPayment": "סה\"כ תשלום (₪)",
     "total": "סה\"כ",
-    "downloadExcel": "הורד ל-Excel"
+    "downloadExcel": "הורד ל-Excel",
+    "filterRole": "תפקיד"
   },
   "employeeReport": {
     "title": "דוח חודשי עבור {{name}} - {{month}}/{{year}}",
@@ -246,6 +249,10 @@
     "bookId": "מזהה ספר",
     "showReport": "הצג דוח",
     "employeeName": "שם עובד",
-    "totalByRole": "סה\"כ לכל תפקיד"
+    "totalByRole": "סה\"כ לכל תפקיד",
+    "downloadExcel": "הורד ל-Excel",
+    "fileName": "דוח_מטריצה",
+    "sheetName": "דוח מטריצה",
+    "total": "סיכום"
   }
 }

@@ -6,7 +6,6 @@ import {
   Box
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
-import WorkEntries from "../WorkEntries/WorkEntries.jsx";
 import { useTranslation } from "react-i18next";
 
 const EmployeeWorkPage = () => {

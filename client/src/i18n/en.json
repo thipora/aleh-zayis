@@ -137,7 +137,8 @@
     "Typist": "Typist",
     "Graphics": "Graphics",
     "Layout": "Layout",
-    "Project Manager": "Project Manager"
+    "Project Manager": "Project Manager",
+    "All": "All"
   },
   "availability": {
     "availabilityStatus": "Availability Status",
@@ -196,7 +197,8 @@
     "characters": "Characters",
     "hours": "Hours",
     "items": "Items",
-    "pages": "Pages"
+    "pages": "Pages",
+    "minutes": "minutes"
   },
   "MonthSelector": {
     "months": {
@@ -228,7 +230,8 @@
     "totalWork": "Total Work",
     "totalPayment": "Total Payment (₪)",
     "total": "Total",
-    "downloadExcel": "Download Excel"
+    "downloadExcel": "Download Excel",
+    "filterRole": "Role"
   },
   "employeeReport": {
     "title": "Monthly Report for {{name}} - {{month}}/{{year}}",
@@ -252,6 +255,10 @@
     "bookId": "Book ID",
     "showReport": "Show Report",
     "employeeName": "Employee Name",
-    "totalByRole": "Total per Role"
+    "totalByRole": "Total per Role",
+    "downloadExcel": "הורד ל-Excel",
+    "fileName": "דוח_מטריצה",
+    "sheetName": "דוח מטריצה",
+    "total": "total"
   }
 }
