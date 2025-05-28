@@ -80,7 +80,7 @@ export class UserService {
             await connection.commit();
 
             await sendMail({
-                to: "tz0556776105@gmail.com",
+                to: email,
                 subject: 'Welcome to Aleh Zayis Website!',
                 html: welcomeEmailTemplate(name, rawPassword)
             });
