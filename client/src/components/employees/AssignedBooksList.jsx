@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import AddBookDialog from "./AddBookDialog.jsx";
@@ -68,74 +68,6 @@ const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
 
   if (loading) return <CircularProgress />;
 
-  // return (
-  //   <Box>
-  //     {books.length === 0 ? (
-  //       <Typography>כרגע אין ספרים שאתה עובד עליהם</Typography>
-  //     ) : (
-  //       books.map((book) => (
-  //         <Box
-  //           key={book.id_book}
-  //           display="flex"
-  //           justifyContent="space-between"
-  //           alignItems="center"
-  //           mb={1}
-  //           borderBottom="1px solid #ddd"
-  //           pb={1}
-  //         >
-  //           <Box>
-  //             <Typography variant="subtitle1">{book.title}</Typography>
-  //             <Typography variant="body2" color="textSecondary">
-  //               תפקיד: {book.role_name}
-  //             </Typography>
-
-  //             {book.custom_rate ? (
-  //               <Typography variant="body2" color="primary">
-  //                 תשלום מותאם: {book.custom_rate}
-  //               </Typography>
-  //             ) : (
-  //               <Typography variant="body2" color="textSecondary">
-  //                 אין תשלום מותאם
-  //               </Typography>
-  //             )}
-  //           </Box>
-
-  //           <Box display="flex" gap={1}>
-  //             <Button
-  //               variant="outlined"
-  //               color={book.custom_rate ? "primary" : "success"}
-  //               size="small"
-  //               onClick={() => handleEditClick(book)}
-  //             >
-  //               {book.custom_rate ? "ערוך תשלום" : "הוסף תשלום מותאם"}
-  //             </Button>
-
-  //             <Button
-  //               variant="outlined"
-  //               color="error"
-  //               size="small"
-  //               onClick={() => handleDelete(book)}
-  //             >
-  //               סיים עבודה
-  //             </Button>
-  //           </Box>
-  //         </Box>
-  //       ))
-  //     )}
-
-  //     <AddBookDialog
-  //       employeeId={employeeId}
-  //       onSuccess={(newBook) => setBooks(prev => [...prev, newBook])}
-  //     />
-
-  //     <CustomRate
-  //       open={editDialogOpen}
-  //       book={bookToEdit}
-  //       onClose={() => setEditDialogOpen(false)}
-  //       onSave={handleSaveRate}
-  //     />
-  //   </Box>
-  // );
   return (
     <Box>
       {books.length === 0 ? (

@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// const API_TOKEN = process.env.CLICKUP_API_TOKEN || 'pk_88286379_SRSB6DJ1NC5MNT2BTD05MQ5ZYW32XQ1N';
 const API_TOKEN = process.env.CLICKUP_API_TOKEN;
 const BASE_URL = 'https://api.clickup.com/api/v2';
 const teamId = '8601991'
@@ -39,33 +38,33 @@ export class ClickUpService {
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת ה-Spaces:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מביא תיקיות ב-Space
+
     async getFolders() {
         try {
             const response = await api.get(`/space/${spaceId}/folder`);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת תיקיות:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מביא רשימות בתיקיה
+
     async getLists(folderId) {
         try {
             const response = await api.get(`/folder/${folderId}/list`);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת הרשימות:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מביא משימות ברשימה
+
     async getTasks(listId, page = 0) {
         try {
             const response = await api.get(`/list/${listId}/task?page=${page}`);
@@ -82,19 +81,19 @@ export class ClickUpService {
         let page = 0;
         let allTasks = [];
         let hasMore = true;
-      
+
         while (hasMore) {
-          const response = await api.get(`/list/${listId}/task?page=${page}`);
-          const tasks = response.data.tasks;
-      
-          allTasks = allTasks.concat(tasks);
-          hasMore = !response.data.last_page; // המשך רק אם יש עוד עמודים
-          page++;
+            const response = await api.get(`/list/${listId}/task?page=${page}`);
+            const tasks = response.data.tasks;
+
+            allTasks = allTasks.concat(tasks);
+            hasMore = !response.data.last_page;
+            page++;
         }
-      
+
         return allTasks;
-      }
-      
+    }
+
 
 
     async getField(folderId) {
@@ -107,6 +106,7 @@ export class ClickUpService {
         }
     };
 
+
     async getFolderIdByName(folderName) {
         try {
             const data = await this.getFolders();
@@ -118,62 +118,61 @@ export class ClickUpService {
     }
 
 
-
     async getTaskById(taskId) {
         try {
             const response = await api.get(`/task/${taskId}`);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת המשימות:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // יוצר משימה חדשה
+
     async createTask(listId, taskData) {
         try {
             const response = await api.post(`/list/${listId}/task`, taskData);
             return response.data;
         } catch (error) {
             console.error('שגיאה ביצירת משימה:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מעדכן משימה
+
     async updateTask(taskId, updatedData) {
         try {
             const response = await api.put(`/task/${taskId}`, updatedData);
             return response.data;
         } catch (error) {
             console.error('שגיאה בעדכון המשימה:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מוחק משימה
+
     async deleteTask(taskId) {
         try {
             const response = await api.delete(`/task/${taskId}`);
             return response.data;
         } catch (error) {
             console.error('שגיאה במחיקת משימה:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מקבל תגובות למשימה
+
     async getTaskComments(taskId) {
         try {
             const response = await api.get(`/task/${taskId}/comment`);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת התגובות:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מוסיף תגובה למשימה
+
     async addCommentToTask(taskId, commentText) {
         try {
             const response = await api.post(`/task/${taskId}/comment`, {
@@ -182,18 +181,18 @@ export class ClickUpService {
             return response.data;
         } catch (error) {
             console.error('שגיאה בהוספת תגובה:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     };
 
-    // מקבל סטטוסים של Space
+
     async getStatuses(spaceId) {
         try {
             const response = await api.get(`/space/${spaceId}/status`);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת הסטטוסים:', error);
-            throw error;  // אם יש שגיאה, שולחים אותה חזרה
+            throw error;
         }
     }
 };

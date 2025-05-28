@@ -1,9 +1,5 @@
 import dayjs from 'dayjs';
 
-/**
- * מקבלת start_time ו-end_time בפורמט HH:mm
- * מחזירה כמות שעות מדויקת (כמספר עשרוני) או null אם הנתונים לא תקינים
- */
 export function calculateWorkQuantityFromTimes(start_time, end_time) {
   if (!start_time || !end_time) return null;
 

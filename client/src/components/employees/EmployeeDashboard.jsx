@@ -4,11 +4,10 @@ import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
 import AddWorkDialog from "../workEntries/AddWorkDialog";
-// import SummaryDialog from "../reports/SummaryDialog";
 import AssignedBooksList from "./AssignedBooksList.jsx"
 import EmployeeReport from "../reports/EmployeeReport";
 import AddBookDialog from "./AddBookDialog.jsx";
-import ChangePassword from "../auth/ChangePassword.jsx"; // או הנתיב הנכון אצלך
+import ChangePassword from "../auth/ChangePassword.jsx";
 import MonthlyCharges from "./MonthlyCharges.jsx";
 import { useTranslation } from "react-i18next";
 
@@ -96,7 +95,7 @@ const EmployeeDashboard = () => {
       const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
       setBooks(booksData);
 
-      const ids = user.roles.join(','); // יוצר מחרוזת "1,2,3"
+      const ids = user.roles.join(',');
       const roleData = await apiRequests.getRequest(`/roles?ids=${ids}`);
 
       setRole(roleData);
@@ -162,8 +161,7 @@ const EmployeeDashboard = () => {
       const user = JSON.parse(userData);
       const data = await apiRequests.getRequest(`/workEntries/${user.employee_id}`);
       setWorkEntries(data);
-      setMonths(extractMonths(data)); // מוסיף את רשימת החודשים
-      // שליפת ספרים רק אם books לא מאותחל (יעיל)
+      setMonths(extractMonths(data));
       if (!books.length) {
         const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
         setBooks(booksData);
@@ -176,8 +174,6 @@ const EmployeeDashboard = () => {
   const handleOpenMonthSummary = () => setShowEmployeeReport(true);
 
   const handleCloseMonthSummary = () => setOpenMonthSummary(false);
-  // const handleOpenBookSummary = () => setOpenBookSummary(true);
-  // const handleCloseBookSummary = () => setOpenBookSummary(false);
 
   const handleFetchMonthSummary = async () => {
     if (!selectedMonth) return;
@@ -222,7 +218,7 @@ const EmployeeDashboard = () => {
   };
 
   const handleOpenAssignedBooksDialog = async () => {
-    await handleOpenAddBookDialog(); // טוען roles וכו'
+    await handleOpenAddBookDialog();
     setOpenAssignedBooksDialog(true);
   };
 
@@ -238,7 +234,7 @@ const EmployeeDashboard = () => {
     if (roleIds.length > 1) {
       try {
         const response = await apiRequests.getRequest(`/roles?ids=${roleIds.join(',')}`);
-        setAvailableRoles(response); // [{ id_role, role_name }]
+        setAvailableRoles(response);
       } catch (err) {
         console.error("Failed to fetch role names", err);
       }
@@ -380,174 +376,6 @@ const EmployeeDashboard = () => {
       </Dialog>
     </Container>
   );
-
-  //   return (
-
-
-  //     <Container>
-  //       <Typography variant="h4">Employee Dashboard</Typography>
-
-  //       <Box
-  //         display="flex"
-  //         flexWrap="wrap"
-  //         alignItems="center"
-  //         justifyContent="flex-start"
-  //         gap={2}
-  //         mt={2}
-  //       >
-
-  //         <FormControl sx={{ minWidth: 150 }}>
-  //           <InputLabel id="availability-status-label" shrink>
-  //             סטטוס זמינות
-  //           </InputLabel>
-  //           <Select
-  //             labelId="availability-status-label"
-  //             value={availabilityStatus}
-  //             label="סטטוס זמינות"
-  //             onChange={(e) => handleAvailabilityChange(e.target.value)}
-  //             size="small"
-  //           >
-  //             <MenuItem value="available">זמין</MenuItem>
-  //             <MenuItem value="not_available">לא זמין</MenuItem>
-  //             <MenuItem value="partial">זמין חלקית</MenuItem>
-  //           </Select>
-  //         </FormControl>
-
-  //         <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
-  //           הצג ספרים שאני עובד עליהם
-  //         </Button>
-
-  //         <Button variant="outlined" color="secondary" onClick={handleOpenMonthSummary}>
-  //           סיכום שעות לפי חודש
-  //         </Button>
-
-  //         <Button variant="outlined" onClick={() => setOpenMonthlyChargesDialog(true)}>
-  //           תשלומים חודשיים מיוחדים
-  //         </Button>
-
-  //         <Button variant="outlined" onClick={() => setOpenChangePasswordDialog(true)}>
-  //           שינוי סיסמה
-  //         </Button>
-
-  //         <Button variant="contained" color="primary" onClick={handleOpenAddWork}>
-  //           Add New
-  //         </Button>
-
-  //       </Box>
-
-
-
-
-  //       <ErrorNotification error={error} />
-
-  //       {/* רשימת העבודה של העובד */}
-  //       <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} />
-
-
-
-  //       {/* דיאלוג (חלון קופץ) להוספת עבודה */}
-  //       <Dialog open={open} onClose={() => setOpen(false)}>
-  //         <DialogTitle>Add New</DialogTitle>
-  //         <DialogContent>
-  //           {loadingBooks ? (
-  //             <Box display="flex" justifyContent="center" alignItems="center" minHeight={150}>
-  //               <CircularProgress color="primary" />
-  //             </Box>
-  //           ) : (
-
-  //             <AddWorkDialog
-  //               open={open}
-  //               onClose={() => setOpen(false)}
-  //               onAdd={handleAddWork}
-  //               books={books}
-  //               role={role}
-  //             />
-
-  //           )}
-  //         </DialogContent>
-  //         <DialogActions>
-  //           <Button onClick={() => setOpen(false)} color="secondary">ביטול</Button>
-  //         </DialogActions>
-  //       </Dialog>
-
-  //       <Dialog open={openAssignedBooksDialog} onClose={() => setOpenAssignedBooksDialog(false)} maxWidth="sm" fullWidth>
-  //         <DialogTitle>הספרים שאתה עובד עליהם</DialogTitle>
-  //         <DialogContent>
-  //           <AssignedBooksList
-  //             employeeId={employeeId}
-  //             initialBooks={books}
-  //             dense
-  //           />
-  //         </DialogContent>
-  //         <DialogActions>
-  //           <Button onClick={() => setOpenAssignedBooksDialog(false)}>סגור</Button>
-  //         </DialogActions>
-  //       </Dialog>
-
-
-  //       <Dialog open={showEmployeeReport} onClose={() => setShowEmployeeReport(false)} maxWidth="md" fullWidth>
-  //         <DialogTitle>סיכום לפי חודש</DialogTitle>
-  //         <DialogContent>
-  //           <EmployeeReport
-  //             employeeId={employeeId}
-  //             employeeName={user.name}
-  //             month={String(now.getMonth() + 1).padStart(2, '0')}
-  //             year={String(now.getFullYear())}
-  //             onBack={() => setShowEmployeeReport(false)}
-  //           />
-  //         </DialogContent>
-  //         <DialogActions>
-  //           <Button onClick={() => setShowEmployeeReport(false)} color="primary">סגור</Button>
-  //         </DialogActions>
-  //       </Dialog>
-
-  //       {/* <Dialog
-  //         open={openChangePasswordDialog}
-  //         onClose={() => setOpenChangePasswordDialog(false)}
-  //         maxWidth="xs"
-  //         fullWidth
-  //       >
-  //         <DialogTitle>שינוי סיסמה</DialogTitle>
-  //         <DialogContent>
-  //           <ChangePassword />
-  //         </DialogContent>
-  //         <DialogActions>
-  //           <Button onClick={() => setOpenChangePasswordDialog(false)} color="secondary">
-  //             סגור
-  //           </Button>
-  //         </DialogActions>
-  //       </Dialog> */}
-  //       <Dialog
-  //         open={openChangePasswordDialog}
-  //         onClose={() => setOpenChangePasswordDialog(false)}
-  //         maxWidth="xs"
-  //         fullWidth
-  //       >
-  //         <ChangePassword onClose={() => setOpenChangePasswordDialog(false)} />
-  //       </Dialog>
-  // <Dialog
-  //   open={openMonthlyChargesDialog}
-  //   onClose={() => setOpenMonthlyChargesDialog(false)}
-  //   maxWidth="sm"
-  //   fullWidth
-  // >
-  //   <DialogTitle>תשלומים חודשיים מיוחדים</DialogTitle>
-  //   <DialogContent>
-  //     <MonthlyCharges employeeId={employeeId} />
-  //   </DialogContent>
-  //   <DialogActions>
-  //     <Button onClick={() => setOpenMonthlyChargesDialog(false)}>סגור</Button>
-  //   </DialogActions>
-  // </Dialog>
-
-
-
-  //     </Container>
-
-
-  //   );
-
-
 };
 
 export default EmployeeDashboard;

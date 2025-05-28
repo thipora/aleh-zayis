@@ -1,8 +1,6 @@
-// services/reportsService.js
 import { executeQuery } from "../config/db.js";
 
 export class ReportsService {
-  //משתמשים
   async getBookSummary(bookId) {
     const workEntries = await this.getWorkEntriesByBookId(bookId);
     const groupedByRole = this.groupWorkEntriesByRole(workEntries);
@@ -63,7 +61,6 @@ groupWorkEntriesByRole(workEntries) {
     rolesMap[role][empId].total += total;
   }
 
-  // המרה למערך ממויין
   const result = Object.entries(rolesMap).map(([role_name, empMap]) => ({
     role_name,
     employees: Object.values(empMap)

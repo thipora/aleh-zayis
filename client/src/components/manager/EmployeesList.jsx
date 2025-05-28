@@ -88,13 +88,8 @@ const EmployeeList = () => {
             <TableRow>
               <TableCell>{t("employeeList.name")}</TableCell>
               <TableCell>{t("availability.availabilityStatus")}</TableCell>
-
               <TableCell>{t("employeeList.email")}</TableCell>
               <TableCell>{t("employeeList.roles")}</TableCell>
-              {/* <TableCell>
-  {emp.roles.map((role, i) => t(`roles.${role}`)).join(", ")}
-</TableCell> */}
-
               <TableCell align="center">{t("employeeList.actions")}</TableCell>
             </TableRow>
           </TableHead>

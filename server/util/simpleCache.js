@@ -1,7 +1,5 @@
-// utils/simpleCache.js
-
 export class SimpleCache {
-    constructor(ttlMs = 1000 * 60 * 5) { // ברירת מחדל: 5 דקות
+    constructor(ttlMs = 1000 * 60 * 5) {
         this.cache = {};
         this.cacheTime = {};
         this.ttlMs = ttlMs;

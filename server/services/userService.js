@@ -11,7 +11,6 @@ import { getDBConnection } from '../config/db.js';
 import { resetPasswordEmailTemplate } from "../util/emailTemplates.js";
 import jwt from "jsonwebtoken";
 
-// const secret = process.env.ACCESS_TOKEN_SECRET || "mySuperSecretKey123";
 const secret = process.env.ACCESS_TOKEN_SECRET;
 
 export class UserService {
@@ -37,12 +36,10 @@ export class UserService {
 
 
         if (users[0].account_type === "Employee") {
-            // שליפת פרטי עובד
             const employee = await UserService.EmployeeService.getEmployeeIdByUserId(users[0].id_user);
             users[0].employee_id = employee?.id_employee || null;
             users[0].availability_status = employee.availability_status;
 
-            // שליפת כל התפקידים של העובדD
             if (users[0].employee_id) {
                 const rolesQuery = `
                 SELECT role_id
@@ -50,7 +47,7 @@ export class UserService {
                 WHERE employee_id = ?
             `;
                 const roles = await executeQuery(rolesQuery, [users[0].employee_id]);
-                users[0].roles = roles.map(r => r.role_id); // מחזיר רק מערך של מזהים
+                users[0].roles = roles.map(r => r.role_id);
             } else {
                 users[0].roles = [];
             }
@@ -156,39 +153,16 @@ export class UserService {
         return true;
     }
 
-    // async resetPasswordByEmail(email) {
-    //     const user = await this.getUserByEmail(email);
-    //     if (!user) return null;
-
-    //     const newPassword = Math.random().toString(36).slice(-8); // סיסמה רנדומלית
-    //     const hashed = await bcrypt.hash(newPassword, 10);
-
-    //     await executeQuery("UPDATE users SET password = ? WHERE id_user = ?", [hashed, user.id_user]);
-
-    //     // שליחת מייל עם הסיסמה החדשה
-    //     await sendMail({
-    //         to: email,
-    //         subject: "Password Reset - Aleh Zayis",
-    //         html: resetPasswordEmailTemplate(newPassword),
-    //     });
-
-    //     return newPassword;
-    // }
-
-
     async resetPasswordByEmail(email) {
-        // יצירת סיסמה רנדומלית חדשה
         const newPassword = Math.random().toString(36).slice(-8);
         const hashed = await bcrypt.hash(newPassword, 10);
 
-        // ניסיון לעדכן סיסמה לפי אימייל
         const result = await executeQuery("UPDATE users SET password = ? WHERE email = ?", [hashed, email]);
 
         if (result.affectedRows === 0) {
             throw new Error("No user found with that email");
         }
 
-        // שליחת מייל עם הסיסמה החדשה
         await sendMail({
             to: email,
             subject: "Password Reset - Aleh Zayis",

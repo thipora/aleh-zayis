@@ -25,10 +25,7 @@ export class EmployeeService {
       }
     }
 
-    // מחזיר מערך של עובדים, כל אחד עם מערך roles
     return Object.values(employeesMap);
-
-    // return result;
   }
 
   async createEmployee(params) {

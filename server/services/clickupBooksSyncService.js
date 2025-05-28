@@ -2,7 +2,7 @@ import { executeQuery } from "../config/db.js";
 import { ClickUpService } from "./clickUpService.js";
 
 const clickUpService = new ClickUpService();
-const folderName = "Freelancer Database"; // שנה לשם התקייה שלך
+const folderName = "Freelancer Database";
 
 export async function syncClickUpBooks() {
   const folderId = await clickUpService.getFolderIdByName(folderName);

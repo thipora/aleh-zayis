@@ -63,13 +63,6 @@ export class WorkEntriesController {
         }
     }
 
-
-
-
-
-
-
-
     async getEditorWorkByMonth(req, res, next) {
         try {
             const { employeeId } = req.params;
@@ -91,7 +84,6 @@ export class WorkEntriesController {
         }
     }
 
-    // דוח 2: כל העבודה על ספר/פרויקט מסוים (לפי עורכים) בחודש מסוים
     async getProjectWorkByMonth(req, res, next) {
         try {
             const { bookId } = req.params;
@@ -113,7 +105,6 @@ export class WorkEntriesController {
         }
     }
 
-    // דוח 3: סיכום עריכה לכל העורכים באותו החודש
     async getEditorsSummaryByMonth(req, res, next) {
         try {
             const { month, year } = req.query;
@@ -134,7 +125,6 @@ export class WorkEntriesController {
         }
     }
 
-        // דוח 4: סיכום שעות לפי ספר
         async getBooksSummary(req, res, next) {
             try {
                 const { month, year } = req.query;
@@ -145,7 +135,6 @@ export class WorkEntriesController {
             }
         }
     
-        // דוח 5: סיכום עובדים בספר (עם שעות לכל עובד)
         async getBookEmployeesSummary(req, res, next) {
             try {
                 const { bookId } = req.params;
@@ -157,7 +146,6 @@ export class WorkEntriesController {
             }
         }
     
-        // דוח 6: פירוט עובד בספר מסוים (כל השורות)
         async getBookEmployeeDetails(req, res, next) {
             try {
                 const { bookId, employeeId } = req.params;

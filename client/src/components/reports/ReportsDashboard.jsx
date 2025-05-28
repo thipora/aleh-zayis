@@ -1,46 +1,3 @@
-// import React, { useState } from "react";
-// import EmployeesReport from "./EmployeesReport";
-// import BookPivotReport from "./BookPivotReport";
-// import { Box, Button, Typography } from "@mui/material";
-// import { useTranslation } from "react-i18next";
-
-// const ReportsDashboard = () => {
-//   const [report, setReport] = useState(null); // "employees" | "editors" | "books"
-
-//   const handleBack = () => setReport(null);
-//   const { t } = useTranslation();
-
-//   return (
-//     <Box p={3} maxWidth={1000} mx="auto" dir="rtl">
-//       {!report && (
-//         <Box display="flex" flexDirection="column" gap={2} alignItems="center">
-//           <Typography variant="h5" gutterBottom>בחר דוח להצגה</Typography>
-//           <Button variant="contained" onClick={() => setReport("employees")} fullWidth>
-//             סיכום חודשי לפי עובדים (תשלומים)
-//           </Button>
-//           <Button variant="contained" onClick={() => setReport("books")} fullWidth>
-//             סיכום שעות לפי ספרים
-//           </Button>
-//         </Box>
-//       )}
-
-//       {report === "employees" && (
-//         <>
-//           <Button onClick={handleBack} sx={{ mt: 2 }}>⬅ חזור</Button>
-//           <EmployeesReport />
-//         </>
-//       )}
-//       {report === "books" && (
-//         <>
-//           <Button onClick={handleBack} sx={{ mt: 2 }}>⬅ חזור</Button>
-//           <BookPivotReport />
-//         </>
-//       )}
-//     </Box>
-//   );
-// };
-
-// export default ReportsDashboard;
 import React, { useState } from "react";
 import EmployeesReport from "./EmployeesReport";
 import BookPivotReport from "./BookPivotReport";
@@ -49,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 
 const ReportsDashboard = () => {
-  const [report, setReport] = useState(null); // "employees" | "books"
+  const [report, setReport] = useState(null);
   const { t } = useTranslation();
   const dir = i18n.language === "he" ? "rtl" : "ltr";
 

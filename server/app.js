@@ -26,7 +26,7 @@ app.use(express.json());
 
 app.use(cors({
   origin: true,
-  credentials: true // זה חשוב אם הבקשה מהקליינט כוללת cookies או כל מידע מזהה
+  credentials: true
 }));
 app.use(cookieParser());
 
@@ -45,7 +45,6 @@ app.use('/monthly-charges', monthlyChargesRouter);
 app.use(logErrors);
 
 
-// const PORT = process.env.PORT || 8080;
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

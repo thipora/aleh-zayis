@@ -9,7 +9,6 @@ export const getAllEmployeeRoles = async (req, res) => {
   }
 };
 
-
 export const getEmployeeRolesById = async (req, res) => {
   try {
     const { id } = req.params;

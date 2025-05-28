@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Typography, Button, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Box, Table, TableHead, TableBody, TableRow, TableCell, Snackbar, Alert
-} from "@mui/material";
+import { useState, useEffect } from "react";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box, Table, TableHead, TableBody, TableRow, TableCell, Snackbar, Alert } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import { useTranslation } from "react-i18next";
 
@@ -62,7 +59,6 @@ const MonthlyCharges = ({ employeeId }) => {
 
   return (
   <Box sx={{ mt: 3 }}>
-    {/* <Typography variant="h6">{t("monthlyCharges.title")}</Typography> */}
     <Table>
       <TableHead>
         <TableRow>

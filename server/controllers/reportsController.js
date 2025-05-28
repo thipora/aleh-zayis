@@ -20,7 +20,6 @@ export class ReportsController {
     }
   }
 
-
   async getMonthlySummaryByEmployee(req, res, next) {
     try {
       const { employeeId } = req.params;

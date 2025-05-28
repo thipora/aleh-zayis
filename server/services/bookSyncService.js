@@ -1,5 +1,3 @@
-// services/bookSyncService.js
-
 import { ClickUpService } from './clickup/clickUpService.js';
 import { executeQuery } from '../config/db.js';
 import { getOfficeWorkersFromClickUp } from './clickup/clickupEmployeeService.js'
@@ -14,7 +12,7 @@ export async function fetchBooksFromClickUp() {
     throw new Error("Current Projects list not found in ClickUp");
   }
 
-  const tasks = await fetchTasksFromListA(currentProjectsList.id);
+  const tasks = await fetchTasksFromList(currentProjectsList.id);
   const allEmployees = await getOfficeWorkersFromClickUp();
 
   const books = [];
@@ -24,14 +22,11 @@ export async function fetchBooksFromClickUp() {
     const clickup_id = task.id;
     const AZ_book_id = task.custom_id;
 
-    // חיפוש שדה "Manager"
     const managerField = task.custom_fields.find(f => f.name === 'Manager');
     const managerIndex = managerField?.value;
     const managerOption = managerField?.type_config?.options?.[managerIndex];
     const managerName = managerOption?.name;
 
-    // חיפוש העובד לפי השם שלו מתוך ClickUp (לא מה-DB!)
-    // const matchingEmployee = allEmployees.find(e => e.name === managerName);
     const matchingEmployee = allEmployees.find(e => e.name.includes(managerName));
     const projectManagerClickupId = matchingEmployee?.id || null;
 
@@ -45,22 +40,6 @@ export async function fetchBooksFromClickUp() {
 
   return books;
 }
-
-async function fetchTasksFromListA(listId) {
-  let allTasks = [];
-  let page = 0;
-  let lastPage = false;
-
-  while (!lastPage) {
-    const response = await clickUpService.getTasks(listId, page);
-    allTasks.push(...response.tasks);
-    lastPage = response.last_page;
-    page++;
-  }
-
-  return allTasks;
-}
-
 
 async function fetchTasksFromList(listId) {
   let allTasks = [];
@@ -76,6 +55,7 @@ async function fetchTasksFromList(listId) {
 
   return allTasks;
 }
+
 
 export async function syncBooksToDatabase() {
   const books = await fetchBooksFromClickUp();

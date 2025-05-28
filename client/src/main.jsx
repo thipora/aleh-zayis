@@ -29,13 +29,13 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import theme from "./theme"; // הנתיב לקובץ שהכנת
+import theme from "./theme";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* מאפס סגנונות דפדפן ברירת מחדל */}
+      <CssBaseline />
       <BrowserRouter>
         <App />
       </BrowserRouter>

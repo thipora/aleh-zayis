@@ -3,7 +3,6 @@ import { executeQuery } from '../config/db.js';
 export class SummaryService {
     static table = "work_entries";
 
-    // סיכום לפי חודש (מחזיר לכל ספר כמה שעות באותו חודש)
     async getSummaryByMonth(employeeId, month) {
         const sql = `
             SELECT book_id, book_name, SUM(quantity) AS total_hours
@@ -15,7 +14,6 @@ export class SummaryService {
         return await executeQuery(sql, [employeeId, month]);
     }
 
-    // סיכום לפי ספר (מחזיר לכל חודש כמה שעות באותו ספר)
     async getSummaryByBook(employeeId, bookId) {
         const sql = `
             SELECT DATE_FORMAT(date, '%Y-%m') AS month, SUM(quantity) AS total_hours
@@ -26,6 +24,4 @@ export class SummaryService {
         `;
         return await executeQuery(sql, [employeeId, bookId]);
     }
-
-    // כאן אפשר להוסיף סיכומים נוספים (שנתי, ממוצעים, דוחות מפורטים וכו')
 }

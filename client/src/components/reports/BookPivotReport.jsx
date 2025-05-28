@@ -91,7 +91,6 @@ const BookMatrixReport = () => {
       return row;
     });
 
-    // שורת סיכום
     const totalRow = {
       [t("bookMatrixReport.employeeName")]: t("bookMatrixReport.totalByRole"),
     };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { Routes, Route } from 'react-router-dom';
-
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Login from "./components/auth/Login.jsx";
 import Register from "./components/auth/Register.jsx";
@@ -9,7 +8,7 @@ import ForgotPassword from "./components/auth/ForgotPassword.jsx";
 
 import EmployeeDashboard from "./components/employees/EmployeeDashboard.jsx";
 import ManagerDashboard from "./components/manager/ManagerDashboard.jsx";
-import ClientPage from "./components/Admin/ClientPage.jsx";
+import ClientPage from "./components/client/ClientPage.jsx";
 import ReportsDashboard from "./components/reports/ReportsDashboard.jsx";
 import EmployeeList from "./components/manager/EmployeesList.jsx";
 import EmployeeWorkPage from "./components/manager/EmployeeWorkPage.jsx";
@@ -71,6 +70,8 @@ const App = () => {
         <Route path="/manager/employees" element={<PrivateRoute allowedRoles={["Manager"]}>  <EmployeeList/> </PrivateRoute>} />
         <Route path="/manager/reports" element={<PrivateRoute allowedRoles={["Manager"]} >  <ReportsDashboard/> </PrivateRoute>} />
         <Route path="/manager/employee/:id/work" element={<PrivateRoute allowedRoles={["Manager"]}>  <EmployeeWorkPage/> </PrivateRoute>} />
+
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Box>
   );

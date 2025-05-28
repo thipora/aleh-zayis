@@ -1,8 +1,5 @@
 import { UserService } from '../services/userService.js';
-// import { createToken } from "../utils/tokenUtils.js";
 import { createToken } from "../util/tokenUtils.js";
-import { userSchema } from '../validations/userValidations.js';
-import jwt from 'jsonwebtoken';
 
 export class AuthController {
     static userService = new UserService();

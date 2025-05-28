@@ -3,12 +3,12 @@ import { WorkEntriesController } from '../controllers/workEntriesController.js';
 import { verifyToken } from "../middleware/authenticateToken.js";
 
 const workEntrieRouter = express.Router();
-const workEntriesController = new WorkEntriesController(); // יצירת מופע של WorkEntriesController
+const workEntriesController = new WorkEntriesController();
 
-workEntrieRouter.get('/:employeeId', verifyToken, workEntriesController.getWorkEntriesByEmployee); // שליחה לפונקציה של המופע
-workEntrieRouter.put('/:WorkEntrieId', verifyToken, workEntriesController.updateWorkEntrie); // שליחה לפונקציה של המופע
-workEntrieRouter.post('/:employeeId', verifyToken, workEntriesController.createWorkEntry); // שליחה לפונקציה של המופע
-// workEntriesRouter.get('/:employeeId', WorkEntriesController.getUniqueBooksByEmployee);
+workEntrieRouter.get('/:employeeId', verifyToken, workEntriesController.getWorkEntriesByEmployee);
+workEntrieRouter.put('/:WorkEntrieId', verifyToken, workEntriesController.updateWorkEntrie);
+workEntrieRouter.post('/:employeeId', verifyToken, workEntriesController.createWorkEntry);
+
 workEntrieRouter.get('/reports/editor/:employeeId', verifyToken, workEntriesController.getEditorWorkByMonth);
 workEntrieRouter.get('/reports/project/:bookId', verifyToken, workEntriesController.getProjectWorkByMonth);
 workEntrieRouter.get('/reports/editors-summary', verifyToken, workEntriesController.getEditorsSummaryByMonth);

@@ -17,7 +17,7 @@ export async function findUserByEmailInClickUp(email) {
   if (matches.length === 0) return null;
 
   return {
-    id: matches[0].id, // נניח שזה אותו ID בכל המופעים
+    id: matches[0].id,
     name: matches[0].name,
     email: matches[0].email,
     roles: matches.flatMap(user => user.roles || [user.role])

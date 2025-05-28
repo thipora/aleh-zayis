@@ -1,4 +1,3 @@
-// controllers/bookController.js
 import { BooksService } from '../services/bookService.js';
 
 export class BooksController {

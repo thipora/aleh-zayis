@@ -1,22 +1,3 @@
-// import { RolesService } from '../services/rolesService.js';
-
-// export class RolesController {
-//   static rolesService = new RolesService();
-
-//   async getRoleById(req, res, next) {
-//     try {
-//       const { roleId } = req.params;
-//       const role = await RolesController.rolesService.getRoleById(roleId);
-//       if (!role) {
-//         return res.status(404).json({ message: 'Role not found' });
-//       }
-//       res.json(role);
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// }
-
 import { RolesService } from '../services/rolesService.js';
 
 export class RolesController {
@@ -37,7 +18,7 @@ export class RolesController {
 
   async getRolesByIds(req, res, next) {
     try {
-      const idsParam = req.query.ids; // מחרוזת "1,2,3"
+      const idsParam = req.query.ids;
       if (!idsParam) {
         return res.status(400).json({ message: 'Missing ids query parameter' });
       }

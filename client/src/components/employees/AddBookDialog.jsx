@@ -1,13 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  TextField,
-  Typography,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Box,
-  Alert
-} from "@mui/material";
+import { useEffect, useState } from "react";
+import { TextField, Typography, Button, Checkbox, FormControlLabel, Box, Alert } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import { useTranslation } from "react-i18next";
 
@@ -74,10 +66,9 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
       });
 
       if (response?.inserted) {
-        // setSuccess("הספר נוסף בהצלחה!");
         setBookId('');
         setSelectedRoles([]);
-        onSuccess?.(response.book); // ⬅️ שליחה של הספר החדש לרשימה
+        onSuccess?.(response.book);
       } else {
         setSystemError(response?.message || "הוספת הספר נכשלה");
       }
@@ -87,98 +78,6 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
 
   };
 
-  // return (
-  //   <Box
-  //     mt={2}
-  //     p={1}
-  //     border="1px solid #ddd"
-  //     borderRadius="6px"
-  //     display="flex"
-  //     flexDirection="column"
-  //     gap={1}
-  //     maxWidth="90%"
-  //     mx="auto"
-  //     sx={{ backgroundColor: "#fafafa" }}
-  //   >
-  //     {/* הודעת מערכת */}
-  //     {(systemError || success) && (
-  //       <Alert severity={systemError ? "error" : "success"} sx={{ mb: 1 }}>
-  //         {systemError || success}
-  //       </Alert>
-  //     )}
-
-  //     {/* שורת פרטי הספר */}
-  //     <Box
-  //       display="flex"
-  //       alignItems="center"
-  //       justifyContent="space-between"
-  //       gap={1}
-  //       flexWrap="wrap"
-  //     >
-  //       <Typography variant="subtitle1" sx={{ whiteSpace: 'nowrap' }}>
-  //         הוספת ספר חדש
-  //       </Typography>
-
-  //       <TextField
-  //         label="Book ID"
-  //         value={bookId}
-  //         onChange={(e) => setBookId(e.target.value)}
-  //         size="small"
-  //         error={bookIdError}
-  //         helperText={bookIdError ? "יש להזין Book ID" : ""}
-  //       />
-
-  //       <Button
-  //         variant="contained"
-  //         color="primary"
-  //         size="small"
-  //         onClick={handleAddBook}
-  //         sx={{ minWidth: 64 }}
-  //       >
-  //         שמור
-  //       </Button>
-  //     </Box>
-
-  //     {/* תפקידים */}
-  //     {availableRoles.length > 1 && (
-  //       <>
-  //         <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
-  //           <Box display="flex" alignItems="center" sx={{ whiteSpace: 'nowrap' }}>
-  //             <Typography variant="body2" sx={{ mr: 0.5 }}>
-  //               בחר תפקידים:
-  //             </Typography>
-  //           </Box>
-
-  //           {availableRoles.map(role => (
-  //             <FormControlLabel
-  //               key={role.id_role}
-  //               control={
-  //                 <Checkbox
-  //                   checked={selectedRoles.includes(role.id_role)}
-  //                   onChange={(e) => {
-  //                     if (e.target.checked) {
-  //                       setSelectedRoles(prev => [...prev, role.id_role]);
-  //                     } else {
-  //                       setSelectedRoles(prev => prev.filter(id => id !== role.id_role));
-  //                     }
-  //                   }}
-  //                   size="small"
-  //                 />
-  //               }
-  //               label={role.role_name}
-  //               sx={{ m: 0 }}
-  //             />
-  //           ))}
-  //         </Box>
-  //         {rolesError && (
-  //           <Typography color="error" variant="caption" sx={{ ml: 4 }}>
-  //             יש לבחור לפחות תפקיד אחד
-  //           </Typography>
-  //         )}
-  //       </>
-  //     )}
-  //   </Box>
-  // );
   return (
     <Box
       mt={2}

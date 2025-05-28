@@ -1,4 +1,3 @@
-// routes/reportsRouter.js
 import express from 'express';
 import { ReportsController } from '../controllers/reportsController.js';
 import { verifyToken } from "../middleware/authenticateToken.js";

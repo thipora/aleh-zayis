@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   TextField, Button, Typography, Box, Paper
 } from "@mui/material";
@@ -34,91 +34,6 @@ const ForgotPassword = () => {
     setLoading(false);
   };
 
-  //   return (
-  //     <Box
-  //       sx={{
-  //         bgcolor: "#fdf9f3",
-  //         minHeight: "calc(100vh - 300px)",
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //         px: 2,
-  //         py: 4,
-  //       }}
-  //     >
-
-  //       <Paper
-  //         elevation={3}
-  //         sx={{
-  //           p: 5,
-  //           borderRadius: 4,
-  //           bgcolor: "#ffffff",
-  //           boxShadow: "0 6px 24px rgba(0,0,0,0.08)",
-  //           width: "100%",
-  //           maxWidth: 420,
-  //         }}
-  //       >
-  //         <Button
-  //   onClick={() => navigate("/login")}
-  //   sx={{
-  //     mb: 2,
-  //     textTransform: "none",
-  //     color: "#5d4037",
-  //     fontWeight: 500,
-  //     fontSize: "0.9rem",
-  //     '&:hover': { backgroundColor: "transparent", textDecoration: "underline" },
-  //     alignSelf: "flex-start"
-  //   }}
-  //   startIcon={<span style={{ fontSize: "1rem" }}>←</span>}
-  // >
-  //   Back
-  // </Button>
-
-  //         <Typography variant="h4" align="center" sx={{ color: "#5d4037", fontWeight: 600, mb: 2 }}>
-  //           {t("forgot.title")}
-  //         </Typography>
-
-  //         {message && (
-  //           <Typography color="success.main" align="center" sx={{ mb: 1 }}>
-  //             {message}
-  //           </Typography>
-  //         )}
-  //         {error && (
-  //           <Typography color="error" align="center" sx={{ mb: 1 }}>
-  //             {error}
-  //           </Typography>
-  //         )}
-
-  //         <form onSubmit={handleSubmit}>
-  //           <TextField
-  //             fullWidth
-  //             label={t("forgot.email")}
-  //             value={email}
-  //             onChange={(e) => setEmail(e.target.value)}
-  //             margin="normal"
-  //             required
-  //           />
-
-  //           <Button
-  //             type="submit"
-  //             variant="contained"
-  //             fullWidth
-  //             disabled={loading}
-  //             sx={{
-  //               mt: 3,
-  //               backgroundColor: "#8d6e63",
-  //               "&:hover": { backgroundColor: "#795548" },
-  //               borderRadius: 3,
-  //               py: 1.5,
-  //               fontWeight: 600,
-  //             }}
-  //           >
-  //             {t("forgot.submit")}
-  //           </Button>
-  //         </form>
-  //       </Paper>
-  //     </Box>
-  //   );
   return (
     <Box
       sx={{

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Container, TextField, Button, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment, IconButton } from "@mui/material";
+import { useState } from "react";
+import { TextField, Button, Typography, Box, InputAdornment, IconButton } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
@@ -17,7 +17,6 @@ const ChangePassword = ({ onClose }) => {
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
   const [touched, setTouched] = useState({
-    // email: false,
     currentPassword: false,
     newPassword: false,
     confirmPassword: false,
@@ -43,7 +42,6 @@ const ChangePassword = ({ onClose }) => {
   };
 
   const hasError = Object.values(errors).some((msg) => !!msg)
-    // || !email
     || !currentPassword
     || !newPassword
     || !confirmPassword
@@ -53,34 +51,6 @@ const ChangePassword = ({ onClose }) => {
   const handleBlur = (field) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setServerError("");
-  //   setTouched({
-  //     email: true,
-  //     currentPassword: true,
-  //     newPassword: true,
-  //     confirmPassword: true,
-  //   });
-
-  //   if (hasError) return;
-
-  //   try {
-
-  //     const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-  //     await apiRequests.postRequest("/auth/change-password", {
-  //       // email,
-  //       userId: user.id_user,
-  //       currentPassword,
-  //       newPassword,
-  //     });
-  //     setSuccess(true);
-  //   } catch (err) {
-  //     setServerError("Failed to change password. Please try again.");
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,109 +82,6 @@ const ChangePassword = ({ onClose }) => {
       setServerError("Failed to change password. Please try again.");
     }
   };
-
-  // return (
-  //   <Box sx={{ p: 3, mt: 2, mb: 2, width: '100%' }}>
-  //     {success && (
-  //       <Typography color="success.main" sx={{ mb: 2 }}>
-  //         הסיסמה עודכנה בהצלחה!
-  //       </Typography>
-  //     )}
-  //     <Typography variant="h5" gutterBottom>
-  //       Change Password
-  //     </Typography>
-  //     {serverError && (
-  //       <Typography color="error" sx={{ mb: 2 }}>
-  //         {serverError}
-  //       </Typography>
-  //     )}
-  //     <form onSubmit={handleSubmit} style={{ width: "100%" }} noValidate>
-  //       <TextField
-  //         fullWidth
-  //         label="Current Password"
-  //         type={showCurrent ? "text" : "password"}
-  //         value={currentPassword}
-  //         onChange={(e) => setCurrentPassword(e.target.value)}
-  //         margin="normal"
-  //         required
-  //         error={!!errors.currentPassword}
-  //         helperText={errors.currentPassword}
-  //         onBlur={() => handleBlur("currentPassword")}
-  //         autoComplete="current-password"
-  //         InputProps={{
-  //           endAdornment: (
-  //             <InputAdornment position="end">
-  //               <IconButton
-  //                 onClick={() => setShowCurrent((prev) => !prev)}
-  //                 edge="end"
-  //               >
-  //                 {showCurrent ? <VisibilityOff /> : <Visibility />}
-  //               </IconButton>
-  //             </InputAdornment>
-  //           ),
-  //         }}
-  //       />
-  //       <TextField
-  //         fullWidth
-  //         label="New Password"
-  //         type={showNew ? "text" : "password"}
-  //         value={newPassword}
-  //         onChange={(e) => setNewPassword(e.target.value)}
-  //         margin="normal"
-  //         required
-  //         error={!!errors.newPassword}
-  //         helperText={errors.newPassword}
-  //         onBlur={() => handleBlur("newPassword")}
-  //         autoComplete="new-password"
-  //         InputProps={{
-  //           endAdornment: (
-  //             <InputAdornment position="end">
-  //               <IconButton
-  //                 onClick={() => setShowNew((prev) => !prev)}
-  //                 edge="end"
-  //               >
-  //                 {showNew ? <VisibilityOff /> : <Visibility />}
-  //               </IconButton>
-  //             </InputAdornment>
-  //           ),
-  //         }}
-  //       />
-  //       <TextField
-  //         fullWidth
-  //         label="Confirm New Password"
-  //         type={showConfirm ? "text" : "password"}
-  //         value={confirmPassword}
-  //         onChange={(e) => setConfirmPassword(e.target.value)}
-  //         margin="normal"
-  //         required
-  //         error={!!errors.confirmPassword}
-  //         helperText={errors.confirmPassword}
-  //         onBlur={() => handleBlur("confirmPassword")}
-  //         autoComplete="new-password"
-  //         InputProps={{
-  //           endAdornment: (
-  //             <InputAdornment position="end">
-  //               <IconButton
-  //                 onClick={() => setShowConfirm((prev) => !prev)}
-  //                 edge="end"
-  //               >
-  //                 {showConfirm ? <VisibilityOff /> : <Visibility />}
-  //               </IconButton>
-  //             </InputAdornment>
-  //           ),
-  //         }}
-  //       />
-  //       <Button
-  //         type="submit"
-  //         variant="contained"
-  //         fullWidth
-  //         sx={{ mt: 2 }}
-  //       >
-  //         Change Password
-  //       </Button>
-  //     </form>
-  //   </Box>
-  // );
 
   return (
     <Box sx={{ p: 3, mt: 2, mb: 2, width: '100%' }}>
