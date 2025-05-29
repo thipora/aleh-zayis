@@ -14,7 +14,7 @@ export class BookAssignmentsService {
       'SELECT id_book, clickup_id FROM books WHERE AZ_book_id = ?',
       [AZ_book_id]
     );
-    book = db[0];
+    const book = db[0];
 console.log("book" + book[0]);
     if (book) return book;
 
