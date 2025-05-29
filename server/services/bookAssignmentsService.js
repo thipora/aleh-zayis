@@ -48,9 +48,13 @@ export class BookAssignmentsService {
 
 
   async getEmployeeRoleInBook(task, employeeClickUpId) {
+    console.log("aaaa")
     const user = await this.clickUpService.getTaskById(employeeClickUpId);
+        console.log("bbbb")
     const employeeName = user.name;
+        console.log("cccc")
     if (!employeeName) throw new Error('Employee name not found');
+    console.log("dddd")
 
     const customFields = task.custom_fields || [];
     const ROLES = ['Editor', 'Typist', 'Graphics', 'Layout', 'Manager'];
@@ -123,7 +127,6 @@ export class BookAssignmentsService {
     if (!roleFromClickUp) {
       return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
     }
-            console.log("111")
     const [roleRow] = await executeQuery(
       'SELECT id_role FROM roles WHERE role_name = ?',
       [roleFromClickUp]
