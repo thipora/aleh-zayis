@@ -116,32 +116,29 @@ export class BookAssignmentsService {
     const book = await this.getOrCreateBookByAZId(AZ_book_id);
     const bookClickUpId = book.clickup_id;
     const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
-            console.log("aaaaa")
     const task = await this.clickUpService.getTaskById(bookClickUpId);
-            console.log("bbbbb")
     if (!task) throw new Error('Book task not found in ClickUp');
-        console.log("ccccc")
 
     const roleFromClickUp = await this.getEmployeeRoleInBook(task, employeeClickUpId);
-            console.log("ddddd")
     if (!roleFromClickUp) {
       return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
     }
-
+            console.log("111")
     const [roleRow] = await executeQuery(
       'SELECT id_role FROM roles WHERE role_name = ?',
       [roleFromClickUp]
     );
+                console.log("222")
     if (!roleRow) throw new Error(`Role "${roleFromClickUp}" not found in DB`);
     const matchedRoleId = roleRow.id_role;
-
+            console.log("3333")
     if (selectedRoleIds.length > 0 && !selectedRoleIds.includes(matchedRoleId)) {
       return {
         inserted: false,
         message: 'Selected roles do not match ClickUp role'
       };
     }
-
+            console.log("444")
     const [empRole] = await executeQuery(
       'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
       [employeeId, matchedRoleId]
@@ -149,9 +146,9 @@ export class BookAssignmentsService {
     if (!empRole) {
       return { inserted: false, message: 'Employee does not have this role in DB' };
     }
-
+            console.log("5555")
     const employeeRoleId = empRole.id_employee_role;
-
+            console.log("66666")
     const [existingAssignment] = await executeQuery(
       `SELECT * FROM book_assignments 
      WHERE book_id = ? AND employee_role_id = ?`,
