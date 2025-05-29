@@ -66,6 +66,7 @@ export class BookAssignmentsService {
         for (const valueId of valueIds) {
           const option = options.find(opt => opt.id === valueId);
                 console.log(valueId)
+                                console.log(options)
           if (!option) continue;
           const label = option.label;
           if (employeeName.includes(label) || label.includes(employeeName)) {
