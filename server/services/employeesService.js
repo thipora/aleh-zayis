@@ -28,7 +28,48 @@ export class EmployeeService {
     return Object.values(employeesMap);
   }
 
-  async createEmployee(params) {
+  // async createEmployee(params) {
+  //   const roleMap = {
+  //     'Editors': 'Editor',
+  //     'Typists': 'Typist',
+  //     'Transcribers': 'Transcriber',
+  //     'graphics': 'Graphics',
+  //     'layout': 'Layout',
+  //     'Project Management': 'Project Manager'
+  //   };
+
+  //   const { user_id, clickup_id, roles } = params;
+
+  //   const insertEmployeeQuery = `INSERT INTO alehzayis.employees (user_id, clickup_id) VALUES (?, ?)`;
+  //   const result = await executeQuery(insertEmployeeQuery, [user_id, clickup_id]);
+
+  //   if (!result.insertId) {
+  //     throw new Error("Failed to create employee");
+  //   }
+
+  //   const employeeId = result.insertId;
+
+  //   for (const roleName of roles) {
+  //     const normalizedRole = roleMap[roleName];
+  //     if (!normalizedRole) continue;
+
+  //     const roleResult = await executeQuery(
+  //       `SELECT id_role FROM roles WHERE role_name = ?`,
+  //       [normalizedRole]
+  //     );
+
+  //     if (roleResult.length) {
+  //       const roleId = roleResult[0].id_role;
+  //       await executeQuery(
+  //         `INSERT INTO alehzayis.employee_roles (employee_id, role_id) VALUES (?, ?)`,
+  //         [employeeId, roleId]
+  //       );
+  //     }
+  //   }
+
+  //   return employeeId;
+  // }
+  async createEmployee(params, connection) {
     const roleMap = {
       'Editors': 'Editor',
       'Typists': 'Typist',
@@ -40,28 +81,26 @@ export class EmployeeService {
 
     const { user_id, clickup_id, roles } = params;
 
-    const insertEmployeeQuery = `INSERT INTO alehzayis.employees (user_id, clickup_id) VALUES (?, ?)`;
-    const result = await executeQuery(insertEmployeeQuery, [user_id, clickup_id]);
+    const [employeeResult] = await connection.execute(
+      `INSERT INTO employees (user_id, clickup_id) VALUES (?, ?)`,
+      [user_id, clickup_id]
+    );
 
-    if (!result.insertId) {
-      throw new Error("Failed to create employee");
-    }
-
-    const employeeId = result.insertId;
+    const employeeId = employeeResult.insertId;
 
     for (const roleName of roles) {
       const normalizedRole = roleMap[roleName];
       if (!normalizedRole) continue;
 
-      const roleResult = await executeQuery(
+      const [roleResult] = await connection.execute(
         `SELECT id_role FROM roles WHERE role_name = ?`,
         [normalizedRole]
       );
 
       if (roleResult.length) {
         const roleId = roleResult[0].id_role;
-        await executeQuery(
-          `INSERT INTO alehzayis.employee_roles (employee_id, role_id) VALUES (?, ?)`,
+        await connection.execute(
+          `INSERT INTO employee_roles (employee_id, role_id) VALUES (?, ?)`,
           [employeeId, roleId]
         );
       }
