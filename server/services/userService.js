@@ -98,7 +98,20 @@ export class UserService {
     }
 
 
-    // async createUserEntry(params) {
+    // // async createUserEntry(params) {
+    // //     const rawPassword = generateRandomPassword();
+    // //     const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+    // //     const newUser = {
+    // //         name: params.name,
+    // //         email: params.email,
+    // //         password: hashedPassword,
+    // //         account_type: 'employee'
+    // //     };
+    // //     const userId = await this.addUser(newUser);
+    // //     return { userId, rawPassword }
+    // // }
+    // async createUserEntry(params, connection) {
     //     const rawPassword = generateRandomPassword();
     //     const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
@@ -108,8 +121,14 @@ export class UserService {
     //         password: hashedPassword,
     //         account_type: 'employee'
     //     };
-    //     const userId = await this.addUser(newUser);
-    //     return { userId, rawPassword }
+
+    //     const [result] = await connection.execute(
+    //         `INSERT INTO users (name, email, password, account_type) VALUES (?, ?, ?, ?)`,
+    //         [newUser.name, newUser.email, newUser.password, newUser.account_type]
+    //     );
+
+    //     const userId = result.insertId;
+    //     return { userId, rawPassword };
     // }
     async createUserEntry(params, connection) {
         const rawPassword = generateRandomPassword();
@@ -122,14 +141,24 @@ export class UserService {
             account_type: 'employee'
         };
 
-        const [result] = await connection.execute(
-            `INSERT INTO users (name, email, password, account_type) VALUES (?, ?, ?, ?)`,
-            [newUser.name, newUser.email, newUser.password, newUser.account_type]
-        );
+        console.log("🔹 inserting new user:", newUser);
 
-        const userId = result.insertId;
-        return { userId, rawPassword };
+        try {
+            const [result] = await connection.execute(
+                `INSERT INTO users (name, email, password, account_type) VALUES (?, ?, ?, ?)`,
+                [newUser.name, newUser.email, newUser.password, newUser.account_type]
+            );
+
+            console.log("✅ user insert result:", result);
+
+            const userId = result.insertId;
+            return { userId, rawPassword };
+        } catch (err) {
+            console.error("❌ failed to insert user:", err);
+            throw err;
+        }
     }
+
 
 
     async validateClickUpUser(email) {
