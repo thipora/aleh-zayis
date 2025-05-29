@@ -68,7 +68,7 @@ export class UserService {
             const clickupUser = await this.validateClickUpUser(email);
             // const { userId, rawPassword } = await this.createUserEntry(params, connection);
             const { userId, rawPassword } = await this.createUserEntry(params, connection);
-            
+
             if (!userId) {
                 throw new Error("Failed to create user");
             }
@@ -144,7 +144,7 @@ export class UserService {
     async userExists(email) {
         const query = registerUserQuery();
         const users = await executeQuery(query, [email]);
-        if (users.length = 0) {
+        if (users.length == 0) {
             throw new Error("User already exists");
         }
         return users.length > 0;
