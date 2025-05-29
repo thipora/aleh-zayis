@@ -13,7 +13,7 @@ export class BookAssignmentsService {
       'SELECT id_book, clickup_id FROM books WHERE AZ_book_id = ?',
       [AZ_book_id]
     );
-
+console.log("book" + book);
     if (book) return book;
 
     const books = await fetchBooksFromClickUp(AZ_book_id);
@@ -113,7 +113,9 @@ export class BookAssignmentsService {
 
 
   async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
+    console.log("aaaa" + AZ_book_id)
     const book = await this.getOrCreateBookByAZId(AZ_book_id);
+        console.log("bbbbb")
     const bookClickUpId = book.clickup_id;
     const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
     const task = await this.clickUpService.getTaskById(bookClickUpId);
