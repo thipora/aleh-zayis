@@ -65,8 +65,8 @@ export class BookAssignmentsService {
       if (Array.isArray(field.value)) {
         for (const valueId of valueIds) {
           const option = options.find(opt => opt.id === valueId);
+                console.log(valueId)
           if (!option) continue;
-                console.log(option)
           const label = option.label;
           if (employeeName.includes(label) || label.includes(employeeName)) {
                     console.log("aaa")
@@ -75,7 +75,7 @@ export class BookAssignmentsService {
         }
       } else {
         const option = options.find(opt => opt.orderindex === valueIds);
-                        console.log(option)
+                        console.log(valueIds)
         const name = option.name;
         if (employeeName.includes(name) || name.includes(employeeName)) {
                   console.log("bbbb")
