@@ -106,7 +106,7 @@ const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
 
         await onAdd(dataToSend);
         onClose();
-      } catch (err) {
+      } catch (error) {
         alert("Error adding work entry.");
       } finally {
         setLoading(false);

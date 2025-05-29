@@ -259,7 +259,7 @@ export class WorkEntriesService {
       if (!row.project_manager_name && row.project_manager_clickup_id) {
         try {
           row.project_manager_name = await getProjectManagerNameById(row.project_manager_clickup_id);
-        } catch (err) {
+        } catch (error) {
           console.error('שגיאה בשליפת שם מנהל מפרויקט:');
           row.project_manager_name = 'שגיאה בשליפה';
         }
@@ -287,7 +287,7 @@ export class WorkEntriesService {
         try {
           const clickUpUser = await clickUpService.getUserById(entry.project_manager_clickup_id);
           projectManagerName = clickUpUser?.username || clickUpUser?.name || 'מנהל לא ידוע';
-        } catch (err) {
+        } catch (error) {
           console.error('שגיאה בשליפת מנהל מפרויקט מ-ClickUp:');
           projectManagerName = 'שגיאה בשליפה';
         }

@@ -25,8 +25,8 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
         try {
             const data = await api.getRequest(`/employee-roles/${employeeId}`);
             setRoles(data);
-        } catch (err) {
-            console.error("Failed to fetch rates", err);
+        } catch (error) {
+            console.error("Failed to fetch rates", error);
         }
         setLoading(false);
     };
@@ -44,8 +44,8 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
         try {
             await api.postRequest(`/employee-roles`, { roles });
             onClose();
-        } catch (err) {
-            console.error("Error updating rates:", err);
+        } catch (error) {
+            console.error("Error updating rates:", error);
         }
         setSaving(false);
     };

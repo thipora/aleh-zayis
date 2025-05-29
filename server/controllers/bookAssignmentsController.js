@@ -12,7 +12,7 @@ export class BookAssignmentsController {
         selectedRoleIds
       );
       res.status(200).json(result);
-    } catch (err) {
+    } catch (error) {
       next({
         statusCode: err.errno || 500,
         message: err.message || err
@@ -37,8 +37,8 @@ export class BookAssignmentsController {
     try {
       const books = await BookAssignmentsController.bookAssignmentsService.getBooksForEmployee(employeeId);
       res.json(books);
-    } catch (err) {
-      console.error("Error getting books for employee", err);
+    } catch (error) {
+      console.error("Error getting books for employee", error);
       res.status(500).json({ error: "Failed to fetch books" });
     }
   }
@@ -53,8 +53,8 @@ export class BookAssignmentsController {
     try {
       await BookAssignmentsController.bookAssignmentsService.updateCustomRate(id_book_assignment, custom_rate);
       res.json({ success: true });
-    } catch (err) {
-      console.error("Error updating custom rate:", err);
+    } catch (error) {
+      console.error("Error updating custom rate:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   }

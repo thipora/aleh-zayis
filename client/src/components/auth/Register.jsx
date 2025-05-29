@@ -39,7 +39,7 @@ const Register = () => {
       await apiRequests.postRequest("/auth/register", formData);
       setSuccessMsg(t("register.success"));
       setTimeout(() => navigate("/login"), 3000);
-    } catch (err) {
+    } catch (error) {
       setError(err.response?.data?.message || t("register.error"));
     } finally {
       setLoading(false);

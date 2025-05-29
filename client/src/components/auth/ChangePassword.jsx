@@ -78,7 +78,7 @@ const ChangePassword = ({ onClose }) => {
           onClose();
         }
       }, 2000);
-    } catch (err) {
+    } catch (error) {
       setServerError("Failed to change password. Please try again.");
     }
   };

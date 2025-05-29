@@ -44,7 +44,7 @@ const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
             : b
         )
       );
-    } catch (err) {
+    } catch (error) {
       alert("שגיאה בשמירת תשלום מותאם");
     } finally {
       setEditDialogOpen(false);
@@ -60,8 +60,8 @@ const AssignedBooksList = ({ employeeId, initialBooks = [] }) => {
       const bookId = book.id_book;
       await api.postRequest(`/book-assignments/complete`, { bookId, employeeId });
       setBooks(prev => prev.filter(b => b.id_book !== bookId));
-    } catch (err) {
-      console.error("שגיאה במחיקת הספר", err);
+    } catch (error) {
+      console.error("שגיאה במחיקת הספר", error);
       alert("אירעה שגיאה במחיקה.");
     }
   };

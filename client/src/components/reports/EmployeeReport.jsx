@@ -24,8 +24,8 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         setRows(data);
         const charges = await api.getRequest(`/monthly-charges/${employeeId}`);
         setMonthlyCharges(charges);
-      } catch (err) {
-        console.error("Error fetching employee report:", err);
+      } catch (error) {
+        console.error("Error fetching employee report:", error);
         setRows([]);
       }
       setLoading(false);

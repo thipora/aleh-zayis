@@ -8,7 +8,7 @@ export class MonthlyChargesController {
             const { employeeId } = req.params;
             const charges = await MonthlyChargesController.monthlyChargesService.getChargesByEmployee(employeeId);
             res.json(charges);
-        } catch (err) {
+        } catch (error) {
             next({
                 statusCode: 500,
                 message: err.message || "Failed to fetch monthly charges"
@@ -21,7 +21,7 @@ export class MonthlyChargesController {
             const { employee_id, charge_name, amount, notes } = req.body;
             await MonthlyChargesController.monthlyChargesService.addCharge(employee_id, charge_name, amount, notes);
             res.status(200).json({ message: "Charge added successfully" });
-        } catch (err) {
+        } catch (error) {
             next({
                 statusCode: 500,
                 message: err.message || "Failed to add monthly charge"
@@ -34,7 +34,7 @@ export class MonthlyChargesController {
             const { chargeId } = req.params;
             await MonthlyChargesController.monthlyChargesService.deleteCharge(chargeId);
             res.status(200).json({ message: "Charge deleted" }); // ✅ במקום sendStatus
-        } catch (err) {
+        } catch (error) {
             next({ statusCode: 500, message: err.message || "Failed to delete" });
         }
     }

@@ -79,7 +79,7 @@ const EmployeeDashboard = () => {
         availability_status: newStatus
       });
       console.log("Availability status updated");
-    } catch (err) {
+    } catch (error) {
       alert("שגיאה בעדכון הסטטוס");
     }
   };
@@ -102,7 +102,7 @@ const EmployeeDashboard = () => {
 
       setOpen(true);
 
-    } catch (err) {
+    } catch (error) {
       setBooks([]);
       setError("Failed to load data.");
     }
@@ -136,7 +136,7 @@ const EmployeeDashboard = () => {
       setNewWork({ book_id: "", quantity: "", description: "", notes: "", is_special_work: false, date: currentDate });
       setOpen(false);
       fetchWorkEntries();
-    } catch (err) {
+    } catch (error) {
       setError("Failed to add work log");
     }
   };
@@ -145,7 +145,7 @@ const EmployeeDashboard = () => {
     try {
       await apiRequests.putRequest(`/workEntries/${updatedWork.id_work_entries}`, updatedWork);
       fetchWorkEntries();
-    } catch (err) {
+    } catch (error) {
       setError("Failed to update work log");
     }
   };
@@ -166,7 +166,7 @@ const EmployeeDashboard = () => {
         const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
         setBooks(booksData);
       }
-    } catch (err) {
+    } catch (error) {
       setError("Failed to fetch work logs");
     }
   };
@@ -212,7 +212,7 @@ const EmployeeDashboard = () => {
       setOpenAddBook(false);
       setSelectedRoles([]);
       setBookId("");
-    } catch (err) {
+    } catch (error) {
       alert("שגיאה בהוספת הספר");
     }
   };
@@ -235,8 +235,8 @@ const EmployeeDashboard = () => {
       try {
         const response = await apiRequests.getRequest(`/roles?ids=${roleIds.join(',')}`);
         setAvailableRoles(response);
-      } catch (err) {
-        console.error("Failed to fetch role names", err);
+      } catch (error) {
+        console.error("Failed to fetch role names", error);
       }
     } else if (roleIds.length === 1) {
       setAvailableRoles([{ id_role: roleIds[0], role_name: "תפקיד יחיד" }]);

@@ -6,7 +6,7 @@ cron.schedule('0 2 * * *', async () => {
     console.log('Running book sync...');
     await syncBooksToDatabase();
     console.log('Book sync complete.');
-  } catch (err) {
+  } catch (error) {
     console.error('Book sync failed:', err.message);
   }
 });

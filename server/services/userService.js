@@ -193,7 +193,7 @@ export class UserService {
             const decoded = jwt.verify(token, secret);
             const user = await this.getUserById(decoded.idUser);
             return user;
-        } catch (err) {
+        } catch (error) {
             return null;
         }
     }

@@ -26,8 +26,8 @@ const Login = () => {
     const logout = async () => {
       try {
         await apiRequests.postRequest("/auth/logout");
-      } catch (err) {
-        console.error("Logout failed", err);
+      } catch (error) {
+        console.error("Logout failed", error);
       }
       localStorage.removeItem("user");
     };
@@ -62,8 +62,8 @@ const Login = () => {
         default:
           navigate("/");
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       setError(t("login.error.failed"));
     }
   };

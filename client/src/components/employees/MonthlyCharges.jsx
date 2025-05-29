@@ -17,8 +17,8 @@ const MonthlyCharges = ({ employeeId }) => {
     try {
       const data = await api.getRequest(`/monthly-charges/${employeeId}`);
       setCharges(data);
-    } catch (err) {
-      console.error("Failed to fetch charges", err);
+    } catch (error) {
+      console.error("Failed to fetch charges", error);
     }
   };
 
@@ -41,8 +41,8 @@ const MonthlyCharges = ({ employeeId }) => {
       setNewCharge({ charge_name: "", amount: "", notes: "" });
       fetchCharges();
       setSuccessMessageOpen(true);
-    } catch (err) {
-      console.error("שגיאה בהוספה", err);
+    } catch (error) {
+      console.error("שגיאה בהוספה", error);
     }
   };
 
@@ -52,8 +52,8 @@ const MonthlyCharges = ({ employeeId }) => {
       await api.deleteRequest(`/monthly-charges/${id}`);
       fetchCharges();
       setSuccessMessageOpen(true);
-    } catch (err) {
-      console.error("שגיאה במחיקה", err);
+    } catch (error) {
+      console.error("שגיאה במחיקה", error);
     }
   };
 

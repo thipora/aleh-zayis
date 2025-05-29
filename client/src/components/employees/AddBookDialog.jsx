@@ -24,8 +24,8 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
         try {
           const response = await api.getRequest(`/roles?ids=${roleIds.join(',')}`);
           setAvailableRoles(response);
-        } catch (err) {
-          console.error("Failed to fetch role names", err);
+        } catch (error) {
+          console.error("Failed to fetch role names", error);
         }
       } else if (roleIds.length === 1) {
         setAvailableRoles([{ id_role: roleIds[0], role_name: "תפקיד יחיד" }]);
@@ -72,7 +72,7 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
       } else {
         setSystemError(response?.message || "הוספת הספר נכשלה");
       }
-    } catch (err) {
+    } catch (error) {
       setSystemError("שגיאה בהוספת הספר");
     }
 

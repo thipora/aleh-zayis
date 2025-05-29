@@ -63,8 +63,8 @@ const BookMatrixReport = () => {
         const data = await api.getRequest(`/reports/book-summary/${selectedBookId}`);
         const transformed = transformToMatrix(data);
         setMatrixData(transformed);
-      } catch (err) {
-        console.error("Failed to load report", err);
+      } catch (error) {
+        console.error("Failed to load report", error);
       }
       setLoading(false);
     };

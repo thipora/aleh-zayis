@@ -26,8 +26,8 @@ const ForgotPassword = () => {
       await api.putRequest("/auth/forgot-password", { email });
       setMessage(t("forgot.success"));
       setTimeout(() => navigate("/login"), 2500);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       setError(t("forgot.error"));
     }
 

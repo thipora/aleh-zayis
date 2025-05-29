@@ -8,8 +8,8 @@ dotenv.config();
     console.log("Starting ClickUp books sync...");
     await syncClickUpBooks();
     console.log("Sync completed.");
-  } catch (err) {
-    console.error("Sync failed:", err);
+  } catch (error) {
+    console.error("Sync failed:", error);
   } finally {
     if (db.end) db.end();
   }

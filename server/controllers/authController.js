@@ -75,8 +75,8 @@ export class AuthController {
 
 
             res.status(200).json({ message: "Password reset and sent by email." });
-        } catch (err) {
-            next(err);
+        } catch (error) {
+            next(error);
         }
     }
 
@@ -84,7 +84,7 @@ export class AuthController {
         try {
             AuthController.userService.logoutUser(res);
             res.status(200).json({ message: "Logged out successfully" });
-        } catch (err) {
+        } catch (error) {
             next({
                 statusCode: 500,
                 message: err.message || "Logout failed"
@@ -109,8 +109,8 @@ export class AuthController {
                 valid: true,
                 user
             });
-        } catch (err) {
-            console.error("validateToken error:", err);
+        } catch (error) {
+            console.error("validateToken error:", error);
             return res.status(401).json({ valid: false });
         }
     }

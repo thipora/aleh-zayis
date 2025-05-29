@@ -12,7 +12,7 @@ export const verifyToken = (req, res, next) => {
         const verified = jwt.verify(token, secret);
         req.body.userId = verified.id;
         return next();
-    } catch (err) {
+    } catch (error) {
         return res.status(401).send("Invalid Token");
     }
 };

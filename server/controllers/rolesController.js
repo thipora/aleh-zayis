@@ -11,8 +11,8 @@ export class RolesController {
         return res.status(404).json({ message: 'Role not found' });
       }
       res.json(role);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -26,8 +26,8 @@ export class RolesController {
       const ids = idsParam.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
       const roles = await RolesController.rolesService.getRolesByIds(ids);
       res.json(roles);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -40,8 +40,8 @@ export class RolesController {
 
       const roles = await RolesController.rolesService.getRoleNamesByIds(ids);
       res.json(roles);
-    } catch (err) {
-            next(err);
+    } catch (error) {
+            next(error);
     }
   };
 }
