@@ -66,7 +66,9 @@ export class UserService {
             const name = params.name;
             await this.userExists(email);
             const clickupUser = await this.validateClickUpUser(email);
+            // const { userId, rawPassword } = await this.createUserEntry(params, connection);
             const { userId, rawPassword } = await this.createUserEntry(params, connection);
+            
             if (!userId) {
                 throw new Error("Failed to create user");
             }
@@ -96,7 +98,20 @@ export class UserService {
     }
 
 
-    async createUserEntry(params) {
+    // async createUserEntry(params) {
+    //     const rawPassword = generateRandomPassword();
+    //     const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+    //     const newUser = {
+    //         name: params.name,
+    //         email: params.email,
+    //         password: hashedPassword,
+    //         account_type: 'employee'
+    //     };
+    //     const userId = await this.addUser(newUser);
+    //     return { userId, rawPassword }
+    // }
+    async createUserEntry(params, connection) {
         const rawPassword = generateRandomPassword();
         const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
@@ -106,8 +121,14 @@ export class UserService {
             password: hashedPassword,
             account_type: 'employee'
         };
-        const userId = await this.addUser(newUser);
-        return { userId, rawPassword }
+
+        const [result] = await connection.execute(
+            `INSERT INTO users (name, email, password, account_type) VALUES (?, ?, ?, ?)`,
+            [newUser.name, newUser.email, newUser.password, newUser.account_type]
+        );
+
+        const userId = result.insertId;
+        return { userId, rawPassword };
     }
 
 
