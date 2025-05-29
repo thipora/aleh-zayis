@@ -48,13 +48,9 @@ export class BookAssignmentsService {
 
 
   async getEmployeeRoleInBook(task, employeeClickUpId) {
-    console.log("aaaa")
     const user = await this.clickUpService.getTaskById(employeeClickUpId);
-        console.log("bbbb")
     const employeeName = user.name;
-        console.log("cccc")
     if (!employeeName) throw new Error('Employee name not found');
-    console.log("dddd")
 
     const customFields = task.custom_fields || [];
     const ROLES = ['Editor', 'Typist', 'Graphics', 'Layout', 'Manager'];
@@ -73,6 +69,7 @@ export class BookAssignmentsService {
 
           const label = option.label;
           if (employeeName.includes(label) || label.includes(employeeName)) {
+                    console.log("aaa")
             return role;
           }
         }
@@ -81,11 +78,12 @@ export class BookAssignmentsService {
         const option = options.find(opt => opt.orderindex === valueIds);
         const name = option.name;
         if (employeeName.includes(name) || name.includes(employeeName)) {
+                  console.log("bbbb")
           return role;
         }
       }
-
     }
+            console.log("ccccc")
     return null;
   }
 
