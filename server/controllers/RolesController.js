@@ -44,5 +44,4 @@ export class RolesController {
             next(err);
     }
   };
-
 }
