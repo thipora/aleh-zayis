@@ -55,6 +55,7 @@ export class BookAssignmentsService {
     const customFields = task.custom_fields || [];
     const ROLES = ['Editor', 'Typist', 'Graphics', 'Layout', 'Manager'];
 
+    console.log(ROLES);
     for (const role of ROLES) {
       const field = customFields.find(f => f.name === role);
       if (!field || !field.value) continue;
