@@ -87,7 +87,7 @@ export class UserService {
 
             return userId;
 
-        } catch {
+        } catch (err) {
             await connection.rollback();
             throw err;
         } finally {

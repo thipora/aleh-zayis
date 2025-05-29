@@ -12,7 +12,7 @@ export class BookAssignmentsController {
         selectedRoleIds
       );
       res.status(200).json(result);
-    } catch (error) {
+    } catch (err) {
       next({
         statusCode: err.errno || 500,
         message: err.message || err
