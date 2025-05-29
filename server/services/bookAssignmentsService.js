@@ -10,10 +10,11 @@ export class BookAssignmentsService {
 
   async getOrCreateBookByAZId(AZ_book_id) {
     console.log(AZ_book_id)
-    const [book] = await executeQuery(
+    const db = await executeQuery(
       'SELECT id_book, clickup_id FROM books WHERE AZ_book_id = ?',
       [AZ_book_id]
     );
+    book = db[0];
 console.log("book" + book[0]);
     if (book) return book;
 
