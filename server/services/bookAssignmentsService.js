@@ -15,7 +15,7 @@ export class BookAssignmentsService {
       [AZ_book_id]
     );
     const book = db[0];
-console.log("book" + book);
+console.log("✅ מצאתי ספר:", book.id_book, book.clickup_id);
     if (book) return book;
 
     const books = await fetchBooksFromClickUp(AZ_book_id);
