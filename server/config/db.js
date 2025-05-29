@@ -4,6 +4,7 @@ dotenv.config();
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
@@ -12,12 +13,26 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// export async function executeQuery(query, params = [], connection = null) {
+//   console.log("aaaa")
+//   const [rows] = connection
+//     ? await connection.execute(query, params)
+//     : await pool.execute(query, params);
+//     console.log("bbb")
+//   return rows;
+// }
 export async function executeQuery(query, params = [], connection = null) {
-  const [rows] = connection
-    ? await connection.execute(query, params)
-    : await pool.execute(query, params);
-  return rows;
+  try {
+    const [rows] = connection
+      ? await connection.execute(query, params)
+      : await pool.execute(query, params);
+    return rows;
+  } catch (error) {
+    console.error("❌ executeQuery error:", error.message);
+    throw error;
+  }
 }
+
 
 export async function getDBConnection() {
   return await pool.getConnection();

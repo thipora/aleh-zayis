@@ -68,7 +68,6 @@ export class ClickUpService {
     async getTasks(listId, page = 0) {
         try {
             const response = await api.get(`/list/${listId}/task?page=${page}`);
-            console.log("response: " + response);
             return response.data;
         } catch (error) {
             console.error('שגיאה בהבאת המשימות:', error);

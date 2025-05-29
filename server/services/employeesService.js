@@ -54,7 +54,7 @@ export class EmployeeService {
       if (!normalizedRole) continue;
 
       const roleResult = await executeQuery(
-        `SELECT id_role FROM alehZayis.roles WHERE role_name = ?`,
+        `SELECT id_role FROM roles WHERE role_name = ?`,
         [normalizedRole]
       );
 
@@ -77,7 +77,7 @@ export class EmployeeService {
   }
 
   async getEmployeeIdByUserId(userId) {
-    const query = 'SELECT id_employee, availability_status FROM alehZayis.employees WHERE user_id = ?';
+    const query = 'SELECT id_employee, availability_status FROM employees WHERE user_id = ?';
     const result = await executeQuery(query, [userId]);
     return result.length > 0 ? result[0] : null;
   }
@@ -94,7 +94,7 @@ export class EmployeeService {
 
 
   async getClickUpIdByWorkerId(workerId) {
-    const query = 'SELECT clickup_id FROM alehZayis.employees WHERE id_employee = ?';
+    const query = 'SELECT clickup_id FROM employees WHERE id_employee = ?';
     const result = await executeQuery(query, [workerId]);
 
     if (result.length === 0) {

@@ -2,7 +2,11 @@ export const logErrors = (error, req, res, next) => {
     const statusCode = error && error.hasOwnProperty("statusCode") ? error.statusCode : 500;
     const message = error && error.hasOwnProperty("message") ? error.message : '';
     console.error(`error statusCode:  ${statusCode} message: ${message} `)
-    return res.status(statusCode).json({ error: errMessageForClient(statusCode) });
+    // return res.status(statusCode).json({ error: errMessageForClient(statusCode) });
+    return res.status(statusCode).json({
+        error: errMessageForClient(statusCode),
+        details: message
+    });
 }
 
 function errMessageForClient(statusCode) {
@@ -12,7 +16,7 @@ function errMessageForClient(statusCode) {
         case 401:
             return 'Authorization required';
         case 403:
-            return 'Forbidden';    
+            return 'Forbidden';
         case 404:
             return 'Not found';
         case 500:

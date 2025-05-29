@@ -43,7 +43,7 @@ export class UserService {
             if (users[0].employee_id) {
                 const rolesQuery = `
                 SELECT role_id
-                FROM alehZayis.employee_roles
+                FROM employee_roles
                 WHERE employee_id = ?
             `;
                 const roles = await executeQuery(rolesQuery, [users[0].employee_id]);

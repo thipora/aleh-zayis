@@ -4,7 +4,7 @@ export class RolesService {
   async getRoleById(roleId) {
     const query = `
       SELECT id_role, role_name, uses_special_quantity, special_unit
-      FROM alehZayis.roles
+      FROM roles
       WHERE id_role = ?
     `;
     const result = await executeQuery(query, [roleId]);
@@ -17,7 +17,7 @@ export class RolesService {
     const placeholders = ids.map(() => '?').join(', ');
     const query = `
       SELECT *
-      FROM alehZayis.roles
+      FROM roles
       WHERE id_role IN (${placeholders})
     `;
     const result = await executeQuery(query, ids);
