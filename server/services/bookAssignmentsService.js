@@ -9,14 +9,12 @@ export class BookAssignmentsService {
 
 
   async getOrCreateBookByAZId(AZ_book_id) {
-    console.log(AZ_book_id)
     const db = await executeQuery(
       'SELECT id_book, clickup_id FROM books WHERE AZ_book_id = ?',
       [AZ_book_id]
     );
     const book = db[0];
     if (book) return book;
-console.log("✅ מצאתי ספר:", book.id_book, book.clickup_id);
 
     const books = await fetchBooksFromClickUp(AZ_book_id);
 
@@ -115,15 +113,17 @@ console.log("✅ מצאתי ספר:", book.id_book, book.clickup_id);
 
 
   async assignEmployeeToBookByAZId(employeeId, AZ_book_id, selectedRoleIds = []) {
-    console.log("aaaa" + AZ_book_id)
     const book = await this.getOrCreateBookByAZId(AZ_book_id);
-        console.log("bbbbb")
     const bookClickUpId = book.clickup_id;
     const employeeClickUpId = await this.getEmployeeClickUpId(employeeId);
+            console.log("aaaaa")
     const task = await this.clickUpService.getTaskById(bookClickUpId);
+            console.log("bbbbb")
     if (!task) throw new Error('Book task not found in ClickUp');
+        console.log("ccccc")
 
     const roleFromClickUp = await this.getEmployeeRoleInBook(task, employeeClickUpId);
+            console.log("ddddd")
     if (!roleFromClickUp) {
       return { inserted: false, message: 'Employee is not assigned to this book in ClickUp' };
     }
