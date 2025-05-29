@@ -60,14 +60,13 @@ export class BookAssignmentsService {
       if (!field || !field.value) continue;
 
       const options = field.type_config?.options || [];
-                console.log(options)
       const valueIds = field.value;
 
       if (Array.isArray(field.value)) {
         for (const valueId of valueIds) {
           const option = options.find(opt => opt.id === valueId);
           if (!option) continue;
-
+                console.log(option)
           const label = option.label;
           if (employeeName.includes(label) || label.includes(employeeName)) {
                     console.log("aaa")
@@ -75,8 +74,8 @@ export class BookAssignmentsService {
           }
         }
       } else {
-
         const option = options.find(opt => opt.orderindex === valueIds);
+                        console.log(option)
         const name = option.name;
         if (employeeName.includes(name) || name.includes(employeeName)) {
                   console.log("bbbb")
