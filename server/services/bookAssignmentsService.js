@@ -15,7 +15,7 @@ export class BookAssignmentsService {
       [AZ_book_id]
     );
     const book = db[0];
-console.log("book" + book[0]);
+console.log("book" + book);
     if (book) return book;
 
     const books = await fetchBooksFromClickUp(AZ_book_id);
