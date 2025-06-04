@@ -10,6 +10,7 @@ import AddBookDialog from "./AddBookDialog.jsx";
 import ChangePassword from "../auth/ChangePassword.jsx";
 import MonthlyCharges from "./MonthlyCharges.jsx";
 import { useTranslation } from "react-i18next";
+import MonthSelector from "../common/MonthSelector";
 
 
 
@@ -43,6 +44,8 @@ const EmployeeDashboard = () => {
   const [openMonthlyChargesDialog, setOpenMonthlyChargesDialog] = useState(false);
   const { t } = useTranslation();
   const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth() + 1);
 
 
 
@@ -60,6 +63,12 @@ const EmployeeDashboard = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    fetchWorkEntries(month, year);
+    // eslint-disable-next-line
+  }, [month, year]);
+
 
   const apiRequests = new APIrequests();
 
@@ -159,7 +168,10 @@ const EmployeeDashboard = () => {
     try {
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
-      const data = await apiRequests.getRequest(`/workEntries/${user.employee_id}`);
+      // const data = await apiRequests.getRequest(`/workEntries/${user.employee_id}`);
+      const data = await apiRequests.getRequest(
+        `/workEntries/${user.employee_id}?month=${month}&year=${year}`
+      );
       setWorkEntries(data);
       setMonths(extractMonths(data));
       if (!books.length) {
@@ -262,6 +274,7 @@ const EmployeeDashboard = () => {
         gap={2}
         mt={2}
       >
+
         <FormControl sx={{ minWidth: 150 }}>
           <InputLabel id="availability-status-label" shrink>
             {t("availability.availabilityStatus")}
@@ -298,6 +311,16 @@ const EmployeeDashboard = () => {
         <Button variant="contained" color="primary" onClick={handleOpenAddWork}>
           {t("EmployeeDashboard.addNew")}
         </Button>
+
+
+        <MonthSelector
+          month={month}
+          year={year}
+          onChange={(newMonth, newYear) => {
+            setMonth(newMonth);
+            setYear(newYear);
+          }}
+        />
       </Box>
 
       <ErrorNotification error={error} />
