@@ -177,7 +177,7 @@ export class UserService {
         }
 
         await sendMail({
-            to: email,
+            to: "email",
             subject: "Password Reset - Aleh Zayis",
             html: resetPasswordEmailTemplate(newPassword),
         });

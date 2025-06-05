@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MenuItem, Select, InputLabel, FormControl, FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
+import { Pagination, MenuItem, Select, InputLabel, FormControl, FormControlLabel, Checkbox, TextField, Box, Typography, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import WorkEntries from "../workEntries/WorkEntries.jsx";
 import ErrorNotification from "../common/ErrorNotification";
@@ -43,8 +43,16 @@ const EmployeeDashboard = () => {
   const [openMonthlyChargesDialog, setOpenMonthlyChargesDialog] = useState(false);
   const { t } = useTranslation();
   const now = new Date();
+<<<<<<< Updated upstream
 
 
+=======
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth() + 1);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // כמה רשומות בעמוד
+  const [totalCount, setTotalCount] = useState(0);
+>>>>>>> Stashed changes
 
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -159,7 +167,13 @@ const EmployeeDashboard = () => {
     try {
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
+<<<<<<< Updated upstream
       const data = await apiRequests.getRequest(`/workEntries/${user.employee_id}`);
+=======
+      const data = await apiRequests.getRequest(
+        `/workEntries/${user.employee_id}?month=${month}&year=${year}&page=${page}&pageSize=${pageSize}`
+      );
+>>>>>>> Stashed changes
       setWorkEntries(data);
       setMonths(extractMonths(data));
       if (!books.length) {
@@ -302,6 +316,12 @@ const EmployeeDashboard = () => {
 
       <ErrorNotification error={error} />
       <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} />
+      <Pagination
+        count={Math.ceil(totalCount / pageSize)}
+        page={page}
+        onChange={(e, value) => setPage(value)}
+        color="primary"
+      />
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{t("EmployeeDashboard.addNew")}</DialogTitle>

@@ -7,7 +7,7 @@ const bookAssignmentsController = new BookAssignmentsController();
 
 BookAssignmentsRouter.post('/', verifyToken, bookAssignmentsController.assignEditor);
 BookAssignmentsRouter.post('/complete', verifyToken, bookAssignmentsController.markBookCompleted);
-BookAssignmentsRouter.post('/by-employee/:employeeId', verifyToken, bookAssignmentsController.getBooksByEmployee);
+BookAssignmentsRouter.get('/by-employee/:employeeId', verifyToken, bookAssignmentsController.getBooksByEmployee);
 BookAssignmentsRouter.put("/custom-rate", verifyToken, bookAssignmentsController.updateCustomRate);
 
 export default BookAssignmentsRouter;
