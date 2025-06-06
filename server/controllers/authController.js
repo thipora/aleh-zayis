@@ -10,7 +10,7 @@ export class AuthController {
             const user = await AuthController.userService.loginUser(req.body);
             const token = createToken({ idUser: user.id_user });
 
-            return res.cookie('x-access-token', token, { httpOnly: true, secure: true, maxAge: 259200000 }).json({ user });
+            return res.cookie('x-access-token', token, { httpOnly: true, secure: true, maxAge: 259200000 }).json({ user, token });
         } catch (ex) {
             next({
                 statusCode: ex.errno || 500,

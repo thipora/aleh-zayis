@@ -10,6 +10,7 @@ export class APIrequests {
                 body: JSON.stringify(body),
                 headers: {
                     'Content-type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
             });
             const data = await response.json();
@@ -33,6 +34,7 @@ export class APIrequests {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
             });
             const data = await response.json();
@@ -53,6 +55,7 @@ export class APIrequests {
                 body: JSON.stringify(body),
                 headers: {
                     'Content-type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
             });
             const data = await response.json();
@@ -72,6 +75,7 @@ export class APIrequests {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 },
             });
             const data = await response.text();

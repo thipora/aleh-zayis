@@ -48,6 +48,7 @@ const Login = () => {
     try {
       const data = await apiRequests.postRequest("/auth/login", { email, password });
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
 
       switch (data.user.account_type) {
         case "Employee":
