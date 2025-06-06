@@ -242,7 +242,7 @@ export class BookAssignmentsService {
     JOIN books ON book_assignments.book_id = books.id_book
     JOIN employee_roles ON book_assignments.employee_role_id = employee_roles.id_employee_role
     JOIN roles ON employee_roles.role_id = roles.id_role
-    WHERE employee_roles.employee_id = ? AND book_assignments.completed = '0'
+    WHERE employee_roles.employee_id = ? AND book_assignments.is_completed = '0'
   `;
     return await executeQuery(sql, [employeeId]);
   }
