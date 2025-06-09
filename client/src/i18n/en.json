@@ -40,11 +40,11 @@
   },
   "EmployeeDashboard": {
     "title": "Employee Dashboard",
-    "viewAssignedBooks": "View Assigned Books",
+    "viewAssignedBooks": "List of Projects",
     "monthlySummary": "Monthly Summary",
     "monthlyCharges": "Special Charges",
     "changePassword": "Change Password",
-    "addNew": "Add New",
+    "addNew": "Add working hours",
     "close": "Close",
     "cancel": "Cancel"
   },
