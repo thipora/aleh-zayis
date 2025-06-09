@@ -34,11 +34,11 @@
   },
   "EmployeeDashboard": {
     "title": "לוח בקרה לעובד",
-    "viewAssignedBooks": "הצג ספרים שאני עובד עליהם",
+    "viewAssignedBooks": "רשימת פרויקטים",
     "monthlySummary": "סיכום שעות לפי חודש",
     "monthlyCharges": "תשלומים מיוחדים",
     "changePassword": "שינוי סיסמה",
-    "addNew": "הוסף עבודה חדשה",
+    "addNew": "הוסף שעות עבודה",
     "close": "סגור",
     "cancel": "ביטול"
   },
