@@ -10,6 +10,9 @@ import AddBookDialog from "./AddBookDialog.jsx";
 import ChangePassword from "../auth/ChangePassword.jsx";
 import MonthlyCharges from "./MonthlyCharges.jsx";
 import { useTranslation } from "react-i18next";
+import ThreeStateSwitch from "./ThreeStateSwitch.jsx";
+import { useNavigate } from "react-router-dom";
+
 
 
 
@@ -262,22 +265,8 @@ const EmployeeDashboard = () => {
         gap={2}
         mt={2}
       >
-        <FormControl sx={{ minWidth: 150 }}>
-          <InputLabel id="availability-status-label" shrink>
-            {t("availability.availabilityStatus")}
-          </InputLabel>
-          <Select
-            labelId="availability-status-label"
-            value={availabilityStatus}
-            label={t("availability.availabilityStatus")}
-            onChange={(e) => handleAvailabilityChange(e.target.value)}
-            size="small"
-          >
-            <MenuItem value="available">{t("availability.available")}</MenuItem>
-            <MenuItem value="not_available">{t("availability.notAvailable")}</MenuItem>
-            <MenuItem value="partial">{t("availability.partial")}</MenuItem>
-          </Select>
-        </FormControl>
+
+        <ThreeStateSwitch value={availabilityStatus} onChange={handleAvailabilityChange} />
 
         <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
           {t("EmployeeDashboard.viewAssignedBooks")}
