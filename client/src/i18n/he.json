@@ -243,8 +243,8 @@
     "hours": "שעות",
     "minutes": "דקות",
     "and": "ו",
-    "fixedMonthlyCharges": "תשלומים קבועים",
-    "fixedPayments": "תשלומים קבועים"
+    "fixedMonthlyCharges": "תשלומים מיוחדים",
+    "fixedPayments": "תשלומים מיוחדים"
   },
   "bookMatrixReport": {
     "title": "דוח תשלום מטריציוני לפי ספר",

@@ -50,7 +50,7 @@
   },
   "workEntries": {
     "date": "Date",
-    "azId": "AZ-id",
+    "azId": "AZ Number",
     "bookTitle": "Book Title",
     "projectManager": "Project Manager",
     "workAmount": "Work Amount",
@@ -108,7 +108,7 @@
     "noCustomRate": "No custom rate",
     "editCustomRate": "Edit Rate",
     "addCustomRate": "Add Custom Rate",
-    "complete": "Complete Work"
+    "complete": "Project Complete"
   },
   "forgotPassword": {
     "title": "Forgot Password",
@@ -145,8 +145,8 @@
     "availability": "Availability",
     "available": "Available",
     "partial": "Partial",
-    "notAvailable": "Not Available",
-    "not_available": "Not Available",
+    "notAvailable": "Partially Available",
+    "not_available": "Partially Available",
     "all": "All"
   },
   "AddWorkDialog": {
@@ -230,13 +230,13 @@
     "totalWork": "Total Work",
     "totalPayment": "Total Payment",
     "total": "Total",
-    "downloadExcel": "Download Excel",
+    "downloadExcel": "Download to Excel",
     "filterRole": "Role"
   },
   "employeeReport": {
     "title": "Monthly Report for {{name}} - {{month}}/{{year}}",
     "back": "Back",
-    "download": "Download Excel",
+    "download": "Download to Excel",
     "az": "AZ",
     "project": "Project Name",
     "manager": "Project Manager",
