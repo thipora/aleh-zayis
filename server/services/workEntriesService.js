@@ -138,7 +138,8 @@ export class WorkEntriesService {
         r.special_unit,
         e.id_employee,
         u.name AS employee_name,
-        u.email AS employee_email
+        u.email AS employee_email,
+        e.currency AS currency
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN roles r ON er.role_id = r.id_role
@@ -168,7 +169,8 @@ export class WorkEntriesService {
           employee_email: email,
           hours: 0,
           specials: {},
-          role_name: entry.role_name
+          role_name: entry.role_name,
+          currency: entry.currency,
         };
       }
 
@@ -197,7 +199,8 @@ export class WorkEntriesService {
           quantity: emp.hours,
           rate: emp.hourly_rate,
           total: +(emp.hours * emp.hourly_rate).toFixed(2),
-          role_name: emp.role_name
+          role_name: emp.role_name,
+          currency: emp.currency
         });
       }
 
@@ -211,7 +214,8 @@ export class WorkEntriesService {
           quantity: data.quantity,
           rate: data.rate,
           total: +(data.quantity * data.rate).toFixed(2),
-          role_name: emp.role_name
+          role_name: emp.role_name,
+          currency: emp.currency
         });
       });
     });
@@ -238,12 +242,14 @@ export class WorkEntriesService {
         b.AZ_book_id,
         b.project_manager_clickup_id,
         r.special_unit,
-        u_pm.name AS project_manager_name
+        u_pm.name AS project_manager_name,
+        e.currency AS currency
 
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN roles r ON er.role_id = r.id_role
       JOIN books b ON we.book_id = b.id_book
+      JOIN employees e ON er.employee_id = e.id_employee
 
       LEFT JOIN employees e_pm ON e_pm.clickup_id = b.project_manager_clickup_id
       LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
@@ -282,6 +288,7 @@ export class WorkEntriesService {
       const rate = parseFloat(entry.applied_rate);
       const rateKey = rate.toFixed(2);
       let projectManagerName = entry.project_manager_name;
+      let currency = entry.currency;
 
       if (!projectManagerName && entry.project_manager_clickup_id) {
         try {
@@ -305,7 +312,8 @@ export class WorkEntriesService {
           rate,
           type: isSpecial ? 'special' : 'hours',
           unit: isSpecial ? unit : null,
-          projectManagerName
+          projectManagerName,
+          currency: entry.currency
         };
       }
 
@@ -320,7 +328,8 @@ export class WorkEntriesService {
       quantity: entry.quantity,
       rate: entry.rate,
       total: +(entry.quantity * entry.rate).toFixed(2),
-      projectManagerName: entry.projectManagerName
+      projectManagerName: entry.projectManagerName,
+      currency: entry.currency
     }));
 
     return result;

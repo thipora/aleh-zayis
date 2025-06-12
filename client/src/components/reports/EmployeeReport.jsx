@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import { formatCurrency } from "../../utils/formatters";
 
 const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
   const [rows, setRows] = useState([]);
@@ -15,6 +16,7 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
   const api = new APIrequests();
   const { t } = useTranslation();
   const [monthlyCharges, setMonthlyCharges] = useState([]);
+  const [employeeCurrency, setEmployeeCurrency] = useState("ILS");
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -22,6 +24,9 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         const url = `/reports/monthly-summary/employee/${employeeId}?month=${month}&year=${year}`;
         const data = await api.getRequest(url);
         setRows(data);
+        if (data.length > 0) {
+          setEmployeeCurrency(data[0].currency);
+        }
         const charges = await api.getRequest(`/monthly-charges/${employeeId}`);
         setMonthlyCharges(charges);
       } catch (error) {
@@ -58,7 +63,7 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         ? formatHours(row.quantity)
         : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`, row.unit)}`,
       [t("employeeReport.rate")]: row.rate,
-      [t("employeeReport.totalPay")]: row.total
+      [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${row.total.toFixed(2)}`
     }));
 
     const summaryByUnit = {};
@@ -77,7 +82,7 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         [t("employeeReport.manager")]: "",
         [t("employeeReport.amount")]: "",
         [t("employeeReport.rate")]: charge.charge_name,
-        [t("employeeReport.totalPay")]: Number(charge.amount).toFixed(2)
+        [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${charge.amount}`
       });
     });
 
@@ -90,7 +95,7 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
           ? formatHours(val)
           : `${val.toLocaleString()} ${t(`specialUnits.${unit}`)}`
       )).join(" | "),
-      [t("employeeReport.totalPay")]: totalPayment
+      [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${totalPayment.toFixed(2)}`
     });
 
     const worksheet = XLSX.utils.json_to_sheet(wsData);
@@ -144,7 +149,9 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
                       : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`, row.unit)}`}
                   </TableCell>
                   <TableCell>{row.rate}</TableCell>
-                  <TableCell>{row.total}</TableCell>
+                  <TableCell align="center">
+                    {formatCurrency(employeeCurrency)} {row.total.toFixed(2)}
+                  </TableCell>
                 </TableRow>
               ))}
 
@@ -153,7 +160,7 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
                   <TableCell sx={{ fontWeight: 'bold' }}>{t("employeeReport.fixedPayments")}</TableCell>
                   <TableCell colSpan={3} />
                   <TableCell>{charge.charge_name}</TableCell>
-                  <TableCell>{Number(charge.amount).toFixed(2)}</TableCell>
+                  <TableCell>{formatCurrency(employeeCurrency)} {charge.amount}</TableCell>
                 </TableRow>
               ))}
 
@@ -171,7 +178,7 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
                   ))}
                 </TableCell>
                 <TableCell />
-                <TableCell sx={{ fontWeight: 'bold' }}>{totalPayment}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{formatCurrency(employeeCurrency)} {totalPayment}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

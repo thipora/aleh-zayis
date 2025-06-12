@@ -52,6 +52,17 @@ const Login = () => {
 
       switch (data.user.account_type) {
         case "Employee":
+          try {
+            const employeeDetails = await apiRequests.getRequest(`/employees/${data.user.employee_id}/currency`);
+            data.user.currency = employeeDetails.currency || 'ILS';
+            localStorage.setItem("user", JSON.stringify(data.user));
+          } catch (err) {
+            console.error("Error fetching employee currency:", err);
+            // אפשר להשאיר currency ב־ILS כברירת מחדל אם רוצים:
+            data.user.currency = 'ILS';
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+
           navigate("/employee");
           break;
         case "Manager":

@@ -143,4 +143,19 @@ export class EmployeeService {
     return result[0].clickup_id;
   }
 
+  async getEmployeeCurrencyById(employeeId) {
+    const query = 'SELECT currency FROM employees WHERE id_employee = ?';
+    const result = await executeQuery(query, [employeeId]);
+    return result.length > 0 ? result[0] : null;
+  }
+
+  async updateCurrency(employeeId, currency) {
+    const query = `
+        UPDATE employees
+        SET currency = ?
+        WHERE id_employee = ?
+    `;
+    await executeQuery(query, [currency, employeeId]);
+  }
+
 }

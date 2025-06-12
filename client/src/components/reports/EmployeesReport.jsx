@@ -11,6 +11,8 @@ import EmployeeReport from "./EmployeeReport";
 import MonthSelector from "../common/MonthSelector";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import { formatCurrency } from "../../utils/formatters";
+
 
 const formatHours = (quantity) => {
   const q = parseFloat(quantity);
@@ -39,7 +41,17 @@ const EmployeesReport = () => {
     ? summary.filter(emp => emp.role_name === selectedRole)
     : summary;
 
-  const totalPay = filteredSummary.reduce((sum, e) => sum + Number(e.total), 0).toFixed(2);
+  // const totalPay = filteredSummary.reduce((sum, e) => sum + Number(e.total), 0).toFixed(2);
+  const totalPayILS = filteredSummary
+    .filter(e => e.currency === "ILS")
+    .reduce((sum, e) => sum + Number(e.total), 0)
+    .toFixed(2);
+
+  const totalPayUSD = filteredSummary
+    .filter(e => e.currency === "USD")
+    .reduce((sum, e) => sum + Number(e.total), 0)
+    .toFixed(2);
+
 
   const allUnits = ["hours", "characters", "pages", "items"];
   const summaryUnits = {};
@@ -105,7 +117,7 @@ const EmployeesReport = () => {
         [headers.totalWork]: isHours
           ? formatHours(q)
           : `${parseInt(emp.quantity)} ${t(`specialUnits.${emp.unit}`, emp.unit)}`,
-        [headers.totalPay]: parseFloat(emp.total).toFixed(2),
+        [headers.totalPay]: `${formatCurrency(emp.currency)} ${emp.total.toFixed(2)}`,
       };
     });
 
@@ -121,7 +133,8 @@ const EmployeesReport = () => {
           : `${summaryUnits[unit].toLocaleString()} ${t(`specialUnits.${unit}`)}`
         )
         .join(" | "),
-      [headers.totalPay]: totalPay
+      // [headers.totalPay]: totalPay
+      [headers.totalPay]: `${formatCurrency(filteredSummary[0]?.currency)} ${totalPay}`
     };
 
     wsData.push({});
@@ -213,13 +226,25 @@ const EmployeesReport = () => {
                       ? formatHours(emp.quantity)
                       : `${parseInt(emp.quantity)} ${t(`specialUnits.${emp.unit}`)}`}
                   </TableCell>
-                  <TableCell align="center">{parseFloat(emp.total).toFixed(2)}</TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      direction: i18n.language === "he" ? "rtl" : "ltr",
+                      textAlign: "center",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {`${formatCurrency(emp.currency)} ${emp.total}`}
+                  </TableCell>
                 </TableRow>
               ))}
               <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                 <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.total")}</TableCell>
                 {unitCells}
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>{totalPay}</TableCell>
+                {/* <TableCell align="center" sx={{ fontWeight: "bold" }}>{`${formatCurrency(filteredSummary[0]?.currency)} ${totalPay}`}</TableCell> */}
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  {`₪ ${totalPayILS}  |  $ ${totalPayUSD}`}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>

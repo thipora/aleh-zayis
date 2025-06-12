@@ -12,8 +12,8 @@ export const getAllEmployeeRoles = async (req, res) => {
 export const getEmployeeRolesById = async (req, res) => {
   try {
     const { id } = req.params;
-    const roles = await employeeRolesService.getEmployeeRolesWithRatesById(id);
-    res.json(roles);
+    const result = await employeeRolesService.getEmployeeRolesWithRatesById(id);
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch employee roles' });
   }

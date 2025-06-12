@@ -18,7 +18,8 @@ async getWorkEntriesByBookId(bookId) {
       r.role_name,
       r.special_unit,
       e.id_employee,
-      u.name AS employee_name
+      u.name AS employee_name,
+      e.currency
     FROM work_entries we
     JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
     JOIN roles r ON er.role_id = r.id_role
@@ -42,6 +43,7 @@ groupWorkEntriesByRole(workEntries) {
     const isSpecial = entry.is_special_work === 1;
     const rate = isSpecial ? entry.special_rate : entry.hourly_rate;
     const total = parseFloat(entry.quantity) * rate;
+    const currency = entry.currency || 'USD';
 
     if (!rolesMap[role]) {
       rolesMap[role] = {};
@@ -53,7 +55,8 @@ groupWorkEntriesByRole(workEntries) {
         employee_name: empName,
         quantity: 0,
         rate: rate,
-        total: 0
+        total: 0,
+        currency: currency
       };
     }
 

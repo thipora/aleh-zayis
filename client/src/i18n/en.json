@@ -226,9 +226,9 @@
     "employeeName": "Employee Name",
     "employeeEmail": "Employee Email",
     "role": "Role",
-    "rate": "Rate (₪)",
+    "rate": "Rate",
     "totalWork": "Total Work",
-    "totalPayment": "Total Payment (₪)",
+    "totalPayment": "Total Payment",
     "total": "Total",
     "downloadExcel": "Download Excel",
     "filterRole": "Role"
@@ -262,5 +262,9 @@
     "fileName": "דוח_מטריצה",
     "sheetName": "דוח מטריצה",
     "total": "total"
+  },
+  "currency": {
+    "ils": "ILS",
+    "usd": "USD"
   }
 }

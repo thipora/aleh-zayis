@@ -5,11 +5,13 @@ import {
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import { useTranslation } from "react-i18next";
+import EmployeeCurrencySelector from './EmployeeCurrencySelector';
 
 const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [currency, setCurrency] = useState('ILS');
 
     const api = new APIrequests();
     const { t } = useTranslation();
@@ -24,7 +26,8 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
         setLoading(true);
         try {
             const data = await api.getRequest(`/employee-roles/${employeeId}`);
-            setRoles(data);
+            setRoles(data.roles || []);
+            setCurrency(data.currency);
         } catch (error) {
             console.error("Failed to fetch rates", error);
         }
@@ -62,6 +65,10 @@ const RateDialog = ({ open, onClose, employeeId, employeeName }) => {
                 {t("RateDialog.title", { name: employeeName })}
             </DialogTitle>
             <DialogContent dividers>
+                <EmployeeCurrencySelector
+                    employeeId={employeeId}
+                    initialCurrency={currency}
+                />
                 {loading ? (
                     <CircularProgress />
                 ) : roles.length === 0 ? (

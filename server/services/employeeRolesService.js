@@ -1,6 +1,22 @@
-import {executeQuery} from '../config/db.js';
+import { executeQuery } from '../config/db.js';
 
 
+// export const getAllEmployeeRolesWithRates = async () => {
+//   const query = `
+//     SELECT
+//       er.id_employee_role,
+//       u.name AS employee_name,
+//       r.role_name,
+//       r.special_unit,
+//       er.hourly_rate,
+//       er.special_rate
+//     FROM employee_roles er
+//     JOIN employees e ON er.employee_id = e.id_employee
+//     JOIN users u ON e.user_id = u.id_user
+//     JOIN roles r ON er.role_id = r.id_role
+//   `;
+//   return await executeQuery(query);
+// };
 export const getAllEmployeeRolesWithRates = async () => {
   const query = `
     SELECT
@@ -9,7 +25,9 @@ export const getAllEmployeeRolesWithRates = async () => {
       r.role_name,
       r.special_unit,
       er.hourly_rate,
-      er.special_rate
+      er.special_rate,
+      e.id_employee AS employee_id,
+      e.currency
     FROM employee_roles er
     JOIN employees e ON er.employee_id = e.id_employee
     JOIN users u ON e.user_id = u.id_user
@@ -18,8 +36,25 @@ export const getAllEmployeeRolesWithRates = async () => {
   return await executeQuery(query);
 };
 
+// export const getEmployeeRolesWithRatesById = async (employeeId) => {
+//   const query = `
+//     SELECT 
+//       er.id_employee_role,
+//       r.role_name,
+//       r.special_unit,
+//       r.uses_special_quantity,
+//       r.is_hourly_primary,
+//       er.hourly_rate,
+//       er.special_rate
+//     FROM employee_roles er
+//     JOIN roles r ON er.role_id = r.id_role
+//     WHERE er.employee_id = ?
+//   `;
+//   return await executeQuery(query, [employeeId]);
+// };
+
 export const getEmployeeRolesWithRatesById = async (employeeId) => {
-  const query = `
+  const rolesQuery = `
     SELECT 
       er.id_employee_role,
       r.role_name,
@@ -27,12 +62,29 @@ export const getEmployeeRolesWithRatesById = async (employeeId) => {
       r.uses_special_quantity,
       r.is_hourly_primary,
       er.hourly_rate,
-      er.special_rate
+      er.special_rate,
+      e.id_employee AS employee_id,
+      e.currency
     FROM employee_roles er
+    JOIN employees e ON er.employee_id = e.id_employee
     JOIN roles r ON er.role_id = r.id_role
     WHERE er.employee_id = ?
   `;
-  return await executeQuery(query, [employeeId]);
+  const roles = await executeQuery(rolesQuery, [employeeId]);
+
+  const employeeQuery = `
+    SELECT currency
+    FROM employees
+    WHERE id_employee = ?
+  `;
+
+  const employeeData = await executeQuery(employeeQuery, [employeeId]);
+  const currency = employeeData.length > 0 ? employeeData[0].currency : 'ILS';
+
+  return {
+    roles,
+    currency
+  };
 };
 
 
