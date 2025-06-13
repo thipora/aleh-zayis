@@ -150,7 +150,8 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
                   </TableCell>
                   <TableCell>{row.rate}</TableCell>
                   <TableCell align="center">
-                    {formatCurrency(employeeCurrency)} {row.total.toFixed(2)}
+                    {/* {formatCurrency(employeeCurrency)} {row.total.toFixed(2)} */}
+                    {formatCurrency(employeeCurrency)} {row.total != null ? row.total.toFixed(2) : '0.00'}
                   </TableCell>
                 </TableRow>
               ))}
