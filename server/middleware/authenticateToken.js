@@ -10,6 +10,7 @@ export const verifyToken = (req, res, next) => {
     if (!token)
         return res.sendStatus(403).send("not access Token");
 
+    
     try {
         const verified = jwt.verify(token, secret);
         req.body.userId = verified.idUser || verified.id;
