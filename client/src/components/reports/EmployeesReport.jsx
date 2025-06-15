@@ -133,8 +133,7 @@ const EmployeesReport = () => {
           : `${summaryUnits[unit].toLocaleString()} ${t(`specialUnits.${unit}`)}`
         )
         .join(" | "),
-      // [headers.totalPay]: totalPay
-      [headers.totalPay]: `${formatCurrency(filteredSummary[0]?.currency)} ${totalPay}`
+      [headers.totalPay]: `₪ ${totalPayILS}  |  $ ${totalPayUSD}`
     };
 
     wsData.push({});
