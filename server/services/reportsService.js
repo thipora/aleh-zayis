@@ -32,7 +32,7 @@ export class ReportsService {
     return await executeQuery(sql, [bookId]);
   }
 
-  //משתמשים
+
   groupWorkEntriesByRole(workEntries) {
     const rolesMap = {};
 
@@ -71,28 +71,6 @@ export class ReportsService {
 
     return result;
   }
-
-  // async getMonthlyBooksSummary(month, year) {
-  //   const sql = `
-  //   SELECT 
-  //     b.id_book AS book_id,
-  //     b.name AS book_name,
-  //     pm.name AS projectManagerName,
-  //     SUM(we.total) AS total_payment,
-  //     SUM(CASE WHEN we.type = 'hours' THEN we.quantity ELSE 0 END) AS total_hours,
-  //     SUM(CASE WHEN we.type != 'hours' THEN we.quantity ELSE 0 END) AS total_quantity,
-  //     we.currency
-  //   FROM work_entries we
-  //   JOIN books b ON we.book_id = b.id_book
-  //   LEFT JOIN project_managers pm ON b.project_manager_id = pm.id_project_manager
-  //   WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
-  //   GROUP BY b.id_book, we.currency
-  //   ORDER BY b.name;
-  // `;
-
-  //   const params = [month, year];
-  //   return await executeQuery(sql, params);
-  // }
 
   async getMonthlyBooksSummary(month, year) {
     const sql = `
