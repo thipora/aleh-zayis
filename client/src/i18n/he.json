@@ -225,7 +225,8 @@
     "totalPayment": "סה\"כ תשלום",
     "total": "סה\"כ",
     "downloadExcel": "הורד ל-Excel",
-    "filterRole": "תפקיד"
+    "filterRole": "תפקיד",
+    "back": "חזור"
   },
   "employeeReport": {
     "title": "דוח חודשי עבור {{name}} - {{month}}/{{year}}",
@@ -260,6 +261,17 @@
   "currency": {
     "ils": "שקל",
     "usd": "דולר"
+  },
+  "booksReport": {
+    "bookId": "מספר ספר",
+    "bookName": "שם הספר",
+    "projectManager": "מנהל פרויקט",
+    "totalWork": "סה\"כ עבודה",
+    "totalPayment": "סה\"כ תשלום",
+    "title": "דו\"ח ספרים",
+    "search": "חיפוש ספר",
+    "searchProjectManager": "חיפוש מנהל פרויקט",
+    "downloadExcel": "הורד לאקסל",
+    "back": "חזור"
   }
-  
 }

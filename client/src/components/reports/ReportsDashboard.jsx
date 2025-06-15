@@ -4,6 +4,7 @@ import BookPivotReport from "./BookPivotReport";
 import { Box, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import BooksReport from "./BooksReport";
 
 const ReportsDashboard = () => {
   const [report, setReport] = useState(null);
@@ -42,7 +43,7 @@ const ReportsDashboard = () => {
           <Button onClick={handleBack} sx={{ mt: 2 }}>
             ⬅ {t("reportsDashboard.back")}
           </Button>
-          <BookPivotReport />
+          <BooksReport />
         </>
       )}
     </Box>

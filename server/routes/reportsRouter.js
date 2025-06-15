@@ -8,6 +8,7 @@ const reportsController = new ReportsController();
 reportsRouter.get('/monthly-summary/employees', verifyToken, reportsController.getMonthlySummaryByEmployees);
 reportsRouter.get("/monthly-summary/employee/:employeeId", verifyToken, reportsController.getMonthlySummaryByEmployee);
 reportsRouter.get('/book-summary/:bookId', verifyToken, reportsController.getBookSummary);
+reportsRouter.get('/monthly-summary/books', verifyToken, reportsController.getMonthlyBooksSummary);
 
 
 export default reportsRouter;

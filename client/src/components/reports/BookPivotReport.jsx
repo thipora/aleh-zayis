@@ -64,9 +64,12 @@ function transformToMatrix(dataFromServer) {
   return { roles, employees, totalsByRoleAndCurrency, totalsByCurrency };
 }
 
-const BookMatrixReport = () => {
-  const [bookIdInput, setBookIdInput] = useState("");
-  const [selectedBookId, setSelectedBookId] = useState("");
+const BookMatrixReport = ({ initialBookId, onBack }) => {
+  const [bookIdInput, setBookIdInput] = useState(initialBookId || "");
+  const [selectedBookId, setSelectedBookId] = useState(initialBookId || "");
+
+  // const [bookIdInput, setBookIdInput] = useState("");
+  // const [selectedBookId, setSelectedBookId] = useState("");
   const [matrixData, setMatrixData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
@@ -154,6 +157,12 @@ const BookMatrixReport = () => {
   return (
     <Box mt={4} maxWidth={1200} mx="auto" dir={i18n.language === "he" ? "rtl" : "ltr"}>
       <Paper sx={{ p: 3 }}>
+
+        {onBack && (
+          <Button onClick={onBack} variant="text">⬅ {t("employeesReport.back")}</Button>
+        )}
+
+
         <Typography variant="h5" gutterBottom>
           {t("bookMatrixReport.title")}
         </Typography>

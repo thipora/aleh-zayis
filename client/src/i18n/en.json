@@ -231,7 +231,8 @@
     "totalPayment": "Total Payment",
     "total": "Total",
     "downloadExcel": "Download to Excel",
-    "filterRole": "Role"
+    "filterRole": "Role",
+    "back": "Back"
   },
   "employeeReport": {
     "title": "Monthly Report for {{name}} - {{month}}/{{year}}",
@@ -266,5 +267,17 @@
   "currency": {
     "ils": "ILS",
     "usd": "USD"
+  },
+  "booksReport": {
+    "bookId": "Book ID",
+    "bookName": "Book Name",
+    "projectManager": "Project Manager",
+    "totalWork": "Total Work",
+    "totalPayment": "Total Payment",
+    "title": "Books Report",
+    "search": "Search Book",
+    "searchProjectManager": "Search Project Manager",
+    "downloadExcel": "Download to Excel",
+    "back": "Back"
   }
 }

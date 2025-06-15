@@ -24,11 +24,11 @@ export class ReportsController {
     try {
       const { employeeId } = req.params;
       const { month, year } = req.query;
-  
+
       if (!employeeId || !month || !year) {
         return res.status(400).json({ message: "Missing required parameters" });
       }
-  
+
       const data = await ReportsController.workEntriesService.getMonthlySummaryByEmployee(
         employeeId,
         { month, year }
@@ -54,5 +54,15 @@ export class ReportsController {
     }
   }
 
-  
+  async getMonthlyBooksSummary(req, res) {
+    const { month, year } = req.query;
+    try {
+      const data = await ReportsController.reportsService.getMonthlyBooksSummary(month, year);
+      res.json(data);
+    } catch (err) {
+      console.error("Error in getMonthlyBooksSummary:", err);
+      res.status(500).json({ error: "Failed to fetch books summary" });
+    }
+  }
+
 }
