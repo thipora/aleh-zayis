@@ -256,6 +256,7 @@ const EmployeeDashboard = () => {
   return (
     <Container>
       <Typography variant="h4">{t("EmployeeDashboard.title")}</Typography>
+      <ThreeStateSwitch value={availabilityStatus} onChange={handleAvailabilityChange} />
 
       <Box
         display="flex"
@@ -265,8 +266,6 @@ const EmployeeDashboard = () => {
         gap={2}
         mt={2}
       >
-
-        <ThreeStateSwitch value={availabilityStatus} onChange={handleAvailabilityChange} />
 
         <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
           {t("EmployeeDashboard.viewAssignedBooks")}

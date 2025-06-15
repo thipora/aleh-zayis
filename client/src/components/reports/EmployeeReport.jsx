@@ -83,7 +83,6 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         [t("employeeReport.manager")]: "",
         [t("employeeReport.amount")]: "",
         [t("employeeReport.rate")]: charge.charge_name,
-        // [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${charge.amount}`
         [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(Number(charge.amount) || 0).toFixed(2)}`
       });
     });
@@ -131,12 +130,12 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>{t("employeeReport.az")}</TableCell>
-                <TableCell>{t("employeeReport.project")}</TableCell>
-                <TableCell>{t("employeeReport.manager")}</TableCell>
-                <TableCell>{t("employeeReport.amount")}</TableCell>
-                <TableCell>{t("employeeReport.rate")}</TableCell>
-                <TableCell>{t("employeeReport.totalPay")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeeReport.az")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeeReport.project")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeeReport.manager")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeeReport.amount")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeeReport.rate")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeeReport.totalPay")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 
 const states = ["available", "partial", "not_available"];
 const colors = {
-    available: "#4caf50",      // ירוק
-    partial: "#ff9800",        // כתום
-    not_available: "#9e9e9e", // grey
+    available: "#4caf50",
+    partial: "#ff9800",
+    not_available: "#f44336",
 };
 
 const ThreeStateSwitch = ({ value, onChange }) => {
     const index = states.indexOf(value);
     const { t, i18n } = useTranslation();
-    const isRtl = i18n.dir() === "rtl";  // דרך תקנית לבדוק RTL
+    const isRtl = i18n.dir() === "rtl";
 
     const labels = {
         available: t("availability.available"),
@@ -61,7 +61,7 @@ const ThreeStateSwitch = ({ value, onChange }) => {
                         justifyContent: 'center',
                         position: 'relative',
                         zIndex: 2,
-                        color: 'black', // תמיד שחור
+                        color: 'black',
                         fontWeight: i === index ? 'bold' : 'normal',
                         fontSize: '0.7rem',
                         textAlign: 'center',
@@ -81,7 +81,7 @@ const ThreeStateSwitch = ({ value, onChange }) => {
                     width: circleSize,
                     height: circleSize,
                     borderRadius: '50%',
-                    backgroundColor: 'white', // העיגול תמיד לבן
+                    backgroundColor: 'white',
                     transition: 'transform 0.3s ease',
                     transform: `translateX(${isRtl
                         ? (states.length - 1 - index) * (containerWidth / 3)

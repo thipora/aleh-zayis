@@ -191,14 +191,16 @@ const BookMatrixReport = ({ initialBookId, onBack }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>{t("bookMatrixReport.employeeName")}</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    {t("bookMatrixReport.employeeName")}
+                  </TableCell>
                   {matrixData.roles.map(role => (
-                    <TableCell key={role} align="center">
+                    <TableCell key={role} align="center" sx={{ fontWeight: "bold" }}>
                       {t(`roles.${role}`, role)}
                     </TableCell>
                   ))}
-                  <TableCell align="center">
-                    <strong>{t("bookMatrixReport.total")}</strong>
+                  <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                    {t("bookMatrixReport.total")}
                   </TableCell>
                 </TableRow>
               </TableHead>

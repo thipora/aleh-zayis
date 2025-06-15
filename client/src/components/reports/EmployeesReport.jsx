@@ -200,12 +200,12 @@ const EmployeesReport = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>{t("employeesReport.employeeName")}</TableCell>
-                <TableCell>{t("employeesReport.employeeEmail")}</TableCell>
-                <TableCell>{t("employeesReport.role")}</TableCell>
-                <TableCell align="center">{t("employeesReport.rate")}</TableCell>
-                <TableCell align="center">{t("employeesReport.totalWork")}</TableCell>
-                <TableCell align="center">{t("employeesReport.totalPayment")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.employeeName")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.employeeEmail")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.role")}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.rate")}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.totalWork")}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.totalPayment")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

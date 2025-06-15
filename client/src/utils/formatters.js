@@ -1,16 +1,3 @@
-// export const formatCurrency = (value, currency, language) => {
-//   const symbol = currency === "USD" ? "$" : "₪";
-//   const formattedValue = parseFloat(value).toFixed(2);
-
-//   if (language === "he") {
-//     // בעברית → קודם המספר ואז הסימן
-//     return `${symbol} ${formattedValue}`;
-//   } else {
-//     // באנגלית → קודם הסימן ואז המספר
-//     return `${formattedValue} ${symbol}';
-//   }
-// };
-
 export const formatCurrency = (currency) => {
   return currency === "USD" ? "$" : "₪";
 };

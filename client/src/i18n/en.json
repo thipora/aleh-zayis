@@ -40,11 +40,11 @@
   },
   "EmployeeDashboard": {
     "title": "Employee Dashboard",
-    "viewAssignedBooks": "List of Projects",
+    "viewAssignedBooks": "View Assigned Projects",
     "monthlySummary": "Monthly Summary",
     "monthlyCharges": "Special Charges",
     "changePassword": "Change Password",
-    "addNew": "Add working hours",
+    "addNew": "Add Work Entry",
     "close": "Close",
     "cancel": "Cancel"
   },
@@ -94,7 +94,7 @@
     "cancel": "Cancel"
   },
   "addBook": {
-    "title": "Add New Book",
+    "title": "Add New Project",
     "bookId": "Book ID",
     "bookIdError": "Please enter a Book ID",
     "save": "Save",
@@ -144,9 +144,9 @@
     "availabilityStatus": "Availability Status",
     "availability": "Availability",
     "available": "Available",
-    "partial": "Partial",
-    "notAvailable": "Partially Available",
-    "not_available": "Partially Available",
+    "partial": "Partially Available",
+    "notAvailable": "Busy",
+    "not_available": "Busy",
     "all": "All"
   },
   "AddWorkDialog": {
@@ -250,8 +250,8 @@
     "hours": "hours",
     "minutes": "minutes",
     "and": "and",
-    "fixedMonthlyCharges": "Fixed Charges",
-    "fixedPayments": "Fixed Charges"
+    "fixedMonthlyCharges": "Special Charges",
+    "fixedPayments": "Special Charges"
   },
   "bookMatrixReport": {
     "title": "Book Payment Matrix Report",

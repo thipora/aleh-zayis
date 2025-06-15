@@ -41,7 +41,7 @@ const BooksReport = () => {
 
   const filteredSummary = summary.filter(book =>
     (book.book_name.toLowerCase().includes(searchText.toLowerCase()) ||
-    book.AZ_book_id.toLowerCase().includes(searchText.toLowerCase())) &&
+      book.AZ_book_id.toLowerCase().includes(searchText.toLowerCase())) &&
     book.projectManagerName.toLowerCase().includes(projectManagerSearch.toLowerCase())
   );
 
@@ -49,11 +49,6 @@ const BooksReport = () => {
     const wsData = filteredSummary.map(book => ({
       [t("booksReport.AZ_book_id")]: book.AZ_book_id,
       [t("booksReport.bookName")]: book.book_name,
-      // [t("booksReport.projectManager")]: book.projectManagerName,
-    //   [t("booksReport.totalWork")]:
-    //     book.total_hours > 0
-    //       ? `${book.total_hours.toFixed(2)} ${t("specialUnits.hours")}`
-    //       : `${book.total_quantity.toLocaleString()} ${t("specialUnits.items")}`,
       [t("booksReport.totalPayment")]: `${formatCurrency(book.currency)} ${(Number(book.total_payment) || 0).toFixed(2)}`
     }));
 
@@ -97,29 +92,19 @@ const BooksReport = () => {
             size="small"
             fullWidth
           />
-          {/* <TextField
-            label={t("booksReport.searchProjectManager")}
-            value={projectManagerSearch}
-            onChange={(e) => setProjectManagerSearch(e.target.value)}
-            size="small"
-            fullWidth
-          /> */}
           <Button onClick={exportToExcel} variant="outlined" size="small">
             {t("booksReport.downloadExcel")}
           </Button>
         </Box>
-
         {loading ? (
           <CircularProgress />
         ) : (
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>{t("booksReport.bookId")}</TableCell>
-                <TableCell>{t("booksReport.bookName")}</TableCell>
-                {/* <TableCell>{t("booksReport.projectManager")}</TableCell> */}
-                {/* <TableCell align="center">{t("booksReport.totalWork")}</TableCell> */}
-                <TableCell align="center">{t("booksReport.totalPayment")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.bookId")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.bookName")}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("booksReport.totalPayment")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -132,12 +117,6 @@ const BooksReport = () => {
                 >
                   <TableCell>{book.AZ_book_id}</TableCell>
                   <TableCell>{book.book_name}</TableCell>
-                  {/* <TableCell>{book.projectManagerName}</TableCell> */}
-                  {/* <TableCell align="center">
-                    {book.total_hours > 0
-                      ? `${book.total_hours.toFixed(2)} ${t("specialUnits.hours")}`
-                      : `${book.total_quantity.toLocaleString()} ${t("specialUnits.items")}`}
-                  </TableCell> */}
                   <TableCell align="center">
                     {formatCurrency(book.currency)} {(Number(book.total_payment) || 0).toFixed(2)}
                   </TableCell>
