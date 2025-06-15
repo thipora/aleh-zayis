@@ -63,7 +63,8 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         ? formatHours(row.quantity)
         : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`, row.unit)}`,
       [t("employeeReport.rate")]: row.rate,
-      [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${row.total.toFixed(2)}`
+      // [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${row.total.toFixed(2)}`
+      [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(row.total ?? 0).toFixed(2)}`
     }));
 
     const summaryByUnit = {};
@@ -82,7 +83,8 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
         [t("employeeReport.manager")]: "",
         [t("employeeReport.amount")]: "",
         [t("employeeReport.rate")]: charge.charge_name,
-        [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${charge.amount}`
+        // [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${charge.amount}`
+        [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(Number(charge.amount) || 0).toFixed(2)}`
       });
     });
 
