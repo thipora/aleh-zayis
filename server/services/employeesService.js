@@ -81,7 +81,12 @@ export class EmployeeService {
   }
 
   async getEmployeeById(employeeId) {
-    const query = 'SELECT * FROM users WHERE id_user = (SELECT user_id FROM employees WHERE id_employee = ?)';
+    const query = `
+      SELECT u.*, e.currency
+      FROM users u
+      JOIN employees e ON e.user_id = u.id_user
+      WHERE e.id_employee = ?
+    `;
     const result = await executeQuery(query, [employeeId]);
 
     if (result.length === 0) {

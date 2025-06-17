@@ -1,0 +1,5 @@
+{
+    "monthlyGreeting": "שלום {{name}},",
+    "monthlyBody": "מצורף הדוח החודשי שלך לחודש {{month}}/{{year}}.",
+    "thanks": "תודה!"
+}

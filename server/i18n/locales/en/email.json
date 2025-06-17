@@ -1,0 +1,5 @@
+{
+  "monthlyGreeting": "Hello {{name}},",
+  "monthlyBody": "Your monthly report for {{month}}/{{year}} is attached.",
+  "thanks": "Thank you!"
+}

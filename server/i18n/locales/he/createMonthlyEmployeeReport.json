@@ -1,0 +1,24 @@
+{
+    "headers": {
+        "az": "AZ",
+        "projectName": "שם פרויקט",
+        "manager": "מנהל פרויקט",
+        "quantity": "כמות",
+        "rate": "תעריף",
+        "total": "סה\"כ לתשלום",
+        "specialPayments": "תשלומים מיוחדים",
+        "totalRow": "סה\"כ"
+    },
+    "units": {
+        "hour": "שעה",
+        "hours": "שעות",
+        "minute": "דקה",
+        "minutes": "דקות",
+        "characters": "תווים",
+        "pages": "עמודים",
+        "and": "ו"
+    },
+    "messages": {
+        "worksheetName": "דו\"ח חודשי"
+    }
+}
