@@ -1,0 +1,23 @@
+{
+    "createMonthlyEmployeeReport": {
+        "headers": {
+            "az": "אריזה",
+            "projectName": "שם פרויקט",
+            "manager": "מנהל פרויקט",
+            "quantity": "כמות",
+            "rate": "תעריף",
+            "total": "סה\"כ לתשלום",
+            "specialPayments": "תשלומים מיוחדים",
+            "totalRow": "סה\"כ"
+        },
+        "units": {
+            "hour": "שעה",
+            "hours": "שעות",
+            "minute": "דקה",
+            "minutes": "דקות"
+        },
+        "messages": {
+            "worksheetName": "דו\"ח חודשי"
+        }
+    }
+}

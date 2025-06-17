@@ -1,0 +1,23 @@
+{
+    "createMonthlyEmployeeReport": {
+        "headers": {
+            "az": "AZ",
+            "projectName": "Project Name",
+            "manager": "Project Manager",
+            "quantity": "Quantity",
+            "rate": "Rate",
+            "total": "Total Payment",
+            "specialPayments": "Special Payments",
+            "totalRow": "Total"
+        },
+        "units": {
+            "hour": "hour",
+            "hours": "hours",
+            "minute": "minute",
+            "minutes": "minutes"
+        },
+        "messages": {
+            "worksheetName": "Monthly Report"
+        }
+    }
+}
