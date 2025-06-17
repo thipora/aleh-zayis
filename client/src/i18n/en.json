@@ -219,7 +219,8 @@
   "reportsDashboard": {
     "title": "Choose a report to view",
     "employeesSummary": "Monthly summary by employees",
-    "booksSummary": "Hours summary by books",
+    "booksSummaryByMonth": "Monthly summary by books",
+    "booksSummary": "Books Summary",
     "back": "Back"
   },
   "employeesReport": {
@@ -254,15 +255,15 @@
     "fixedPayments": "Special Charges"
   },
   "bookMatrixReport": {
-    "title": "Book Payment Matrix Report",
+    "title": "Book Payments Report",
     "bookId": "Book ID",
     "showReport": "Show Report",
     "employeeName": "Employee Name",
     "totalByRole": "Total per Role",
-    "downloadExcel": "הורד ל-Excel",
-    "fileName": "דוח_מטריצה",
-    "sheetName": "דוח מטריצה",
-    "total": "total"
+    "downloadExcel": "Download Excel",
+    "fileName": "book_payments_report",
+    "sheetName": "Book Payments Report",
+    "total": "Total"
   },
   "currency": {
     "ils": "ILS",

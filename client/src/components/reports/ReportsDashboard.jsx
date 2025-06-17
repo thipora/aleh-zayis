@@ -20,8 +20,11 @@ const ReportsDashboard = () => {
           <Typography variant="h5" gutterBottom>
             {t("reportsDashboard.title")}
           </Typography>
-          <Button variant="contained" onClick={() => setReport("employees")} fullWidth>
+          <Button variant="contained" onClick={() => setReport("employeesMonth")} fullWidth>
             {t("reportsDashboard.employeesSummary")}
+          </Button>
+          <Button variant="contained" onClick={() => setReport("booksMonth")} fullWidth>
+            {t("reportsDashboard.booksSummaryByMonth")}
           </Button>
           <Button variant="contained" onClick={() => setReport("books")} fullWidth>
             {t("reportsDashboard.booksSummary")}
@@ -29,7 +32,7 @@ const ReportsDashboard = () => {
         </Box>
       )}
 
-      {report === "employees" && (
+      {report === "employeesMonth" && (
         <>
           <Button onClick={handleBack} sx={{ mt: 2 }}>
             ⬅ {t("reportsDashboard.back")}
@@ -38,12 +41,20 @@ const ReportsDashboard = () => {
         </>
       )}
 
+      {report === "booksMonth" && (
+        <>
+          <Button onClick={handleBack} sx={{ mt: 2 }}>
+            ⬅ {t("reportsDashboard.back")}
+          </Button>
+          <BooksReport isMonthly={true} />
+        </>
+      )}
       {report === "books" && (
         <>
           <Button onClick={handleBack} sx={{ mt: 2 }}>
             ⬅ {t("reportsDashboard.back")}
           </Button>
-          <BooksReport />
+          <BooksReport isMonthly={false} />
         </>
       )}
     </Box>

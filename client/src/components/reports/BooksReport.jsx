@@ -12,10 +12,10 @@ import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import { formatCurrency } from "../../utils/formatters";
 
-const BooksReport = () => {
+const BooksReport = ({ isMonthly = false }) => {
   const now = new Date();
-  const [year, setYear] = useState(now.getFullYear());
-  const [month, setMonth] = useState(now.getMonth() + 1);
+  const [year, setYear] = useState(isMonthly ? now.getFullYear() : null);
+  const [month, setMonth] = useState(isMonthly ? now.getMonth() + 1 : null);
   const [summary, setSummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -28,7 +28,11 @@ const BooksReport = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const url = `/reports/monthly-summary/books?month=${month}&year=${year}`;
+        // const url = `/reports/monthly-summary/books?month=${month}&year=${year}`;
+        let url = `/reports/books-summary`;
+        if (isMonthly && month && year) {
+          url += `?month=${month}&year=${year}`;
+        }
         const data = await api.getRequest(url);
         setSummary(data);
       } catch (error) {
@@ -39,10 +43,12 @@ const BooksReport = () => {
     fetchData();
   }, [month, year]);
 
+  const safeLower = (val) => (val || "").toLowerCase();
+
   const filteredSummary = summary.filter(book =>
-    (book.book_name.toLowerCase().includes(searchText.toLowerCase()) ||
-      book.AZ_book_id.toLowerCase().includes(searchText.toLowerCase())) &&
-    book.projectManagerName.toLowerCase().includes(projectManagerSearch.toLowerCase())
+    (safeLower(book.book_name).includes(safeLower(searchText)) ||
+      safeLower(book.AZ_book_id).includes(safeLower(searchText))) &&
+    safeLower(book.projectManagerName).includes(safeLower(projectManagerSearch))
   );
 
   const exportToExcel = () => {
@@ -64,8 +70,11 @@ const BooksReport = () => {
   if (selectedBook) {
     return (
       <BookPivotReport
-        initialBookId={selectedBook.AZ_book_id}
+        initialBook={selectedBook}
         onBack={() => setSelectedBook(null)}
+        month={month ? month : null}
+        year={year ? year : null}
+        isMonthly={isMonthly}
       />
     );
   }
@@ -73,16 +82,18 @@ const BooksReport = () => {
   return (
     <Box mt={3} maxWidth={1000} mx="auto" dir={i18n.language === "he" ? "rtl" : "ltr"}>
       <Paper elevation={2} sx={{ p: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <MonthSelector
-            month={month}
-            year={year}
-            onChange={(newMonth, newYear) => {
-              setMonth(newMonth);
-              setYear(newYear);
-            }}
-          />
-        </Box>
+        {isMonthly && (
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <MonthSelector
+              month={month}
+              year={year}
+              onChange={(newMonth, newYear) => {
+                setMonth(newMonth);
+                setYear(newYear);
+              }}
+            />
+          </Box>
+        )}
 
         <Box display="flex" gap={2} mb={2}>
           <TextField
@@ -104,6 +115,7 @@ const BooksReport = () => {
               <TableRow>
                 <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.bookId")}</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.bookName")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.projectManager")}</TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("booksReport.totalPayment")}</TableCell>
               </TableRow>
             </TableHead>
@@ -117,6 +129,7 @@ const BooksReport = () => {
                 >
                   <TableCell>{book.AZ_book_id}</TableCell>
                   <TableCell>{book.book_name}</TableCell>
+                  <TableCell>{book.projectManagerName}</TableCell>
                   <TableCell align="center">
                     {formatCurrency(book.currency)} {(Number(book.total_payment) || 0).toFixed(2)}
                   </TableCell>

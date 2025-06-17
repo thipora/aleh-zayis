@@ -1,15 +1,16 @@
 import { executeQuery } from "../config/db.js";
+import { getProjectManagerNameById } from './projectManagerService.js'
 
 export class ReportsService {
-  async getBookSummary(bookId) {
-    const workEntries = await this.getWorkEntriesByBookId(bookId);
+  async getBookSummary(bookId, month = null, year = null) {
+    const workEntries = await this.getWorkEntriesByBookId(bookId, month, year);
     const groupedByRole = this.groupWorkEntriesByRole(workEntries);
     return groupedByRole
   }
 
 
-  async getWorkEntriesByBookId(bookId) {
-    const sql = `
+  async getWorkEntriesByBookId(bookId, month, year) {
+    let sql = `
     SELECT
       we.quantity,
       we.is_special_work,
@@ -28,8 +29,14 @@ export class ReportsService {
     JOIN books b ON b.id_book = we.book_id
     WHERE b.AZ_book_id = ?
   `;
+    const params = [bookId];
 
-    return await executeQuery(sql, [bookId]);
+    if (month && year) {
+      sql += ` AND MONTH(we.date) = ? AND YEAR(we.date) = ?`;
+      params.push(month, year);
+    }
+
+    return await executeQuery(sql, params);
   }
 
 
@@ -72,12 +79,36 @@ export class ReportsService {
     return result;
   }
 
+  // async getMonthlyBooksSummary(month, year) {
+  //   const sql = `
+  //   SELECT 
+  //     b.AZ_book_id,
+  //     b.name AS book_name,
+  //     '' AS projectManagerName,
+  //     SUM(we.quantity * IF(we.is_special_work = 1, er.special_rate, er.hourly_rate)) AS total_payment,
+  //     SUM(CASE WHEN r.special_unit = 'hours' THEN we.quantity ELSE 0 END) AS total_hours,
+  //     SUM(CASE WHEN r.special_unit != 'hours' THEN we.quantity ELSE 0 END) AS total_quantity,
+  //     e.currency
+  //   FROM work_entries we
+  //   JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
+  //   JOIN roles r ON er.role_id = r.id_role
+  //   JOIN employees e ON er.employee_id = e.id_employee
+  //   JOIN books b ON we.book_id = b.id_book
+  //   WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
+  //   GROUP BY b.id_book, e.currency
+  //   ORDER BY b.name;
+  // `;
+
+  //   return await executeQuery(sql, [month, year]);
+  // }
+
   async getMonthlyBooksSummary(month, year) {
     const sql = `
     SELECT 
       b.AZ_book_id,
       b.name AS book_name,
-      '' AS projectManagerName,
+      b.project_manager_clickup_id,
+      u_pm.name AS projectManagerName,
       SUM(we.quantity * IF(we.is_special_work = 1, er.special_rate, er.hourly_rate)) AS total_payment,
       SUM(CASE WHEN r.special_unit = 'hours' THEN we.quantity ELSE 0 END) AS total_hours,
       SUM(CASE WHEN r.special_unit != 'hours' THEN we.quantity ELSE 0 END) AS total_quantity,
@@ -87,12 +118,68 @@ export class ReportsService {
     JOIN roles r ON er.role_id = r.id_role
     JOIN employees e ON er.employee_id = e.id_employee
     JOIN books b ON we.book_id = b.id_book
+    LEFT JOIN employees e_pm ON e_pm.clickup_id = b.project_manager_clickup_id
+    LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
     WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
     GROUP BY b.id_book, e.currency
     ORDER BY b.name;
   `;
 
-    return await executeQuery(sql, [month, year]);
+    const rows = await executeQuery(sql, [month, year]);
+
+    // השלמה מתוך ClickUp למי שאין לו שם מנהל פרויקט
+    for (const row of rows) {
+      if (!row.projectManagerName && row.project_manager_clickup_id) {
+        try {
+          const clickUpUser = await getProjectManagerNameById(row.project_manager_clickup_id);
+          row.projectManagerName = clickUpUser || "לא ידוע";
+        } catch (error) {
+          console.error("שגיאה בשליפת מנהל מפרויקט מ-ClickUp:", error);
+          row.projectManagerName = "שגיאה בשליפה";
+        }
+      }
+    }
+
+    return rows;
+  }
+
+  async getAllBooksSummary() {
+    const sql = `
+    SELECT 
+      b.AZ_book_id,
+      b.name AS book_name,
+      b.project_manager_clickup_id,
+      u_pm.name AS projectManagerName,
+      SUM(we.quantity * IF(we.is_special_work = 1, er.special_rate, er.hourly_rate)) AS total_payment,
+      SUM(CASE WHEN r.special_unit = 'hours' THEN we.quantity ELSE 0 END) AS total_hours,
+      SUM(CASE WHEN r.special_unit != 'hours' THEN we.quantity ELSE 0 END) AS total_quantity,
+      e.currency
+    FROM work_entries we
+    JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
+    JOIN roles r ON er.role_id = r.id_role
+    JOIN employees e ON er.employee_id = e.id_employee
+    JOIN books b ON we.book_id = b.id_book
+    LEFT JOIN employees e_pm ON e_pm.clickup_id = b.project_manager_clickup_id
+    LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
+    GROUP BY b.id_book, e.currency
+    ORDER BY b.name;
+  `;
+
+    const rows = await executeQuery(sql);
+
+    for (const row of rows) {
+      if (!row.projectManagerName && row.project_manager_clickup_id) {
+        try {
+          const clickUpUser = await getProjectManagerNameById(row.project_manager_clickup_id);
+          row.projectManagerName = clickUpUser || "לא ידוע";
+        } catch (error) {
+          console.error("שגיאה בשליפת מנהל מפרויקט מ-ClickUp:", error);
+          row.projectManagerName = "שגיאה בשליפה";
+        }
+      }
+    }
+
+    return rows;
   }
 
 }

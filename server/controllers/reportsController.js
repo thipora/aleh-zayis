@@ -45,9 +45,17 @@ export class ReportsController {
   async getBookSummary(req, res, next) {
     try {
       const { bookId } = req.params;
+      const { month, year } = req.query;
+
       if (!bookId) return res.status(400).json({ message: "Missing bookId" });
 
-      const data = await ReportsController.reportsService.getBookSummary(bookId);
+      let data;
+      if (!month || !year) {
+        data = await ReportsController.reportsService.getBookSummary(bookId)
+      }
+      else {
+        data = await ReportsController.reportsService.getBookSummary(bookId, Number(month), Number(year));
+      }
       res.json(data);
     } catch (ex) {
       next({ statusCode: ex.errno || 500, message: ex.message || ex });
@@ -55,9 +63,14 @@ export class ReportsController {
   }
 
   async getMonthlyBooksSummary(req, res) {
-    const { month, year } = req.query;
+    const { month = null, year = null } = req.query;
     try {
-      const data = await ReportsController.reportsService.getMonthlyBooksSummary(month, year);
+      let data;
+      if (month && year) {
+        data = await ReportsController.reportsService.getMonthlyBooksSummary(month, year);
+      } else {
+        data = await ReportsController.reportsService.getAllBooksSummary();
+      }
       res.json(data);
     } catch (err) {
       console.error("Error in getMonthlyBooksSummary:", err);

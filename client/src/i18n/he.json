@@ -213,7 +213,8 @@
   "reportsDashboard": {
     "title": "בחר דוח להצגה",
     "employeesSummary": "סיכום חודשי לפי עובדים",
-    "booksSummary": "סיכום שעות לפי ספרים",
+    "booksSummaryByMonth": "סיכום חודשי לפי ספרים",
+    "booksSummary": "סיכום ספרים",
     "back": "חזור"
   },
   "employeesReport": {
@@ -248,15 +249,15 @@
     "fixedPayments": "תשלומים מיוחדים"
   },
   "bookMatrixReport": {
-    "title": "דוח תשלום מטריציוני לפי ספר",
-    "bookId": "מזהה ספר",
+    "title": "דוח תשלומים לפי ספר",
+    "bookId": "מספר ספר",
     "showReport": "הצג דוח",
     "employeeName": "שם עובד",
-    "totalByRole": "סה\"כ לכל תפקיד",
+    "totalByRole": "סה\"כ לפי תפקיד",
     "downloadExcel": "הורד ל-Excel",
-    "fileName": "דוח_מטריצה",
-    "sheetName": "דוח מטריצה",
-    "total": "סיכום"
+    "fileName": "דוח_תשלומים_ספר",
+    "sheetName": "דוח תשלומים לפי ספר",
+    "total": "סה\"כ"
   },
   "currency": {
     "ils": "שקל",
