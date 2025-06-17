@@ -15,7 +15,8 @@ export const sendMail = async (params) => {
             from: process.env.EMAIL,
             to: params.to,
             subject: params.subject,
-            html: params.html
+            html: params.html,
+            attachments: params.attachments || [],
         });
 
         return info;

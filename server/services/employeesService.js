@@ -80,6 +80,17 @@ export class EmployeeService {
     return result.length > 0 ? result[0] : null;
   }
 
+  async getEmployeeById(employeeId) {
+    const query = 'SELECT * FROM users WHERE id_user = (SELECT user_id FROM employees WHERE id_employee = ?)';
+    const result = await executeQuery(query, [employeeId]);
+
+    if (result.length === 0) {
+      throw new Error(`Employee with ID ${employeeId} not found.`);
+    }
+
+    return result[0];
+  }
+
 
   async getClickUpEmployees(teamId) {
     const data = await fetchClickUpAPI(`https://api.clickup.com/api/v2/team/${teamId}/user`);

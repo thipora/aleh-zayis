@@ -10,3 +10,9 @@ export const resetPasswordEmailTemplate = (password) => `
   <p>Your password has been successfully reset.</p>
   <p><strong>New Password:</strong> ${password}</p>
 `;
+
+export const monthlyReportEmailTemplate = (name, month, year) => `
+  <p>Hello ${name},</p>
+  <p>Your monthly report for ${month}/${year} is attached.</p>
+  <p>Thank you!</p>
+`;

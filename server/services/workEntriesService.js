@@ -266,8 +266,8 @@ export class WorkEntriesService {
         try {
           row.project_manager_name = await getProjectManagerNameById(row.project_manager_clickup_id);
         } catch (error) {
-          console.error('שגיאה בשליפת שם מנהל מפרויקט:');
-          row.project_manager_name = 'שגיאה בשליפה';
+          console.error('Error fetching project manager name:');
+          row.project_manager_name = 'Error fetching';
         }
       }
     }
