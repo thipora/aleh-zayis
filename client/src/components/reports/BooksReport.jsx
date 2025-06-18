@@ -4,13 +4,13 @@ import {
   TableCell, TableBody, CircularProgress, Button, TextField
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 import BookPivotReport from "./BookPivotReport";
 import MonthSelector from "../common/MonthSelector";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import { formatCurrency } from "../../utils/formatters";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 const BooksReport = ({ isMonthly = false }) => {
   const now = new Date();
@@ -28,7 +28,6 @@ const BooksReport = ({ isMonthly = false }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // const url = `/reports/monthly-summary/books?month=${month}&year=${year}`;
         let url = `/reports/books-summary`;
         if (isMonthly && month && year) {
           url += `?month=${month}&year=${year}`;
@@ -51,20 +50,79 @@ const BooksReport = ({ isMonthly = false }) => {
     safeLower(book.projectManagerName).includes(safeLower(projectManagerSearch))
   );
 
-  const exportToExcel = () => {
-    const wsData = filteredSummary.map(book => ({
-      [t("booksReport.AZ_book_id")]: book.AZ_book_id,
-      [t("booksReport.bookName")]: book.book_name,
-      [t("booksReport.totalPayment")]: `${formatCurrency(book.currency)} ${(Number(book.total_payment) || 0).toFixed(2)}`
-    }));
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(t("booksReport.title") || "Books Report");
 
-    const worksheet = XLSX.utils.json_to_sheet(wsData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, t("booksReport.title") || "Books Report");
+    const isRTL = i18n.language === "he";
+    worksheet.views = [{ rightToLeft: isRTL }];
 
-    const fileName = `${t("booksReport.title")}_${month}_${year}.xlsx`;
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), fileName);
+    const date = new Date(year, month - 1);
+    const monthName = date.toLocaleString(isRTL ? "he-IL" : "en-US", {
+      month: "long",
+      year: "numeric"
+    });
+
+    let titleText;
+    if (isMonthly) {
+      titleText = `${t("booksReport.title")} - ${monthName}`;
+    } else {
+      titleText = t("booksReport.title");
+    }
+    worksheet.mergeCells("A1:D1");
+    worksheet.getCell("A1").value = titleText;
+    worksheet.getCell("A1").font = { bold: true, size: 14 };
+    worksheet.getCell("A1").alignment = { horizontal: "center", vertical: "middle" };
+
+    const headers =
+      [
+        t("booksReport.AZ"),
+        t("booksReport.bookName"),
+        t("booksReport.projectManager"),
+        t("booksReport.totalPayment"),
+      ];
+
+    const headerRow = worksheet.addRow(headers);
+    headerRow.font = { bold: true };
+    headerRow.alignment = { horizontal: "center" };
+
+    filteredSummary.forEach((book) => {
+      const row = isRTL
+        ? [
+          `${formatCurrency(book.currency)} ${(Number(book.total_payment) || 0).toFixed(2)}`,
+          book.projectManagerName,
+          book.book_name,
+          book.AZ_book_id,
+        ]
+        : [
+          book.AZ_book_id,
+          book.book_name,
+          book.projectManagerName,
+          `${formatCurrency(book.currency)} ${(Number(book.total_payment) || 0).toFixed(2)}`
+        ];
+      worksheet.addRow(row);
+    });
+
+    worksheet.columns.forEach((column) => {
+      let maxLength = 0;
+      column.eachCell?.({ includeEmpty: true }, (cell) => {
+        const val = cell.value ? cell.value.toString() : "";
+        if (val.length > maxLength) maxLength = val.length;
+      });
+      column.width = maxLength + 4;
+    });
+
+    let fileName;
+    if (isMonthly) {
+      fileName = `${t("booksReport.title")} ${monthName}.xlsx`;
+    } else {
+      fileName = `${t("booksReport.title")}.xlsx`;
+    }
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+    saveAs(blob, fileName);
   };
 
   if (selectedBook) {
@@ -113,7 +171,7 @@ const BooksReport = ({ isMonthly = false }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.bookId")}</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.AZ")}</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.bookName")}</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>{t("booksReport.projectManager")}</TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("booksReport.totalPayment")}</TableCell>

@@ -261,7 +261,7 @@
     "employeeName": "Employee Name",
     "totalByRole": "Total per Role",
     "downloadExcel": "Download Excel",
-    "fileName": "book_payments_report",
+    "fileName": "book report",
     "sheetName": "Book Payments Report",
     "total": "Total"
   },
@@ -270,6 +270,7 @@
     "usd": "USD"
   },
   "booksReport": {
+    "AZ": "AZ",
     "bookId": "Book ID",
     "bookName": "Book Name",
     "projectManager": "Project Manager",
@@ -279,6 +280,7 @@
     "search": "Search Book",
     "searchProjectManager": "Search Project Manager",
     "downloadExcel": "Download to Excel",
-    "back": "Back"
+    "back": "Back",
+    "summaryFor": "Summary for"
   }
 }

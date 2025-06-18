@@ -255,8 +255,8 @@
     "employeeName": "שם עובד",
     "totalByRole": "סה\"כ לפי תפקיד",
     "downloadExcel": "הורד ל-Excel",
-    "fileName": "דוח_תשלומים_ספר",
-    "sheetName": "דוח תשלומים לפי ספר",
+    "fileName": "דוח ספר",
+    "sheetName": "דוח סיכום לספר",
     "total": "סה\"כ"
   },
   "currency": {
@@ -264,15 +264,17 @@
     "usd": "דולר"
   },
   "booksReport": {
+    "AZ": "AZ",
     "bookId": "מספר ספר",
     "bookName": "שם הספר",
     "projectManager": "מנהל פרויקט",
     "totalWork": "סה\"כ עבודה",
     "totalPayment": "סה\"כ תשלום",
-    "title": "דו\"ח ספרים",
+    "title": "דוח ספרים",
     "search": "חיפוש ספר",
     "searchProjectManager": "חיפוש מנהל פרויקט",
     "downloadExcel": "הורד לאקסל",
-    "back": "חזור"
+    "back": "חזור",
+    "summaryFor": "סיכום עבור חודש"
   }
 }
