@@ -12,6 +12,7 @@ import MonthSelector from "../common/MonthSelector";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import { formatCurrency } from "../../utils/formatters";
+import ExcelJS from "exceljs";
 
 
 const formatHours = (quantity) => {
@@ -41,7 +42,6 @@ const EmployeesReport = () => {
     ? summary.filter(emp => emp.role_name === selectedRole)
     : summary;
 
-  // const totalPay = filteredSummary.reduce((sum, e) => sum + Number(e.total), 0).toFixed(2);
   const totalPayILS = filteredSummary
     .filter(e => e.currency === "ILS")
     .reduce((sum, e) => sum + Number(e.total), 0)
@@ -96,58 +96,87 @@ const EmployeesReport = () => {
     fetchData();
   }, [month, year]);
 
-  const exportToExcel = () => {
-    const headers = {
-      name: t("employeesReport.employeeName"),
-      email: t("employeesReport.employeeEmail"),
-      role: t("employeesReport.role"),
-      rate: t("employeesReport.rate"),
-      totalWork: t("employeesReport.totalWork"),
-      totalPay: t("employeesReport.totalPayment")
-    };
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Employees Report");
 
-    const wsData = filteredSummary.map(emp => {
-      const q = parseFloat(emp.quantity);
-      const isHours = emp.type === "hours";
-      return {
-        [headers.name]: emp.employee_name,
-        [headers.email]: emp.employee_email,
-        [headers.role]: t(`roles.${emp.role_name}`, emp.role_name),
-        [headers.rate]: emp.rate,
-        [headers.totalWork]: isHours
-          ? formatHours(q)
-          : `${parseInt(emp.quantity)} ${t(`specialUnits.${emp.unit}`, emp.unit)}`,
-        [headers.totalPay]: `${formatCurrency(emp.currency)} ${emp.total.toFixed(2)}`,
-      };
+    const isRTL = i18n.language === "he";
+    sheet.views = [{ rightToLeft: isRTL }];
+
+    const monthName = new Date(year, month - 1).toLocaleString(i18n.language === "he" ? "he-IL" : "en-US", {
+      month: "long",
+      year: "numeric"
     });
 
-    const summaryRow = {
-      [headers.name]: t("employeesReport.total"),
-      [headers.email]: "",
-      [headers.role]: "",
-      [headers.rate]: "",
-      [headers.totalWork]: allUnits
-        .filter(unit => summaryUnits[unit])
-        .map(unit => unit === "hours"
-          ? formatHours(summaryUnits[unit])
-          : `${summaryUnits[unit].toLocaleString()} ${t(`specialUnits.${unit}`)}`
-        )
-        .join(" | "),
-      [headers.totalPay]: `₪ ${totalPayILS}  |  $ ${totalPayUSD}`
-    };
+    const title = `${t("employeeReport.title")} - ${monthName}`;
+    sheet.mergeCells("A1", "F1");
+    sheet.getCell("A1").value = title;
+    sheet.getCell("A1").font = { size: 14, bold: true };
+    sheet.getCell("A1").alignment = { horizontal: "center", vertical: "middle" };
 
-    wsData.push({});
+    sheet.addRow([]);
 
-    wsData.push(summaryRow);
+    const headers = [
+      t("employeesReport.employeeName"),
+      t("employeesReport.employeeEmail"),
+      t("employeesReport.role"),
+      t("employeesReport.rate"),
+      t("employeesReport.totalWork"),
+      t("employeesReport.totalPayment"),
+    ];
+    sheet.addRow(headers).font = { bold: true };
 
-    const worksheet = XLSX.utils.json_to_sheet(wsData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Employees Report");
+    filteredSummary.forEach(emp => {
+      const isHours = emp.type === "hours";
+      const quantity = parseFloat(emp.quantity);
+      const totalWork = isHours
+        ? formatHours(quantity)
+        : `${parseInt(emp.quantity)} ${t(`specialUnits.${emp.unit}`)}`;
 
-    const fileName = `${t("employeeReport.fileName")}_${month}_${year}.xlsx`;
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), fileName);
+      const totalPay = `${formatCurrency(emp.currency)} ${emp.total.toFixed(2)}`;
+
+      const row = [
+        emp.employee_name,
+        emp.employee_email,
+        t(`roles.${emp.role_name}`, emp.role_name),
+        emp.rate,
+        totalWork,
+        totalPay
+      ];
+      sheet.addRow(row);
+    });
+
+    sheet.addRow([]);
+
+    const summaryUnitsStr = allUnits
+      .filter(unit => summaryUnits[unit])
+      .map(unit => unit === "hours"
+        ? formatHours(summaryUnits[unit])
+        : `${summaryUnits[unit].toLocaleString()} ${t(`specialUnits.${unit}`)}`
+      )
+      .join(" | ");
+
+    const summaryRow = [
+      t("employeesReport.total"),
+      "", "", "", summaryUnitsStr,
+      `₪ ${totalPayILS}  |  $ ${totalPayUSD}`
+    ];
+    sheet.addRow(summaryRow).font = { bold: true };
+
+    sheet.columns.forEach(column => {
+      let maxLength = 0;
+      column.eachCell({ includeEmpty: true }, cell => {
+        const val = cell.value ? cell.value.toString() : "";
+        maxLength = Math.max(maxLength, val.length);
+      });
+      column.width = maxLength + 4;
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    saveAs(blob, `${t("employeeReport.fileName")}_${month}_${year}.xlsx`);
   };
+
 
   if (selectedEmployee) {
     return (

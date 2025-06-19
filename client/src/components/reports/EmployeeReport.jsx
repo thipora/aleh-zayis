@@ -4,11 +4,12 @@ import {
   TableCell, TableBody, CircularProgress, Button
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests.js";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import { formatCurrency } from "../../utils/formatters";
+import ExcelJS from 'exceljs';
 
 const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
   const [rows, setRows] = useState([]);
@@ -54,57 +55,219 @@ const EmployeeReport = ({ employeeId, employeeName, month, year, onBack }) => {
     return str;
   };
 
-  const exportToExcel = () => {
-    const wsData = rows.map(row => ({
-      [t("employeeReport.az")]: row.AZ_book_id,
-      [t("employeeReport.project")]: row.book_name,
-      [t("employeeReport.manager")]: row.projectManagerName,
-      [t("employeeReport.amount")]: row.type === "hours"
-        ? formatHours(row.quantity)
-        : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`, row.unit)}`,
-      [t("employeeReport.rate")]: row.rate,
-      [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(row.total ?? 0).toFixed(2)}`
-    }));
+  // // const exportToExcel = () => {
+  // //   const wsData = rows.map(row => ({
+  // //     [t("employeeReport.az")]: row.AZ_book_id,
+  // //     [t("employeeReport.project")]: row.book_name,
+  // //     [t("employeeReport.manager")]: row.projectManagerName,
+  // //     [t("employeeReport.amount")]: row.type === "hours"
+  // //       ? formatHours(row.quantity)
+  // //       : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`, row.unit)}`,
+  // //     [t("employeeReport.rate")]: row.rate,
+  // //     [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(row.total ?? 0).toFixed(2)}`
+  // //   }));
 
-    const summaryByUnit = {};
+  // //   const summaryByUnit = {};
+  // //   rows.forEach(row => {
+  // //     const unit = row.type === "hours" ? "hours" : row.unit;
+  // //     const quantity = parseFloat(row.quantity);
+  // //     if (!isNaN(quantity)) {
+  // //       summaryByUnit[unit] = (summaryByUnit[unit] || 0) + quantity;
+  // //     }
+  // //   });
+
+  // //   monthlyCharges.forEach(charge => {
+  // //     wsData.push({
+  // //       [t("employeeReport.az")]: t("employeeReport.fixedPayments"),
+  // //       [t("employeeReport.project")]: "",
+  // //       [t("employeeReport.manager")]: "",
+  // //       [t("employeeReport.amount")]: "",
+  // //       [t("employeeReport.rate")]: charge.charge_name,
+  // //       [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(Number(charge.amount) || 0).toFixed(2)}`
+  // //     });
+  // //   });
+
+  // //   wsData.push({});
+
+  // //   wsData.push({
+  // //     [t("employeeReport.az")]: t("employeeReport.total"),
+  // //     [t("employeeReport.amount")]: Object.entries(summaryByUnit).map(([unit, val], idx) => (
+  // //       unit === "hours"
+  // //         ? formatHours(val)
+  // //         : `${val.toLocaleString()} ${t(`specialUnits.${unit}`)}`
+  // //     )).join(" | "),
+  // //     [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${totalPayment.toFixed(2)}`
+  // //   });
+
+  // //   const worksheet = XLSX.utils.json_to_sheet(wsData);
+  // //   const workbook = XLSX.utils.book_new();
+  // //   XLSX.utils.book_append_sheet(workbook, worksheet, t("employeeReport.sheetName"));
+  // //   const fileName = `${t("employeeReport.fileName")}_${employeeName}_${month}_${year}.xlsx`;
+  // //   const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  // //   saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), fileName);
+  // // };
+  // const exportToExcel = async () => {
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet(t("employeeReport.sheetName") || "Report");
+
+  //   if (i18n.language === "he") {
+  //     worksheet.views = [{ rightToLeft: true }];
+  //   }
+
+  //   // כותרת ראשית
+  //   const monthName = new Date(year, month - 1).toLocaleString(i18n.language === "he" ? "he-IL" : "en-US", {
+  //     month: "long", year: "numeric"
+  //   });
+  //   const titleText = `${t("employeeReport.title", { name: employeeName, month: monthName, year })}`;
+
+  //   worksheet.mergeCells("A1:F1");
+  //   const titleCell = worksheet.getCell("A1");
+  //   titleCell.value = titleText;
+  //   titleCell.font = { bold: true, size: 14 };
+  //   titleCell.alignment = { horizontal: "center", vertical: "middle" };
+
+  //   // כותרות עמודות
+  //   const headers = [
+  //     t("employeeReport.az"),
+  //     t("employeeReport.project"),
+  //     t("employeeReport.manager"),
+  //     t("employeeReport.amount"),
+  //     t("employeeReport.rate"),
+  //     t("employeeReport.totalPay")
+  //   ];
+  //   worksheet.addRow(headers);
+  //   const headerRow = worksheet.getRow(2);
+  //   headerRow.font = { bold: true };
+  //   headerRow.alignment = { horizontal: "center" };
+
+  //   // תוכן רגיל
+  //   rows.forEach(row => {
+  //     const quantity = row.type === "hours"
+  //       ? formatHours(row.quantity)
+  //       : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`)}`;
+  //     worksheet.addRow([
+  //       row.AZ_book_id,
+  //       row.book_name,
+  //       row.projectManagerName,
+  //       quantity,
+  //       row.rate,
+  //       `${formatCurrency(employeeCurrency)} ${(row.total ?? 0).toFixed(2)}`
+  //     ]);
+  //   });
+
+  //   // תשלומים קבועים
+  //   monthlyCharges.forEach(charge => {
+  //     worksheet.addRow([
+  //       t("employeeReport.fixedPayments"),
+  //       "", "", "", charge.charge_name,
+  //       `${formatCurrency(employeeCurrency)} ${(Number(charge.amount) || 0).toFixed(2)}`
+  //     ]);
+  //   });
+
+  //   // שורת רווח
+  //   worksheet.addRow([]);
+
+  //   // שורת סיכום
+  //   const summary = Object.entries(summaryByUnit).map(([unit, val]) =>
+  //     unit === "hours"
+  //       ? formatHours(val)
+  //       : `${val.toLocaleString()} ${t(`specialUnits.${unit}`)}`
+  //   ).join(" | ");
+
+  //   const totalRow = worksheet.addRow([
+  //     t("employeeReport.total"), "", "", summary, "",
+  //     `${formatCurrency(employeeCurrency)} ${totalPayment.toFixed(2)}`
+  //   ]);
+  //   totalRow.font = { bold: true };
+
+  //   // התאמת רוחב עמודות
+  //   worksheet.columns.forEach(column => {
+  //     column.width = 25;
+  //   });
+
+  //   const buffer = await workbook.xlsx.writeBuffer();
+  //   const blob = new Blob([buffer], {
+  //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  //   });
+  //   saveAs(blob, `${t("employeeReport.fileName")}_${employeeName}_${month}_${year}.xlsx`);
+  // };
+
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(t("employeeReport.sheetName") || "Report");
+
+    const isRTL = i18n.language === "he";
+    worksheet.views = [{ rightToLeft: isRTL }];
+
+    const monthName = new Date(year, month - 1).toLocaleString(isRTL ? "he-IL" : "en-US", {
+      month: "long", year: "numeric"
+    });
+    const titleText = `${t("employeeReport.title")} ${employeeName} - ${monthName}`;
+    worksheet.mergeCells("A1:F1");
+    const titleCell = worksheet.getCell("A1");
+    titleCell.value = titleText;
+    titleCell.font = { bold: true, size: 14 };
+    titleCell.alignment = { horizontal: "center", vertical: "middle" };
+
+    const headers =
+      [
+        t("employeeReport.az"),
+        t("employeeReport.project"),
+        t("employeeReport.manager"),
+        t("employeeReport.amount"),
+        t("employeeReport.rate"),
+        t("employeeReport.totalPay")
+      ];
+    worksheet.addRow(headers).font = { bold: true };
+
     rows.forEach(row => {
-      const unit = row.type === "hours" ? "hours" : row.unit;
-      const quantity = parseFloat(row.quantity);
-      if (!isNaN(quantity)) {
-        summaryByUnit[unit] = (summaryByUnit[unit] || 0) + quantity;
-      }
+      const quantity = row.type === "hours"
+        ? formatHours(row.quantity)
+        : `${Math.floor(row.quantity)} ${t(`specialUnits.${row.unit}`)}`;
+      const data = [
+        row.AZ_book_id,
+        row.book_name,
+        row.projectManagerName,
+        quantity,
+        row.rate,
+        `${formatCurrency(employeeCurrency)} ${(row.total ?? 0).toFixed(2)}`
+      ];
+      worksheet.addRow(isRTL ? data : [...data].reverse());
     });
 
     monthlyCharges.forEach(charge => {
-      wsData.push({
-        [t("employeeReport.az")]: t("employeeReport.fixedPayments"),
-        [t("employeeReport.project")]: "",
-        [t("employeeReport.manager")]: "",
-        [t("employeeReport.amount")]: "",
-        [t("employeeReport.rate")]: charge.charge_name,
-        [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${(Number(charge.amount) || 0).toFixed(2)}`
-      });
+      const data = [
+        t("employeeReport.fixedPayments"),
+        "", "", "", charge.charge_name,
+        `${formatCurrency(employeeCurrency)} ${(Number(charge.amount) || 0).toFixed(2)}`
+      ];
+      worksheet.addRow(isRTL ? data : [...data].reverse());
     });
 
-    wsData.push({});
+    worksheet.addRow([]);
 
-    wsData.push({
-      [t("employeeReport.az")]: t("employeeReport.total"),
-      [t("employeeReport.amount")]: Object.entries(summaryByUnit).map(([unit, val], idx) => (
-        unit === "hours"
-          ? formatHours(val)
-          : `${val.toLocaleString()} ${t(`specialUnits.${unit}`)}`
-      )).join(" | "),
-      [t("employeeReport.totalPay")]: `${formatCurrency(employeeCurrency)} ${totalPayment.toFixed(2)}`
+    const summary = Object.entries(summaryByUnit).map(([unit, val]) =>
+      unit === "hours" ? formatHours(val) : `${val.toLocaleString()} ${t(`specialUnits.${unit}`)}`
+    ).join(" | ");
+
+    const totalRow = [
+      t("employeeReport.total"), "", "", summary, "",
+      `${formatCurrency(employeeCurrency)} ${totalPayment.toFixed(2)}`
+    ];
+    worksheet.addRow(isRTL ? totalRow : [...totalRow].reverse()).font = { bold: true };
+
+    worksheet.columns.forEach(col => {
+      col.width = 25;
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(wsData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, t("employeeReport.sheetName"));
-    const fileName = `${t("employeeReport.fileName")}_${employeeName}_${month}_${year}.xlsx`;
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), fileName);
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+    saveAs(blob, `${t("employeeReport.fileName")} ${employeeName} ${monthName}.xlsx`);
   };
+
+
 
   const summaryByUnit = {};
   rows.forEach(row => {

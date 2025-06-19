@@ -236,7 +236,7 @@
     "back": "Back"
   },
   "employeeReport": {
-    "title": "Monthly Report for {{name}} - {{month}}/{{year}}",
+    "title": "Monthly Report",
     "back": "Back",
     "download": "Download to Excel",
     "az": "AZ",
