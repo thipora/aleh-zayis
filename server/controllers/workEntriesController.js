@@ -26,10 +26,10 @@ export class WorkEntriesController {
     async updateWorkEntrie(req, res, next) {
         try {
             const { WorkEntrieId } = req.params;
-            const { quantity, description, notes } = req.body;
+            const { start_time, end_time, description, notes = null } = req.body;
 
             const updatedWorkEntrie = await WorkEntriesController.workEntriesService.updateWorkEntrie(WorkEntrieId, {
-                quantity, description, notes
+                start_time, end_time, description, notes
             });
 
             if (updatedWorkEntrie.affectedRows > 0) {

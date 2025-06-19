@@ -63,11 +63,13 @@ export class WorkEntriesService {
 
 
 
-  async updateWorkEntrie(workEntrieId, { date, quantity, description, notes }) {
+  async updateWorkEntrie(workEntrieId, { start_time, end_time, description, notes }) {
     const updateFields = [];
     const values = [];
 
-    if (date) updateFields.push("date = ?") && values.push(date);
+    const quantity = calculateWorkQuantityFromTimes(start_time, end_time);
+    if (start_time) updateFields.push("start_time = ?") && values.push(start_time);
+    if (end_time) updateFields.push("end_time = ?") && values.push(end_time);
     if (quantity) updateFields.push("quantity = ?") && values.push(quantity);
     if (description) updateFields.push("description = ?") && values.push(description);
     if (notes) updateFields.push("notes = ?") && values.push(notes);
@@ -79,7 +81,8 @@ export class WorkEntriesService {
     `;
 
     values.push(workEntrieId);
-    return await executeQuery(query, values);
+    const result = await executeQuery(query, values);
+    return result;
   }
 
 
