@@ -8,7 +8,7 @@ import { sendMail } from '../util/mailer.js';
 import { welcomeEmailTemplate } from '../util/emailTemplates.js';
 import { generateRandomPassword } from "../util/passwordUtils.js";
 import { getDBConnection } from '../config/db.js';
-import { resetPasswordEmailTemplate } from "../util/emailTemplates.js";
+import { notifyAdminTemplate, resetPasswordEmailTemplate } from "../util/emailTemplates.js";
 import jwt from "jsonwebtoken";
 
 const secret = process.env.ACCESS_TOKEN_SECRET;
@@ -84,6 +84,12 @@ export class UserService {
                 to: email,
                 subject: 'Welcome to Aleh Zayis Website!',
                 html: welcomeEmailTemplate(name, rawPassword)
+            });
+
+            await sendMail({
+                to: 'i.singer@alehzayis.com',
+                subject: 'New User Registered',
+                html: notifyAdminTemplate(name, email)
             });
 
             return userId;

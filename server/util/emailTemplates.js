@@ -44,3 +44,12 @@ export const monthlyReportEmailTemplate = (name, month, year, language = 'en') =
     <p>Thank you!</p>
   `;
 };
+
+
+export const notifyAdminTemplate = (name, email) => {
+  return `
+    <h2>New User Registered</h2>
+    <p>The user <strong>${name}</strong> (${email}) has successfully registered to the system.</p>
+    <p>Please update their payment rates accordingly.</p>
+  `;
+};
