@@ -238,6 +238,8 @@
     "filterRole": "תפקיד",
     "back": "חזור",
     "currency": "מטבע",
+    "filterCurrency": "סינון לפי מטבע",
+    "allCurrencies": "כל המטבעות",
     "ILS": "שקל",
     "USD": "דולר"
   },

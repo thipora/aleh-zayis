@@ -245,7 +245,9 @@
     "back": "Back",
     "currency": "Currency",
     "ILS": "ILS",
-    "USD": "USD"
+    "USD": "USD",
+    "filterCurrency": "Filter by currency",
+    "allCurrencies": "All currencies"
   },
   "employeeReport": {
     "title": "Monthly Report",
