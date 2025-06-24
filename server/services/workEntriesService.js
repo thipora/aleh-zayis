@@ -20,6 +20,10 @@ export class WorkEntriesService {
       values.push(projectId);
     }
 
+    const employeeQuery = `SELECT currency FROM employees WHERE id_employee = ?`;
+    const employeeRows = await executeQuery(employeeQuery, [employeeId]);
+    const currency = employeeRows[0]?.currency || null;
+
     const query = `
       SELECT 
         we.id_work_entries,
@@ -36,7 +40,8 @@ export class WorkEntriesService {
         b.AZ_book_id,
         r.role_name,
         r.special_unit,
-        we.is_special_work
+        we.is_special_work,
+        e.currency
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN employees e ON er.employee_id = e.id_employee
@@ -52,11 +57,14 @@ export class WorkEntriesService {
       const managerName = await getProjectManagerNameById(entry.project_manager_clickup_id);
       return {
         ...entry,
-        project_manager_name: managerName
+        project_manager_name: managerName,
       };
     }));
 
-    return entriesWithManager;
+    return {
+      entries: entriesWithManager,
+      currency
+    };
   }
 
 
@@ -106,8 +114,8 @@ export class WorkEntriesService {
     }
 
     const applied_rate =
-  empRole.custom_rate ??
-  (is_special_work ? empRole.special_rate : empRole.hourly_rate);
+      empRole.custom_rate ??
+      (is_special_work ? empRole.special_rate : empRole.hourly_rate);
 
     const query = `
       INSERT INTO ${WorkEntriesService.table}

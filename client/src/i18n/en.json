@@ -58,7 +58,16 @@
     "description": "Description",
     "notes": "Notes",
     "update": "Update",
-    "workEntries": "workEntries"
+    "workEntries": "workEntries",
+    "exportExcel": "Export to Excel",
+    "reportTitle": "Work Report",
+    "employee": "Employee",
+    "currency": "Currency",
+    "duration": {
+      "hours": "hours",
+      "minutes": "minutes",
+      "and": "and"
+    }
   },
   "duration": {
     "hours": "hours",

@@ -52,7 +52,16 @@
     "description": "תיאור",
     "notes": "הערות",
     "update": "עדכון",
-    "workEntries": "דיווחי עבודה"
+    "workEntries": "דיווחי עבודה",
+    "exportExcel": "ייצוא לאקסל",
+    "reportTitle": "דוח עבודה",
+    "employee": "עובד",
+    "currency": "מטבע",
+    "duration": {
+      "hours": "שעות",
+      "minutes": "דקות",
+      "and": "ו"
+    }
   },
   "duration": {
     "hours": "שעות",

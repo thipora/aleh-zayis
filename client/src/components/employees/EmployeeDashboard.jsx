@@ -12,7 +12,7 @@ import MonthlyCharges from "./MonthlyCharges.jsx";
 import { useTranslation } from "react-i18next";
 import ThreeStateSwitch from "./ThreeStateSwitch.jsx";
 import { useNavigate } from "react-router-dom";
-
+import MonthSelector from "../common/MonthSelector";
 
 
 
@@ -46,8 +46,8 @@ const EmployeeDashboard = () => {
   const [openMonthlyChargesDialog, setOpenMonthlyChargesDialog] = useState(false);
   const { t } = useTranslation();
   const now = new Date();
-
-
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+  const [currency, setcurrency] = useState(null);
 
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -163,8 +163,9 @@ const EmployeeDashboard = () => {
       const userData = localStorage.getItem("user");
       const user = JSON.parse(userData);
       const data = await apiRequests.getRequest(`/workEntries/${user.employee_id}`);
-      setWorkEntries(data);
-      setMonths(extractMonths(data));
+      setWorkEntries(data.entries);
+      setMonths(extractMonths(data.entries));
+      setcurrency(data.currency);
       if (!books.length) {
         const booksData = await apiRequests.getRequest(`/books/${user.employee_id}`);
         setBooks(booksData);
@@ -287,9 +288,30 @@ const EmployeeDashboard = () => {
           {t("EmployeeDashboard.addNew")}
         </Button>
       </Box>
-
+      <MonthSelector
+        month={selectedMonth}
+        year={selectedYear}
+        onChange={(month, year) => {
+          setSelectedMonth(month);
+          setSelectedYear(year);
+        }}
+      />
       <ErrorNotification error={error} />
-      <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} />
+      {/* <WorkEntries workEntries={workEntries} onUpdate={handleUpdateWork} /> */}
+      <WorkEntries
+        workEntries={workEntries.filter((entry) => {
+          const d = new Date(entry.date);
+          return (
+            d.getMonth() + 1 === selectedMonth &&
+            d.getFullYear() === selectedYear
+          );
+        })}
+        month={selectedMonth}
+        year={selectedYear}
+        employeeName={user.name}
+        onUpdate={handleUpdateWork}
+        currency={currency}
+      />
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{t("EmployeeDashboard.addNew")}</DialogTitle>

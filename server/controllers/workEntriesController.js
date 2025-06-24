@@ -10,12 +10,12 @@ export class WorkEntriesController {
             const { employeeId } = req.params;
             const { month, year, projectId, sort, start, range } = req.query;
 
-            const entries = await WorkEntriesController.workEntriesService.getWorkEntriesByEmployee(
+            const result = await WorkEntriesController.workEntriesService.getWorkEntriesByEmployee(
                 employeeId,
                 { month, year, projectId, sort, start: +start || 0, range: +range || 10 }
             );
 
-            res.json(entries);
+            res.json(result);
         } catch (ex) {
             next({ statusCode: ex.errno || 500, message: ex.message || ex });
         }
