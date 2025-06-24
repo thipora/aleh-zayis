@@ -63,21 +63,6 @@ export const updateRates = async (id, hourlyRate, specialRate) => {
   await executeQuery(query, [hourlyRate, specialRate, id]);
 };
 
-// export const updateMultipleRates = async (roles) => {
-//   const updates = roles.map(role => {
-//     return executeQuery(
-//       `
-//         UPDATE employee_roles
-//         SET hourly_rate = ?, special_rate = ?
-//         WHERE id_employee_role = ?
-//       `,
-//       [role.hourly_rate || null, role.special_rate || null, role.id_employee_role]
-//     );
-//   });
-
-//   return await Promise.all(updates);
-// };
-
 export const updateMultipleRates = async (roles) => {
   const connection = await getDBConnection();
 

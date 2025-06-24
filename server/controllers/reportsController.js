@@ -1,4 +1,3 @@
-// controllers/reportsController.js
 import { WorkEntriesService } from "../services/workEntriesService.js";
 import { ReportsService } from "../services/reportsService.js";
 

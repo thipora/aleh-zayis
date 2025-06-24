@@ -79,29 +79,6 @@ export class ReportsService {
     return result;
   }
 
-  // async getMonthlyBooksSummary(month, year) {
-  //   const sql = `
-  //   SELECT 
-  //     b.AZ_book_id,
-  //     b.name AS book_name,
-  //     '' AS projectManagerName,
-  //     SUM(we.quantity * IF(we.is_special_work = 1, er.special_rate, er.hourly_rate)) AS total_payment,
-  //     SUM(CASE WHEN r.special_unit = 'hours' THEN we.quantity ELSE 0 END) AS total_hours,
-  //     SUM(CASE WHEN r.special_unit != 'hours' THEN we.quantity ELSE 0 END) AS total_quantity,
-  //     e.currency
-  //   FROM work_entries we
-  //   JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
-  //   JOIN roles r ON er.role_id = r.id_role
-  //   JOIN employees e ON er.employee_id = e.id_employee
-  //   JOIN books b ON we.book_id = b.id_book
-  //   WHERE MONTH(we.date) = ? AND YEAR(we.date) = ?
-  //   GROUP BY b.id_book, e.currency
-  //   ORDER BY b.name;
-  // `;
-
-  //   return await executeQuery(sql, [month, year]);
-  // }
-
   async getMonthlyBooksSummary(month, year) {
     const sql = `
     SELECT 
@@ -127,7 +104,6 @@ export class ReportsService {
 
     const rows = await executeQuery(sql, [month, year]);
 
-    // השלמה מתוך ClickUp למי שאין לו שם מנהל פרויקט
     for (const row of rows) {
       if (!row.projectManagerName && row.project_manager_clickup_id) {
         try {

@@ -58,7 +58,6 @@ const Login = () => {
             localStorage.setItem("user", JSON.stringify(data.user));
           } catch (err) {
             console.error("Error fetching employee currency:", err);
-            // אפשר להשאיר currency ב־ILS כברירת מחדל אם רוצים:
             data.user.currency = 'ILS';
             localStorage.setItem("user", JSON.stringify(data.user));
           }

@@ -33,7 +33,7 @@ export class MonthlyChargesController {
         try {
             const { chargeId } = req.params;
             await MonthlyChargesController.monthlyChargesService.deleteCharge(chargeId);
-            res.status(200).json({ message: "Charge deleted" }); // ✅ במקום sendStatus
+            res.status(200).json({ message: "Charge deleted" });
         } catch (err) {
             next({ statusCode: 500, message: err.message || "Failed to delete" });
         }

@@ -31,7 +31,6 @@ export class ClickUpService {
         }
     };
 
-    // מביא את ה-Spaces בצוות
     async getSpaces() {
         try {
             const response = await api.get(`/team/${teamId}/space`);

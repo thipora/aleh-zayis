@@ -13,14 +13,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// export async function executeQuery(query, params = [], connection = null) {
-//   console.log("aaaa")
-//   const [rows] = connection
-//     ? await connection.execute(query, params)
-//     : await pool.execute(query, params);
-//     console.log("bbb")
-//   return rows;
-// }
 export async function executeQuery(query, params = [], connection = null) {
   try {
     const [rows] = connection

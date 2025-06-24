@@ -1,4 +1,3 @@
-// routes/bookRoutes.js
 import express from 'express';
 import { BooksController } from '../controllers/bookController.js';
 import { verifyToken } from "../middleware/authenticateToken.js";
