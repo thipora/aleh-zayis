@@ -236,7 +236,10 @@
     "total": "סה\"כ",
     "downloadExcel": "הורד ל-Excel",
     "filterRole": "תפקיד",
-    "back": "חזור"
+    "back": "חזור",
+    "currency": "מטבע",
+    "ILS": "שקל",
+    "USD": "דולר"
   },
   "employeeReport": {
     "title": "דוח חודשי ",

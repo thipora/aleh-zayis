@@ -109,7 +109,7 @@ const EmployeesReport = () => {
     });
 
     const title = `${t("employeeReport.title")} - ${monthName}`;
-    sheet.mergeCells("A1", "F1");
+    sheet.mergeCells("A1", "G1");
     sheet.getCell("A1").value = title;
     sheet.getCell("A1").font = { size: 14, bold: true };
     sheet.getCell("A1").alignment = { horizontal: "center", vertical: "middle" };
@@ -121,6 +121,7 @@ const EmployeesReport = () => {
       t("employeesReport.employeeEmail"),
       t("employeesReport.role"),
       t("employeesReport.rate"),
+      t("employeesReport.currency"),
       t("employeesReport.totalWork"),
       t("employeesReport.totalPayment"),
     ];
@@ -140,6 +141,7 @@ const EmployeesReport = () => {
         emp.employee_email,
         t(`roles.${emp.role_name}`, emp.role_name),
         emp.rate,
+        t(`employeesReport.${emp.currency}`),
         totalWork,
         totalPay
       ];
@@ -158,7 +160,7 @@ const EmployeesReport = () => {
 
     const summaryRow = [
       t("employeesReport.total"),
-      "", "", "", summaryUnitsStr,
+      "", "", "","", summaryUnitsStr,
       `₪ ${totalPayILS}  |  $ ${totalPayUSD}`
     ];
     sheet.addRow(summaryRow).font = { bold: true };
@@ -233,6 +235,7 @@ const EmployeesReport = () => {
                 <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.employeeEmail")}</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.role")}</TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.rate")}</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.currency")}</TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.totalWork")}</TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>{t("employeesReport.totalPayment")}</TableCell>
               </TableRow>
@@ -249,6 +252,7 @@ const EmployeesReport = () => {
                   <TableCell>{emp.employee_email}</TableCell>
                   <TableCell>{t(`roles.${emp.role_name}`)}</TableCell>
                   <TableCell align="center">{emp.rate}</TableCell>
+                  <TableCell align="center">{t(`employeesReport.${emp.currency}`)}</TableCell>
                   <TableCell align="center">
                     {emp.type === "hours"
                       ? formatHours(emp.quantity)
@@ -267,9 +271,15 @@ const EmployeesReport = () => {
                 </TableRow>
               ))}
               <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>{t("employeesReport.total")}</TableCell>
-                {unitCells}
-                {/* <TableCell align="center" sx={{ fontWeight: "bold" }}>{`${formatCurrency(filteredSummary[0]?.currency)} ${totalPay}`}</TableCell> */}
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell />
+                <TableCell align="center">
+                  {unitCells.map(cell => cell.props.children)}
+                </TableCell>
+                {/* סה"כ תשלום */}
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>
                   {`₪ ${totalPayILS}  |  $ ${totalPayUSD}`}
                 </TableCell>

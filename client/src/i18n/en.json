@@ -242,7 +242,10 @@
     "total": "Total",
     "downloadExcel": "Download to Excel",
     "filterRole": "Role",
-    "back": "Back"
+    "back": "Back",
+    "currency": "Currency",
+    "ILS": "ILS",
+    "USD": "USD"
   },
   "employeeReport": {
     "title": "Monthly Report",
