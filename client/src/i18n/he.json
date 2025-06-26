@@ -30,7 +30,9 @@
     "roles": "תפקידים",
     "actions": "פעולות",
     "viewWork": "צפייה בעבודות",
-    "editRates": "עריכת תעריפים"
+    "editRates": "עריכת תעריפים",
+    "editEnglishName": "עריכת שם באנגלית",
+    "englishName": "שם באנגלית"
   },
   "EmployeeDashboard": {
     "title": "לוח בקרה לעובד",

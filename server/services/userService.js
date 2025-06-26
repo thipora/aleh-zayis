@@ -217,4 +217,9 @@ export class UserService {
         }
     }
 
+    async updateEnglishName(userId, en_name) {
+        const query = `UPDATE users SET en_name = ? WHERE id_user = ?`;
+        await executeQuery(query, [en_name, userId]);
+    }
+
 }

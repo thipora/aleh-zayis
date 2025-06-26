@@ -14,8 +14,7 @@ import employeeRolesRoutes from './routes/employeeRolesRoutes.js';
 import employeeRouter from './routes/employeeRoutes.js';
 import monthlyChargesRouter from './routes/monthlyChargesRouter.js';
 import cookieParser from "cookie-parser";
-
-
+import { userRouter } from './routes/userRouter.js';
 
 
 dotenv.config();
@@ -42,7 +41,7 @@ app.use('/reports', reportsRouter);
 app.use('/book-assignments', bookAssignmentsRouter);
 app.use('/employee-roles', employeeRolesRoutes);
 app.use('/monthly-charges', monthlyChargesRouter);
-
+app.use('/users', userRouter);
 
 app.use(logErrors);
 
