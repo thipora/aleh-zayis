@@ -57,6 +57,10 @@
     "reportTitle": "דוח עבודה",
     "employee": "עובד",
     "currency": "מטבע",
+    "totalHours": "סה\"כ שעות",
+    "totalPayment": "סה\"כ תשלום",
+    "totalChars": "סה\"כ תווים",
+    "chars": "תווים",
     "duration": {
       "hours": "שעות",
       "minutes": "דקות",

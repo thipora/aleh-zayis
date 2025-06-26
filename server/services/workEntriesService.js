@@ -33,6 +33,7 @@ export class WorkEntriesService {
         we.notes,
         we.start_time,
         we.end_time,
+        we.applied_rate,
         b.id_book,
         b.name AS book_name,
         b.clickup_id,

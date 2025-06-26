@@ -14,7 +14,6 @@ export class WorkEntriesController {
                 employeeId,
                 { month, year, projectId, sort, start: +start || 0, range: +range || 10 }
             );
-
             res.json(result);
         } catch (ex) {
             next({ statusCode: ex.errno || 500, message: ex.message || ex });

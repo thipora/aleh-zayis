@@ -100,6 +100,45 @@ const exportToExcel = async (entries, t, formatDuration, employeeName, month, ye
     ]);
   });
 
+
+  const currencySymbol = currency === "ILS" ? "₪" : currency === "USD" ? "$" : currency || "";
+
+  let totalHours = 0;
+  let totalChars = 0;
+  let totalPayment = 0;
+
+  entries.forEach((entry) => {
+    console.log(entry);
+    const quantity = parseFloat(entry.quantity) || 0;
+    const rate = parseFloat(entry.applied_rate) || 0;
+
+    if (entry.is_special_work) {
+      totalChars += quantity;
+    } else {
+      totalHours += quantity;
+    }
+
+    totalPayment += quantity * rate;
+  });
+
+  worksheet.addRow([]);
+
+  const summaryRow = worksheet.addRow([
+    "", "", "", "",
+    totalHours > 0 ? formatDuration(totalHours) : "",
+    totalChars > 0 ? `${totalChars} ${t("workEntries.chars")}` : "",
+    "",
+    `${currencySymbol}${totalPayment.toFixed(2)}`
+  ]);
+
+  summaryRow.eachCell((cell) => {
+    cell.font = { bold: true };
+  });
+
+  summaryRow.eachCell((cell) => {
+    cell.font = { bold: true };
+  });
+
   const currencyLabel = `${t("workEntries.currency")}: ${currency}`;
   worksheet.mergeCells(`A${worksheet.lastRow.number + 1}:H${worksheet.lastRow.number + 1}`);
   worksheet.addRow([currencyLabel]);

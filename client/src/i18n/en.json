@@ -63,6 +63,10 @@
     "reportTitle": "Work Report",
     "employee": "Employee",
     "currency": "Currency",
+    "totalHours": "Total Hours",
+    "totalPayment": "Total Payment",
+    "totalChars": "Total Characters",
+    "chars": "chars",
     "duration": {
       "hours": "hours",
       "minutes": "minutes",
