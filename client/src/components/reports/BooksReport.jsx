@@ -133,11 +133,11 @@ const BooksReport = ({ isMonthly = false }) => {
     });
 
     const summaryText = `${formatCurrency("ILS")} ${totalILS.toFixed(2)} | ${formatCurrency("USD")} ${totalUSD.toFixed(2)}`;
-    const summaryRow = worksheet.addRow([summaryText]);
+    const summaryRow = worksheet.addRow(["", "", "", summaryText]);
 
-    worksheet.mergeCells(`A${summaryRow.number}:D${summaryRow.number}`);
-    summaryRow.getCell(1).font = { bold: true };
-    summaryRow.getCell(1).alignment = { horizontal: "center" };
+    summaryRow.getCell(4).font = { bold: true };
+    summaryRow.getCell(4).alignment = { horizontal: "center" };
+
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {
