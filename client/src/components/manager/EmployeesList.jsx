@@ -171,6 +171,7 @@ const EmployeeList = () => {
     const fetchEmployees = async () => {
       try {
         const data = await api.getRequest("/employees");
+        console.log(data)
         setEmployees(data);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -181,9 +182,9 @@ const EmployeeList = () => {
 
   const handleUpdateEnglishName = async () => {
     try {
-      await api.putRequest(`/users/${editingName.id_user}/name-en`, { name_en: newEnglishName });
+      await api.putRequest(`/users/${editingName.id_user}/name-en`, { en_name: newEnglishName });
       const updated = employees.map(emp =>
-        emp.id_user === editingName.id_user ? { ...emp, name_en: newEnglishName } : emp
+        emp.id_user === editingName.id_user ? { ...emp, en_name: newEnglishName } : emp
       );
       setEmployees(updated);
       setEditingName(null);
@@ -260,14 +261,13 @@ const EmployeeList = () => {
               <TableRow key={emp.id_employee}>
                 <TableCell>
                   {emp.name}
-                  {/* {!emp.name_en && /^[\u0590-\u05FF\s]+$/.test(emp.name) && ( */}
-                  {!emp.name_en && (
+                  {!emp.en_name && (
                     <Tooltip title={t("employeeList.editEnglishName")}>
                       <IconButton
                         size="small"
                         onClick={() => {
                           setEditingName(emp);
-                          setNewEnglishName(emp.name_en || "");
+                          setNewEnglishName(emp.en_name || "");
                         }}
                       >
                         <EditIcon fontSize="small" />
