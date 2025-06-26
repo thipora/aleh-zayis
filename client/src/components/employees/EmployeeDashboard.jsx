@@ -256,9 +256,20 @@ const EmployeeDashboard = () => {
 
   return (
     <Container>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        mt={2}
+        mb={3}
+        sx={{ transform: "scale(1.5)" }}
+      >
+        <ThreeStateSwitch
+          value={availabilityStatus}
+          onChange={handleAvailabilityChange}
+        />
+      </Box>
       <Typography variant="h4">{t("EmployeeDashboard.title")}</Typography>
-      <ThreeStateSwitch value={availabilityStatus} onChange={handleAvailabilityChange} />
-
       <Box
         display="flex"
         flexWrap="wrap"
@@ -267,7 +278,6 @@ const EmployeeDashboard = () => {
         gap={2}
         mt={2}
       >
-
         <Button variant="outlined" onClick={() => setOpenAssignedBooksDialog(true)}>
           {t("EmployeeDashboard.viewAssignedBooks")}
         </Button>
