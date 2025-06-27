@@ -19,7 +19,7 @@ export class ReportsService {
       r.role_name,
       r.special_unit,
       e.id_employee,
-      u.name AS employee_name,
+      COALESCE(u.en_name, u.name) AS employee_name,
       e.currency
     FROM work_entries we
     JOIN employee_roles er ON we.employee_role_id = er.id_employee_role

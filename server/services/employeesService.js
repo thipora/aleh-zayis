@@ -4,7 +4,7 @@ import { fetchClickUpAPI } from '../config/clickUpApiConfig.js';
 export class EmployeeService {
 
   async getAllEmployees() {
-    const query = 'SELECT employees.id_employee, employees.availability_status, users.id_user, users.name, users.email, users.en_name, roles.role_name AS role FROM employees JOIN users ON employees.user_id = users.id_user JOIN employee_roles er ON er.employee_id = employees.id_employee JOIN roles ON er.role_id = roles.id_role';
+    const query = 'SELECT employees.id_employee, employees.availability_status, users.id_user, COALESCE(users.en_name, users.name) AS name, users.email, roles.role_name AS role FROM employees JOIN users ON employees.user_id = users.id_user JOIN employee_roles er ON er.employee_id = employees.id_employee JOIN roles ON er.role_id = roles.id_role';
     const result = await executeQuery(query);
 
     const employeesMap = {};

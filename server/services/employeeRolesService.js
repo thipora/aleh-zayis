@@ -4,7 +4,7 @@ export const getAllEmployeeRolesWithRates = async () => {
   const query = `
     SELECT
       er.id_employee_role,
-      u.name AS employee_name,
+      COALESCE(u.en_name, u.name) AS employee_name,
       r.role_name,
       r.special_unit,
       er.hourly_rate,

@@ -149,7 +149,7 @@ export class WorkEntriesService {
         r.role_name,
         r.special_unit,
         e.id_employee,
-        u.name AS employee_name,
+        COALESCE(u.en_name, u.name) AS employee_name,
         u.email AS employee_email,
         e.currency AS currency
       FROM work_entries we
