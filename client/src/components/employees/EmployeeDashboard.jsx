@@ -25,12 +25,13 @@ const EmployeeDashboard = () => {
     notes: "",
     date: new Date().toISOString().split('T')[0]
   });
+  const now = new Date();
   const [books, setBooks] = useState([]);
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [openMonthSummary, setOpenMonthSummary] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1);
   const [monthSummary, setMonthSummary] = useState([]);
   const [months, setMonths] = useState([]);
   const [loadingSummary, setLoadingSummary] = useState(false);
@@ -45,7 +46,6 @@ const EmployeeDashboard = () => {
   const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(false);
   const [openMonthlyChargesDialog, setOpenMonthlyChargesDialog] = useState(false);
   const { t } = useTranslation();
-  const now = new Date();
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [currency, setcurrency] = useState(null);
 
