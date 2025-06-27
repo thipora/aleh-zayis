@@ -32,7 +32,8 @@
     "viewWork": "צפייה בעבודות",
     "editRates": "עריכת תעריפים",
     "editEnglishName": "עריכת שם באנגלית",
-    "englishName": "שם באנגלית"
+    "englishName": "שם באנגלית",
+    "exportAll": "ייצוא כל העובדים"
   },
   "EmployeeDashboard": {
     "title": "לוח בקרה לעובד",

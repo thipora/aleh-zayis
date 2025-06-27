@@ -71,6 +71,24 @@ const EmployeeList = () => {
 
   const allRoles = [...new Set(employees.flatMap(emp => emp.roles))];
 
+  const handleExportAllWork = async () => {
+    try {
+      const response = await api.getFile(`/reports/all-work-entries-excel`);
+      const blob = new Blob([response], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "All_Work_Entries.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Failed to export work entries", error);
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
@@ -78,6 +96,13 @@ const EmployeeList = () => {
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleExportAllWork}
+        >
+          {t("employeeList.exportAll")}
+        </Button>
         <TextField
           label={t("employeeList.searchName")}
           value={filterName}

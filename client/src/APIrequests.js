@@ -87,4 +87,27 @@ export class APIrequests {
             throw error;
         }
     }
+
+    async getFile(url) {
+        try {
+            const response = await fetch(API_URL + url, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Failed to fetch file');
+            }
+
+            return await response.blob();
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }

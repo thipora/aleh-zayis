@@ -31,7 +31,8 @@
     "viewWork": "View Work",
     "editRates": "Edit Rates",
     "editEnglishName": "Edit English Name",
-    "englishName": "English Name"
+    "englishName": "English Name",
+    "exportAll": "Export All Employees"
   },
   "forgot": {
     "title": "Forgot Password",

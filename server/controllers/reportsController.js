@@ -77,4 +77,16 @@ export class ReportsController {
     }
   }
 
+  async exportAllWorkEntries(req, res) {
+    try {
+      const buffer = await ReportsController.reportsService.generateAllWorkExcel();
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", "attachment; filename=All_Work_Entries.xlsx");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error exporting all work entries:", error);
+      res.status(500).json({ message: "Failed to generate Excel file" });
+    }
+  }
+
 }

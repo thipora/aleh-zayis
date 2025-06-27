@@ -9,6 +9,6 @@ reportsRouter.get('/monthly-summary/employees', verifyToken, reportsController.g
 reportsRouter.get("/monthly-summary/employee/:employeeId", verifyToken, reportsController.getMonthlySummaryByEmployee);
 reportsRouter.get('/book-summary/:bookId', verifyToken, reportsController.getBookSummary);
 reportsRouter.get('/books-summary', verifyToken, reportsController.getMonthlyBooksSummary);
-
+reportsRouter.get('/all-work-entries-excel', verifyToken, reportsController.exportAllWorkEntries);
 
 export default reportsRouter;
