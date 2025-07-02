@@ -67,7 +67,7 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
       });
 
       if (response?.inserted) {
-        setBookId('');
+        setBookId('AZ-');
         setSelectedRoles([]);
         onSuccess?.(response.book);
       } else {
@@ -109,57 +109,17 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
           {t("addBook.title")}
         </Typography>
 
-        {/* <TextField
-          label={t("addBook.bookId")}
-          value={bookId}
-          onChange={(e) => setBookId(e.target.value)}
-          size="small"
-          error={bookIdError}
-          helperText={bookIdError ? t("addBook.bookIdError") : ""}
-        /> */}
-        {/* <TextField
-          label={t("addBook.bookId")}
-          value={bookId.slice(3)}
-          onChange={(e) => setBookId("AZ-" + e.target.value)}
-          size="small"
-          error={bookIdError}
-          helperText={bookIdError ? t("addBook.bookIdError") : ""}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">AZ-</InputAdornment>,
-          }}
-        /> */}
-        {/* <TextField
-          label={t("addBook.bookId")}
-          value={bookId.slice(3)}
-          onChange={(e) => setBookId("AZ-" + e.target.value)}
-          size="small"
-          error={bookIdError}
-          helperText={bookIdError ? t("addBook.bookIdError") : ""}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start" sx={{ mr: 0 }}>
-                AZ-
-              </InputAdornment>
-            ),
-          }}
-          inputProps={{ dir: 'ltr' }}
-          sx={{
-            '& input': { paddingLeft: '0px' }
-          }}
-        />
- */}
         <TextField
           label={t("addBook.bookId")}
           value={bookId}
           onChange={(e) => {
             const input = e.target.value;
-            if (!input.startsWith("AZ-")) return; // מגן על הקידומת
+            if (!input.startsWith("AZ-")) return;
             setBookId(input);
           }}
           size="small"
           error={bookIdError}
           helperText={bookIdError ? t("addBook.bookIdError") : ""}
-          inputProps={{ dir: 'ltr' }}
           sx={{
             '& input': {
               textAlign: 'left'
