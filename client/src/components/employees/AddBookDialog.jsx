@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { TextField, Typography, Button, Checkbox, FormControlLabel, Box, Alert } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
 import { useTranslation } from "react-i18next";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const AddBookDialog = ({ employeeId, onSuccess }) => {
-  const [bookId, setBookId] = useState('');
+  const [bookId, setBookId] = useState('AZ-');
   const [availableRoles, setAvailableRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [systemError, setSystemError] = useState('');
@@ -108,13 +109,62 @@ const AddBookDialog = ({ employeeId, onSuccess }) => {
           {t("addBook.title")}
         </Typography>
 
-        <TextField
+        {/* <TextField
           label={t("addBook.bookId")}
           value={bookId}
           onChange={(e) => setBookId(e.target.value)}
           size="small"
           error={bookIdError}
           helperText={bookIdError ? t("addBook.bookIdError") : ""}
+        /> */}
+        {/* <TextField
+          label={t("addBook.bookId")}
+          value={bookId.slice(3)}
+          onChange={(e) => setBookId("AZ-" + e.target.value)}
+          size="small"
+          error={bookIdError}
+          helperText={bookIdError ? t("addBook.bookIdError") : ""}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">AZ-</InputAdornment>,
+          }}
+        /> */}
+        {/* <TextField
+          label={t("addBook.bookId")}
+          value={bookId.slice(3)}
+          onChange={(e) => setBookId("AZ-" + e.target.value)}
+          size="small"
+          error={bookIdError}
+          helperText={bookIdError ? t("addBook.bookIdError") : ""}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start" sx={{ mr: 0 }}>
+                AZ-
+              </InputAdornment>
+            ),
+          }}
+          inputProps={{ dir: 'ltr' }}
+          sx={{
+            '& input': { paddingLeft: '0px' }
+          }}
+        />
+ */}
+        <TextField
+          label={t("addBook.bookId")}
+          value={bookId}
+          onChange={(e) => {
+            const input = e.target.value;
+            if (!input.startsWith("AZ-")) return; // מגן על הקידומת
+            setBookId(input);
+          }}
+          size="small"
+          error={bookIdError}
+          helperText={bookIdError ? t("addBook.bookIdError") : ""}
+          inputProps={{ dir: 'ltr' }}
+          sx={{
+            '& input': {
+              textAlign: 'left'
+            }
+          }}
         />
 
         <Button
