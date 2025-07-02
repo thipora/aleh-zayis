@@ -100,7 +100,7 @@ export class WorkEntriesService {
 
 
   async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
-    const locked = await isMonthLocked(date);
+    const locked = await this.isMonthLocked(date);
     if (locked) {
       throw new Error('Reporting for this month is closed and no additional work can be added.');
     }
