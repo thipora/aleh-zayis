@@ -29,7 +29,7 @@ export const sendMonthlyReportToEmployee = async (employeeId, month, year) => {
     const html = monthlyReportEmailTemplate(employee.name, month, year, language || 'en');
 
     await sendMail({
-        to: employee.email,
+        to: [employee.email, 'i.singer@alehzayis.com'],
         subject,
         html,
         attachments: [

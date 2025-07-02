@@ -73,6 +73,10 @@ export class WorkEntriesService {
 
 
   async updateWorkEntrie(workEntrieId, { start_time, end_time, description, notes }) {
+    const locked = await isMonthLocked(date);
+    if (locked) {
+      throw new Error('Reporting for this month is closed and no additional work can be added.');
+    }
     const updateFields = [];
     const values = [];
 
@@ -96,6 +100,10 @@ export class WorkEntriesService {
 
 
   async createWorkEntry(employeeId, { roleId, date, quantity, description, notes, book_id, start_time, end_time }) {
+    const locked = await isMonthLocked(date);
+    if (locked) {
+      throw new Error('Reporting for this month is closed and no additional work can be added.');
+    }
     const [empRole] = await executeQuery(`
       SELECT er.id_employee_role, er.hourly_rate, er.special_rate, ba.custom_rate
       FROM employee_roles er
@@ -346,4 +354,19 @@ export class WorkEntriesService {
 
     return result;
   }
+
+
+  async isMonthLocked(dateString) {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    const query = `
+    SELECT locked FROM locked_months
+    WHERE month = ? AND year = ? LIMIT 1
+  `;
+    const result = await executeQuery(query, [month, year]);
+    return result.length > 0 && result[0].locked === 1;
+  };
+
 }
