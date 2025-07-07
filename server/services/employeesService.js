@@ -4,30 +4,48 @@ import { fetchClickUpAPI } from '../config/clickUpApiConfig.js';
 export class EmployeeService {
 
   async getAllEmployees() {
-    const query = 'SELECT employees.id_employee, employees.availability_status, users.id_user, COALESCE(users.en_name, users.name) AS name, users.email, roles.role_name AS role FROM employees JOIN users ON employees.user_id = users.id_user JOIN employee_roles er ON er.employee_id = employees.id_employee JOIN roles ON er.role_id = roles.id_role';
+    const query = 'SELECT employees.id_employee, employees.availability_status, users.id_user, COALESCE(users.en_name, users.name) AS name, users.email, roles.role_name AS role FROM employees JOIN users ON employees.user_id = users.id_user JOIN employee_roles er ON er.employee_id = employees.id_employee JOIN roles ON er.role_id = roles.id_role ORDER BY name';
     const result = await executeQuery(query);
 
-    const employeesMap = {};
+    // const employeesMap = {};
+
+    // for (const row of result) {
+    //   const { id_employee, name, email, availability_status, role, id_user } = row;
+
+    //   if (!employeesMap[id_employee]) {
+    //     employeesMap[id_employee] = {
+    //       id_user,
+    //       id_employee,
+    //       name,
+    //       email,
+    //       availability_status,
+    //       roles: [role],
+    //       en_name: row.en_name || null
+    //     };
+    //   } else {
+    //     employeesMap[id_employee].roles.push(role);
+    //   }
+    // }
+
+    // return Object.values(employeesMap);
+    const employeesMap = new Map();
 
     for (const row of result) {
-      const { id_employee, name, email, availability_status, role, id_user } = row;
+      const { id_employee, ...rest } = row;
 
-      if (!employeesMap[id_employee]) {
-        employeesMap[id_employee] = {
-          id_user,
+      if (!employeesMap.has(id_employee)) {
+        employeesMap.set(id_employee, {
           id_employee,
-          name,
-          email,
-          availability_status,
-          roles: [role],
+          ...rest,
+          roles: [row.role],
           en_name: row.en_name || null
-        };
+        });
       } else {
-        employeesMap[id_employee].roles.push(role);
+        employeesMap.get(id_employee).roles.push(row.role);
       }
     }
 
-    return Object.values(employeesMap);
+    return Array.from(employeesMap.values());
   }
 
   async createEmployee(params, connection) {
