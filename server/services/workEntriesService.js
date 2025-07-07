@@ -140,6 +140,14 @@ export class WorkEntriesService {
     };
   }
 
+  async deleteWorkEntry(workEntrieId) {
+    const query = `
+      DELETE FROM ${WorkEntriesService.table}
+      WHERE id_work_entries = ?
+    `;
+    const result = await executeQuery(query, [workEntrieId]);
+    return result;
+  }
 
   async getMonthlyWorkSummaryByEmployees({ month, year }) {
     const workEntries = await this.getMonthlyWorkEntriesWithDetails(month, year);

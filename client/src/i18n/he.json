@@ -47,6 +47,10 @@
     "cancel": "ביטול"
   },
   "workEntries": {
+    "actions": "פעולות",
+    "delete": "מחק",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את הדיווח הזה?",
+    "deleteError": "אירעה שגיאה בעת מחיקת הדיווח",
     "date": "תאריך",
     "azId": "מזהה AZ",
     "bookTitle": "שם הספר",
@@ -313,5 +317,9 @@
     "downloadExcel": "הורד לאקסל",
     "back": "חזור",
     "summaryFor": "סיכום עבור חודש"
+  },
+  "common": {
+    "cancel": "ביטול",
+    "confirm": "אישור"
   }
 }

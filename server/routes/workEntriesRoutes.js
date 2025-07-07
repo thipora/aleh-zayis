@@ -8,6 +8,7 @@ const workEntriesController = new WorkEntriesController();
 workEntrieRouter.get('/:employeeId', verifyToken, workEntriesController.getWorkEntriesByEmployee);
 workEntrieRouter.put('/:WorkEntrieId', verifyToken, workEntriesController.updateWorkEntrie);
 workEntrieRouter.post('/:employeeId', verifyToken, workEntriesController.createWorkEntry);
+workEntrieRouter.delete('/:employeeId', verifyToken, workEntriesController.deleteWorkEntry);
 
 workEntrieRouter.get('/reports/editor/:employeeId', verifyToken, workEntriesController.getEditorWorkByMonth);
 workEntrieRouter.get('/reports/project/:bookId', verifyToken, workEntriesController.getProjectWorkByMonth);

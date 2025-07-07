@@ -53,6 +53,10 @@
     "cancel": "Cancel"
   },
   "workEntries": {
+    "actions": "Actions",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this entry?",
+    "deleteError": "An error occurred while deleting the entry",
     "date": "Date",
     "azId": "AZ Number",
     "bookTitle": "Book Title",
@@ -319,5 +323,9 @@
     "downloadExcel": "Download to Excel",
     "back": "Back",
     "summaryFor": "Summary for"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   }
 }

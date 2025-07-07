@@ -9,7 +9,8 @@ import { useTranslation } from "react-i18next";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import i18n from "i18next";
-
+import ConfirmDialog from "../common/ConfirmDialog";
+import { APIrequests } from "../../APIrequests";
 
 function useDurationFormatter() {
   const { t } = useTranslation();
@@ -108,7 +109,6 @@ const exportToExcel = async (entries, t, formatDuration, employeeName, month, ye
   let totalPayment = 0;
 
   entries.forEach((entry) => {
-    console.log(entry);
     const quantity = parseFloat(entry.quantity) || 0;
     const rate = parseFloat(entry.applied_rate) || 0;
 
@@ -155,11 +155,14 @@ const exportToExcel = async (entries, t, formatDuration, employeeName, month, ye
 
 
 
-const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonthChange, allowUpdate = true, currency }) => {
+const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonthChange, allowUpdate = true, allowDelete = false, currency }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedWork, setSelectedWork] = useState(null);
   const { t } = useTranslation();
   const formatDuration = useDurationFormatter();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState(null);
+  const api = new APIrequests();
 
   const handleUpdate = (log) => {
     setSelectedWork(log);
@@ -182,9 +185,26 @@ const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonth
     );
   };
 
+  const handleDeleteClick = (id) => {
+    setEntryToDelete(id);
+    setConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await api.deleteRequest(`/workEntries/${entryToDelete}`);
+      const updated = workEntries.filter(e => e.id_work_entries !== entryToDelete);
+      onUpdate?.(updated);
+    } catch (err) {
+      console.error("Error fetching employees:", err);
+    } finally {
+      setConfirmOpen(false);
+      setEntryToDelete(null);
+    }
+  };
+
   return (
     <div>
-
       <Button
         variant="contained"
         color="success"
@@ -221,9 +241,11 @@ const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonth
               <TableCell>
                 <Typography variant="subtitle1" fontWeight="bold">{t("workEntries.notes")}</Typography>
               </TableCell>
-              {allowUpdate && (
+              {(allowUpdate || allowDelete) && (
                 <TableCell>
-                  <Typography variant="subtitle1" fontWeight="bold">{t("workEntries.update")}</Typography>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {t("workEntries.actions")}
+                  </Typography>
                 </TableCell>
               )}
             </TableRow>
@@ -247,19 +269,33 @@ const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonth
                 </TableCell>
                 <TableCell>{log.description}</TableCell>
                 <TableCell>{log.notes}</TableCell>
-                <TableCell>
-                  {allowUpdate && (
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => handleUpdate(log)}
-                      disabled={!isToday(log.date)}
-                    >
-                      {t("workEntries.update")}
-                    </Button>
-                  )}
-                </TableCell>
+                {(allowUpdate || allowDelete) && (
+                  <TableCell>
+                    {allowUpdate && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => handleUpdate(log)}
+                        disabled={!isToday(log.date)}
+                        sx={{ mr: allowDelete ? 1 : 0 }}
+                      >
+                        {t("workEntries.update")}
+                      </Button>
+                    )}
+                    {allowDelete && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleDeleteClick(log.id_work_entries)}
+                        disabled={!isToday(log.date)}
+                      >
+                        {t("workEntries.delete")}
+                      </Button>
+                    )}
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -274,6 +310,13 @@ const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonth
           onUpdate={onUpdate}
         />
       )}
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title={""}
+        content={t("workEntries.confirmDelete")}
+      />
     </div>
   );
 

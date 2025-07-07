@@ -51,8 +51,22 @@ export class WorkEntriesController {
             const { roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time } = req.body;
 
             const newEntry = await WorkEntriesController.workEntriesService.createWorkEntry(employeeId, {
-                roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time });
+                roleId, date, quantity, description, notes, book_id, book_name, start_time, end_time
+            });
 
+            res.status(201).json(newEntry);
+        } catch (ex) {
+            next({
+                statusCode: ex.errno || 500,
+                message: ex.message || ex
+            });
+        }
+    }
+
+    async deleteWorkEntry(req, res, next) {
+        try {
+            const { employeeId } = req.params;
+            const newEntry = await WorkEntriesController.workEntriesService.deleteWorkEntry(employeeId);
             res.status(201).json(newEntry);
         } catch (ex) {
             next({
@@ -70,7 +84,7 @@ export class WorkEntriesController {
             if (!employeeId || !month || !year) {
                 return res.status(400).json({ message: 'Missing required parameters' });
             }
-
+            
             const data = await WorkEntriesController.workEntriesService.getEditorWorkByMonth(
                 employeeId, { month, year }
             );
@@ -124,51 +138,51 @@ export class WorkEntriesController {
         }
     }
 
-        async getBooksSummary(req, res, next) {
-            try {
-                const { month, year } = req.query;
-                const data = await WorkEntriesController.workEntriesService.getBooksSummary({ month, year });
-                res.json(data);
-            } catch (ex) {
-                next({ statusCode: ex.errno || 500, message: ex.message || ex });
-            }
+    async getBooksSummary(req, res, next) {
+        try {
+            const { month, year } = req.query;
+            const data = await WorkEntriesController.workEntriesService.getBooksSummary({ month, year });
+            res.json(data);
+        } catch (ex) {
+            next({ statusCode: ex.errno || 500, message: ex.message || ex });
         }
-    
-        async getBookEmployeesSummary(req, res, next) {
-            try {
-                const { bookId } = req.params;
-                const { month, year } = req.query;
-                const data = await WorkEntriesController.workEntriesService.getBookEmployeesSummary(bookId, { month, year });
-                res.json(data);
-            } catch (ex) {
-                next({ statusCode: ex.errno || 500, message: ex.message || ex });
-            }
-        }
-    
-        async getBookEmployeeDetails(req, res, next) {
-            try {
-                const { bookId, employeeId } = req.params;
-                const { month, year } = req.query;
-                const data = await WorkEntriesController.workEntriesService.getBookEmployeeDetails(bookId, employeeId, { month, year });
-                res.json(data);
-            } catch (ex) {
-                next({ statusCode: ex.errno || 500, message: ex.message || ex });
-            }
-        }
+    }
 
-        async getMonthlyWorkSummaryByEmployees(req, res, next) {
-            try {
-              const { month, year } = req.query;
-              if (!month || !year) {
+    async getBookEmployeesSummary(req, res, next) {
+        try {
+            const { bookId } = req.params;
+            const { month, year } = req.query;
+            const data = await WorkEntriesController.workEntriesService.getBookEmployeesSummary(bookId, { month, year });
+            res.json(data);
+        } catch (ex) {
+            next({ statusCode: ex.errno || 500, message: ex.message || ex });
+        }
+    }
+
+    async getBookEmployeeDetails(req, res, next) {
+        try {
+            const { bookId, employeeId } = req.params;
+            const { month, year } = req.query;
+            const data = await WorkEntriesController.workEntriesService.getBookEmployeeDetails(bookId, employeeId, { month, year });
+            res.json(data);
+        } catch (ex) {
+            next({ statusCode: ex.errno || 500, message: ex.message || ex });
+        }
+    }
+
+    async getMonthlyWorkSummaryByEmployees(req, res, next) {
+        try {
+            const { month, year } = req.query;
+            if (!month || !year) {
                 return res.status(400).json({ message: "Missing month or year" });
-              }
-              const data = await WorkEntriesController.workEntriesService.getPaymentsSummaryByMonth({ month, year });
-              res.json(data);
-            } catch (ex) {
-              next({ statusCode: ex.errno || 500, message: ex.message || ex });
             }
-          }
-          
-    
+            const data = await WorkEntriesController.workEntriesService.getPaymentsSummaryByMonth({ month, year });
+            res.json(data);
+        } catch (ex) {
+            next({ statusCode: ex.errno || 500, message: ex.message || ex });
+        }
+    }
+
+
 }
 

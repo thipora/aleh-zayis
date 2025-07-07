@@ -75,7 +75,9 @@ const EmployeeWorkPage = () => {
       ) : (
         <WorkEntries
           workEntries={entries}
+          onUpdate={setEntries}
           allowUpdate={false}
+          allowDelete={true}
           month={month}
           year={year}
           employeeName={state?.name}

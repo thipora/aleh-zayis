@@ -30,7 +30,6 @@ const EmployeeList = () => {
     const fetchEmployees = async () => {
       try {
         const data = await api.getRequest("/employees");
-        console.log(data)
         setEmployees(data);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -102,22 +101,6 @@ const EmployeeList = () => {
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-        {/* <Button
-          variant="contained"
-          color="success"
-          onClick={handleExportAllWork}
-        >
-          {t("employeeList.exportAll")}
-        </Button> */}
-        {/* <Button
-          variant="contained"
-          color="success"
-          onClick={handleExportAllWork}
-          disabled={isExporting}
-          startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : null}
-        >
-          {isExporting ? t("employeeList.exporting") : t("employeeList.exportAll")}
-        </Button> */}
         <Button
           variant="contained"
           color="success"
