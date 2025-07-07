@@ -65,26 +65,20 @@ export class BookAssignmentsService {
       if (Array.isArray(field.value)) {
         for (const valueId of valueIds) {
           const option = options.find(opt => opt.id === valueId);
-                console.log(valueId)
-                                console.log(options)
           if (!option) continue;
           const label = option.label;
           if (employeeName.includes(label) || label.includes(employeeName)) {
-                    console.log("aaa")
             return role;
           }
         }
       } else {
         const option = options.find(opt => opt.orderindex === valueIds);
-                        console.log(valueIds)
         const name = option.name;
         if (employeeName.includes(name) || name.includes(employeeName)) {
-                  console.log("bbbb")
           return role;
         }
       }
     }
-            console.log("ccccc")
     return null;
   }
 
@@ -130,17 +124,14 @@ export class BookAssignmentsService {
       'SELECT id_role FROM roles WHERE role_name = ?',
       [roleFromClickUp]
     );
-                console.log("222")
     if (!roleRow) throw new Error(`Role "${roleFromClickUp}" not found in DB`);
     const matchedRoleId = roleRow.id_role;
-            console.log("3333")
     if (selectedRoleIds.length > 0 && !selectedRoleIds.includes(matchedRoleId)) {
       return {
         inserted: false,
         message: 'Selected roles do not match ClickUp role'
       };
     }
-            console.log("444")
     const [empRole] = await executeQuery(
       'SELECT id_employee_role FROM employee_roles WHERE employee_id = ? AND role_id = ?',
       [employeeId, matchedRoleId]
@@ -148,9 +139,7 @@ export class BookAssignmentsService {
     if (!empRole) {
       return { inserted: false, message: 'Employee does not have this role in DB' };
     }
-            console.log("5555")
     const employeeRoleId = empRole.id_employee_role;
-            console.log("66666")
     const [existingAssignment] = await executeQuery(
       `SELECT * FROM book_assignments 
      WHERE book_id = ? AND employee_role_id = ?`,

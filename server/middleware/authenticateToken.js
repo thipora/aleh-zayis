@@ -6,7 +6,6 @@ export const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const tokenFromHeader = authHeader && authHeader.split(' ')[1];
     const token = tokenFromHeader || req?.query?.token || req?.cookies["x-access-token"];
-    console.log(token)
     if (!token)
         return res.sendStatus(403).send("not access Token");
 

@@ -166,9 +166,10 @@ export class ReportsService {
     worksheet.views = [{ rightToLeft: false }];
 
     worksheet.columns = [
-            { header: "Employee", key: "employee_name", width: 25 },
+      { header: "Employee", key: "employee_name", width: 25 },
       { header: "Role", key: "role_name", width: 20 },
       { header: "Book", key: "AZ_book_id", width: 30 },
+      { header: "Project Manager", key: "project_manager_name", width: 25 },
       { header: "Date", key: "date", width: 15 },
       { header: "Start Time", key: "start_time", width: 12 },
       { header: "End Time", key: "end_time", width: 12 },
@@ -204,6 +205,7 @@ export class ReportsService {
         employee_name: row.employee_name,
         role_name: row.role_name,
         AZ_book_id: row.AZ_book_id,
+        project_manager_name: row.project_manager_name || "",
         date: row.date?.toISOString().split("T")[0],
         start_time: row.start_time?.slice(0, 5) || "",
         end_time: row.end_time?.slice(0, 5) || "",
@@ -238,16 +240,34 @@ export class ReportsService {
         we.applied_rate,
         we.is_special_work,
         er.hourly_rate,
-        er.special_rate
+        er.special_rate,
+        b.project_manager_clickup_id,
+        u_pm.name AS project_manager_name
+
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN employees e ON er.employee_id = e.id_employee
       JOIN users u ON e.user_id = u.id_user
       JOIN roles r ON er.role_id = r.id_role
       JOIN books b ON we.book_id = b.id_book
+
+      LEFT JOIN employees e_pm ON e_pm.clickup_id = b.project_manager_clickup_id
+      LEFT JOIN users u_pm ON e_pm.user_id = u_pm.id_user
+
       ORDER BY we.date DESC
     `;
-    return await executeQuery(query);
+    const rows = await executeQuery(query);
+    for (const row of rows) {
+      if (!row.project_manager_name && row.project_manager_clickup_id) {
+        try {
+          row.project_manager_name = await getProjectManagerNameById(row.project_manager_clickup_id);
+        } catch (error) {
+          console.error('Error fetching project manager name:');
+          row.project_manager_name = 'Error fetching';
+        }
+      }
+    }
+    return rows;
   }
 
 }

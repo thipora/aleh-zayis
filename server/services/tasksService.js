@@ -8,7 +8,6 @@ export async function getTaskMembersFromList(listId) {
         data.tasks.forEach(task => {
             if (task.custom_fields) {
                 task.custom_fields.forEach(field => {
-                    console.log(task.custom_fields);
                     if (field.name === 'Email') {
                         if (field.name.value) {
                             emails.add(field.value);
@@ -21,14 +20,13 @@ export async function getTaskMembersFromList(listId) {
     
         const tasks = data.tasks;
 
-        console.log(tasks[0]);
         tasks.forEach(task => {
             if (task.creator && task.creator.email) {
                 emails.add(task.creator.email);
             }
-            if(task.Email || task.email){
-                console.log(task.Email)
-            }
+            // if(task.Email || task.email){
+            //     console.log(task.Email)
+            // }
             if (task.assignees) {
                 task.assignees.forEach(assignee => {
                     if (assignee.email) {
