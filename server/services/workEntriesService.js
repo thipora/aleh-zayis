@@ -116,7 +116,7 @@ export class WorkEntriesService {
     }
     const employeeRoleId = empRole.id_employee_role;
     let is_special_work = true;
-    if (quantity == 0) {
+    if (start_time) {
       is_special_work = false;
       const calculated = calculateWorkQuantityFromTimes(start_time, end_time);
       if (calculated) quantity = calculated;

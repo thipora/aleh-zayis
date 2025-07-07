@@ -166,6 +166,14 @@
     "all": "All"
   },
   "AddWorkDialog": {
+    "pause": "Pause",
+    "finish": "Finish",
+    "reset": "Reset",
+    "resume": "Resume",
+    "confirmReset": "Are you sure you want to reset the timer?",
+    "timerMode": "Using Timer",
+    "rangeMode": "Start and End Time",
+    "manualMode": "Manual Hours",
     "title": "Add Work Entry",
     "bookLabel": "Choose Book",
     "byHours": "Work by hours",
@@ -177,7 +185,13 @@
     "notes": "Notes",
     "date": "Date",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "continue": "CONTINUE",
+    "confirmCancelTitle": "Are you sure you want to cancel?",
+    "yes": "Yes",
+    "no": "No",
+    "hours": "Hours",
+    "minutes": "Minutes"
   },
   "ManagerDashboard": {
     "title": "Manager Dashboard",

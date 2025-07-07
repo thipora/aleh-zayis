@@ -2,55 +2,73 @@ import React, { useState, useEffect } from "react";
 import {
   Dialog, DialogActions, DialogContent, DialogTitle,
   TextField, Button, CircularProgress, MenuItem, Select,
-  FormControl, InputLabel, Checkbox, FormControlLabel, FormHelperText, Box
+  FormControl, InputLabel, FormHelperText, Tabs, Tab
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import TimerInput from "./TimerInput";
+import RangeInput from "./RangeInput";
+import ManualInput from "./ManualInput";
 
-const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
+const TIMER_CANCEL_KEY = "timerCanceled";
+
+const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
+  const { t } = useTranslation();
+  const [selectedMode, setSelectedMode] = useState("timer");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [disableTabs, setDisableTabs] = useState(false);
+
   const [newWork, setNewWork] = useState({
     book_id: "",
     book_name: "",
-    hours: "",
-    minutes: "",
-    start_time: "",
-    end_time: "",
+    start_time: "00:00",
+    end_time: "00:00",
+    quantity: "",
     description: "",
     notes: "",
     date: new Date().toISOString().split("T")[0],
-    is_special_work: false,
+    entry_mode: "timer"
   });
 
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [isSpecialWork, setIsSpecialWork] = useState(false);
-  const [quantity, setQuantity] = useState("");
-  const [is_hourly_primary, set_is_hourly_primary] = useState(true);
-  const { t } = useTranslation();
+  const [startTime, setStartTime] = useState(null);
+  const [elapsed, setElapsed] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [timerFinished, setTimerFinished] = useState(false);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
-    if (!open) {
-      setNewWork({
-        book_id: "",
-        book_name: "",
-        hours: "",
-        minutes: "",
-        start_time: "",
-        end_time: "",
-        description: "",
-        notes: "",
-        date: new Date().toISOString().split("T")[0],
-      });
-      setErrors({});
-      setIsSpecialWork(false);
-      setQuantity("");
-      set_is_hourly_primary(role[0].is_hourly_primary === 0)
+    const savedTimer = JSON.parse(localStorage.getItem("activeTimer"));
+    const canceled = localStorage.getItem(TIMER_CANCEL_KEY) === "true";
+    if (savedTimer && savedTimer.isRunning && !canceled) {
+      setStartTime(savedTimer.startTime);
+      setIsRunning(true);
+    } else {
+      localStorage.removeItem("activeTimer");
+      localStorage.removeItem(TIMER_CANCEL_KEY);
     }
-  }, [open]);
+  }, []);
+
+  useEffect(() => {
+    let interval;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setElapsed(Date.now() - startTime);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, startTime]);
+
+  const handleTabChange = (e, newValue) => {
+    if (isRunning) return;
+    setSelectedMode(newValue);
+    setNewWork(prev => ({ ...prev, entry_mode: newValue }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "book_id") {
-      const selectedBook = books.find(book => book.id_book === value);
+      const selectedBook = books.find(b => b.id_book === value);
       setNewWork(prev => ({
         ...prev,
         book_id: value,
@@ -61,165 +79,136 @@ const AddWorkDialog = ({ open, onClose, onAdd, books, role }) => {
     }
   };
 
-  const handleCheckboxChange = (e) => {
-    setIsSpecialWork(e.target.checked);
+  const handleQuantityUpdate = (q, start = null, end = null) => {
+    setNewWork(prev => ({
+      ...prev,
+      quantity: q,
+      start_time: start || prev.start_time,
+      end_time: end || prev.end_time
+    }));
   };
 
   const handleSave = async () => {
-    let newErrors = {};
+    const newErrors = {};
+    if (!newWork.book_id) newErrors.book_id = t("AddWorkDialog.errors.book");
+    if (!newWork.description) newErrors.description = t("AddWorkDialog.errors.description");
+    if (!newWork.date) newErrors.date = t("AddWorkDialog.errors.date");
+    if (!newWork.quantity) newErrors.quantity = t("AddWorkDialog.errors.quantity");
 
-    if (!newWork.book_id) newErrors.book_id = "This field is required";
-    if (!newWork.description) newErrors.description = "This field is required";
-    if (!newWork.date) newErrors.date = "This field is required";
-
-    const isUsingTime =
-      (role[0].is_hourly_primary === 1 && !isSpecialWork) ||
-      (role[0].is_hourly_primary === 0 && isSpecialWork);
-
-    if (isUsingTime) {
-      if (!newWork.start_time || !newWork.end_time) {
-        newErrors.start_time = "Start and end time are required";
-      } else if (newWork.end_time < newWork.start_time) {
-        newErrors.end_time = "End time must be after start time";
-      }
-    } else {
-      if (!quantity) {
-        newErrors.quantity = "This field is required";
-      }
-    }
+    newWork.quantity = parseFloat(newWork.quantity);
 
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length === 0) {
       setLoading(true);
       try {
-        const totalMinutes =
-          parseInt(newWork.hours || 0) * 60 + parseInt(newWork.minutes || 0);
-        const hourQuantity = (totalMinutes / 60).toFixed(3);
-
-        const dataToSend = {
-          ...newWork,
-          quantity: isUsingTime ? hourQuantity : quantity,
-          hours: undefined,
-          minutes: undefined
-        };
-
-        await onAdd(dataToSend);
-        onClose();
-      } catch (error) {
+        await onAdd(newWork);
+        handleDialogClose();
+      } catch (err) {
         alert("Error adding work entry.");
       } finally {
-        setLoading(false);
+        setDisableTabs(false);
       }
     }
   };
 
+  const handleDialogClose = () => {
+    setDisableTabs(false);
+    setStartTime(null);
+    setElapsed(0);
+    setIsRunning(false);
+    localStorage.setItem(TIMER_CANCEL_KEY, "true");
+    localStorage.removeItem("activeTimer");
+    localStorage.removeItem("activeTimerData");
+    setTimerFinished(false);
+    onClose();
+  };
+
   return (
-  <Dialog open={open} onClose={onClose}>
-    <DialogTitle>{t("AddWorkDialog.title")}</DialogTitle>
-    <DialogContent>
-      <FormControl fullWidth margin="normal" error={!!errors.book_id}>
-        <InputLabel>{t("AddWorkDialog.bookLabel")}</InputLabel>
-        <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
-          {books.map(book => (
-            <MenuItem key={book.id_book} value={book.id_book}>
-              {book.AZ_book_id} - {book.title}
-            </MenuItem>
-          ))}
-        </Select>
-        {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}
-      </FormControl>
+    <Dialog open={open} handleDialogClose={handleDialogClose} fullWidth maxWidth="sm">
+      <DialogTitle>{t("AddWorkDialog.title")}</DialogTitle>
+      <DialogContent>
+        <Tabs value={selectedMode} onChange={handleTabChange} variant="fullWidth">
+          <Tab label={t("AddWorkDialog.timerMode") || "Timer"} value="timer" />
+          <Tab label={t("AddWorkDialog.rangeMode") || "Start-End"} value="range" disabled={disableTabs} />
+          <Tab label={t("AddWorkDialog.manualMode") || "Manual"} value="manual" disabled={disableTabs} />
+        </Tabs>
 
-      {role[0].uses_special_quantity === 1 && (
-        <FormControlLabel
-          control={<Checkbox checked={isSpecialWork} onChange={handleCheckboxChange} />}
-          label={
-            role[0].is_hourly_primary
-              ? t("AddWorkDialog.bySpecial", { unit: role[0].special_unit })
-              : t("AddWorkDialog.byHours")
+        {selectedMode === "timer" && (
+          <TimerInput
+            onFinish={(elapsedMs) => {
+              const hours = (elapsedMs / 1000 / 60 / 60).toFixed(3);
+              const now = new Date();
+              const start = new Date(now.getTime() - elapsedMs);
+              handleQuantityUpdate(hours, start.toTimeString().slice(0, 5), now.toTimeString().slice(0, 5));
+              setTimerFinished(true);
+            }}
+            disabled={!newWork.book_id}
+            setDisableTabs={setDisableTabs}
+            setTimerFinished={setTimerFinished}
+            setIsTimerRunning={setIsTimerRunning}
+          />
+        )}
+
+        {selectedMode === "range" && (
+          <RangeInput onQuantityUpdate={handleQuantityUpdate} />
+        )}
+
+        {selectedMode === "manual" && (
+          <ManualInput onChange={(q) => setNewWork(prev => ({ ...prev, quantity: q }))} />
+        )}
+
+
+        <FormControl fullWidth margin="normal" error={!!errors.book_id}>
+          <InputLabel>{t("AddWorkDialog.bookLabel")}</InputLabel>
+          <Select name="book_id" value={newWork.book_id} onChange={handleInputChange}>
+            {books.map(book => (
+              <MenuItem key={book.id_book} value={book.id_book}>
+                {book.AZ_book_id} - {book.title}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors.book_id && <FormHelperText>{errors.book_id}</FormHelperText>}
+        </FormControl>
+
+        <TextField label={t("AddWorkDialog.description")} name="description" value={newWork.description} onChange={handleInputChange} fullWidth margin="normal" error={!!errors.description} helperText={errors.description} />
+        <TextField label={t("AddWorkDialog.notes")} name="notes" value={newWork.notes || ""} onChange={handleInputChange} fullWidth margin="normal" />
+        <TextField label={t("AddWorkDialog.date")} name="date" type="date" value={newWork.date} onChange={handleInputChange} fullWidth margin="normal" error={!!errors.date} helperText={errors.date} />
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={() => setConfirmCancelOpen(true)}>
+          {t("AddWorkDialog.cancel")}
+        </Button>
+        <Button
+          onClick={handleSave}
+          disabled={
+            loading ||
+            (selectedMode === "timer" && (!timerFinished || isRunning))
           }
-        />
-      )}
-
-      {(role[0].is_hourly_primary === 1 && !isSpecialWork) ||
-      (role[0].is_hourly_primary === 0 && isSpecialWork) ? (
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <TextField
-            label={t("AddWorkDialog.start")}
-            name="start_time"
-            type="time"
-            value={newWork.start_time}
-            onChange={handleInputChange}
-            fullWidth
-            error={!!errors.start_time}
-            InputLabelProps={{ shrink: true }}
-          />
-          <TextField
-            label={t("AddWorkDialog.end")}
-            name="end_time"
-            type="time"
-            value={newWork.end_time}
-            onChange={handleInputChange}
-            fullWidth
-            error={!!errors.end_time}
-            helperText={errors.end_time}
-            InputLabelProps={{ shrink: true }}
-          />
-        </Box>
-      ) : (
-        <TextField
-          label={role[0].special_unit || t("AddWorkDialog.quantity")}
-          type="text"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          fullWidth
-          margin="normal"
-          error={!!errors.quantity}
-          helperText={errors.quantity}
-        />
-      )}
-
-      <TextField
-        label={t("AddWorkDialog.description")}
-        name="description"
-        value={newWork.description || ""}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        error={!!errors.description}
-        helperText={errors.description}
-      />
-
-      <TextField
-        label={t("AddWorkDialog.notes")}
-        name="notes"
-        value={newWork.notes || ""}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-      />
-
-      <TextField
-        label={t("AddWorkDialog.date")}
-        name="date"
-        type="date"
-        value={newWork.date}
-        onChange={handleInputChange}
-        fullWidth
-        margin="normal"
-        error={!!errors.date}
-        helperText={errors.date}
-      />
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={onClose} color="secondary">{t("AddWorkDialog.cancel")}</Button>
-      <Button onClick={handleSave} color="primary" disabled={loading}>
-        {loading ? <CircularProgress size={24} /> : t("AddWorkDialog.save")}
-      </Button>
-    </DialogActions>
-  </Dialog>
-);
-
+        >
+          {loading ? <CircularProgress size={24} /> : t("AddWorkDialog.save")}
+        </Button>
+      </DialogActions>
+      <Dialog open={confirmCancelOpen} onClose={() => setConfirmCancelOpen(false)}>
+        <DialogTitle>{t("AddWorkDialog.confirmCancelTitle") || "Are you sure you want to cancel?"}</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setConfirmCancelOpen(false)}>
+            {t("AddWorkDialog.no") || "No"}
+          </Button>
+          <Button
+            onClick={() => {
+              setConfirmCancelOpen(false);
+              handleDialogClose();
+            }}
+            color="error"
+            variant="contained"
+          >
+            {t("AddWorkDialog.yes") || "Yes"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Dialog>
+  );
 };
 
 export default AddWorkDialog;
