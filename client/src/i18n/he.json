@@ -185,7 +185,8 @@
     "yes": "כן",
     "no": "לא",
     "hours": "שעות",
-    "minutes": "דקות"
+    "minutes": "דקות",
+    "showMoreModes": "אפשרויות הזנת עבודה נוספות"
   },
   "ManagerDashboard": {
     "title": "לוח מנהל",

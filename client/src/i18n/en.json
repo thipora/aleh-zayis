@@ -191,7 +191,8 @@
     "yes": "Yes",
     "no": "No",
     "hours": "Hours",
-    "minutes": "Minutes"
+    "minutes": "Minutes",
+    "showMoreModes": "Other work entry options"
   },
   "ManagerDashboard": {
     "title": "Manager Dashboard",

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Dialog, DialogActions, DialogContent, DialogTitle,
   TextField, Button, CircularProgress, MenuItem, Select,
-  FormControl, InputLabel, FormHelperText, Tabs, Tab
+  FormControl, InputLabel, FormHelperText, Tabs, Tab, Box
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import TimerInput from "./TimerInput";
@@ -36,6 +36,7 @@ const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [showOtherModes, setShowOtherModes] = useState(false);
 
   useEffect(() => {
     const savedTimer = JSON.parse(localStorage.getItem("activeTimer"));
@@ -127,11 +128,19 @@ const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
     <Dialog open={open} handleDialogClose={handleDialogClose} fullWidth maxWidth="sm">
       <DialogTitle>{t("AddWorkDialog.title")}</DialogTitle>
       <DialogContent>
-        <Tabs value={selectedMode} onChange={handleTabChange} variant="fullWidth">
+        {showOtherModes && (<Tabs value={selectedMode} onChange={handleTabChange} variant="fullWidth">
           <Tab label={t("AddWorkDialog.timerMode") || "Timer"} value="timer" />
           <Tab label={t("AddWorkDialog.rangeMode") || "Start-End"} value="range" disabled={disableTabs} />
           <Tab label={t("AddWorkDialog.manualMode") || "Manual"} value="manual" disabled={disableTabs} />
-        </Tabs>
+        </Tabs>)}
+
+        {!showOtherModes && (
+          <Box textAlign="center" mt={2}>
+            <Button variant="outlined" onClick={() => setShowOtherModes(true)}>
+              {t("AddWorkDialog.showMoreModes") || "אפשרויות הזנת עבודה נוספות"}
+            </Button>
+          </Box>
+        )}
 
         {selectedMode === "timer" && (
           <TimerInput
