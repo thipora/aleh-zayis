@@ -33,7 +33,8 @@
     "editRates": "עריכת תעריפים",
     "editEnglishName": "עריכת שם באנגלית",
     "englishName": "שם באנגלית",
-    "exportAll": "ייצוא כל העובדים"
+    "exportAll": "ייצוא כל העובדים",
+    "exporting": "מוריד..."
   },
   "EmployeeDashboard": {
     "title": "לוח בקרה לעובד",

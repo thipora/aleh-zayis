@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Typography, Paper, Box, Button, Table, TableHead,
+  Typography, Paper, Box, Button, Table, TableHead, CircularProgress,
   TableBody, TableRow, TableCell, TextField, FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions
 } from "@mui/material";
 import { APIrequests } from "../../APIrequests";
@@ -20,6 +20,7 @@ const EmployeeList = () => {
   const [filterAvailability, setFilterAvailability] = useState("");
   const [filterRole, setFilterRole] = useState("");
   const [nameError, setNameError] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
 
   const navigate = useNavigate();
   const api = new APIrequests();
@@ -73,6 +74,9 @@ const EmployeeList = () => {
 
   const handleExportAllWork = async () => {
     try {
+      setIsExporting(true);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const response = await api.getFile(`/reports/all-work-entries-excel`);
       const blob = new Blob([response], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -86,6 +90,8 @@ const EmployeeList = () => {
       link.remove();
     } catch (error) {
       console.error("Failed to export work entries", error);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -96,13 +102,32 @@ const EmployeeList = () => {
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-        <Button
+        {/* <Button
           variant="contained"
           color="success"
           onClick={handleExportAllWork}
         >
           {t("employeeList.exportAll")}
+        </Button> */}
+        {/* <Button
+          variant="contained"
+          color="success"
+          onClick={handleExportAllWork}
+          disabled={isExporting}
+          startIcon={isExporting ? <CircularProgress size={20} color="inherit" /> : null}
+        >
+          {isExporting ? t("employeeList.exporting") : t("employeeList.exportAll")}
+        </Button> */}
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleExportAllWork}
+          disabled={isExporting}
+          startIcon={isExporting && <CircularProgress size={16} color="inherit" />}
+        >
+          {isExporting ? t("employeeList.exporting") : t("employeeList.exportAll")}
         </Button>
+
         <TextField
           label={t("employeeList.searchName")}
           value={filterName}

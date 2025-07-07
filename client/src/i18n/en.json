@@ -32,7 +32,8 @@
     "editRates": "Edit Rates",
     "editEnglishName": "Edit English Name",
     "englishName": "English Name",
-    "exportAll": "Export All Employees"
+    "exportAll": "Export All Employees",
+    "exporting": "Downloading..."
   },
   "forgot": {
     "title": "Forgot Password",
