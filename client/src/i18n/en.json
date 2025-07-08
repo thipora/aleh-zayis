@@ -197,7 +197,12 @@
     "no": "No",
     "hours": "Hours",
     "minutes": "Minutes",
-    "showMoreModes": "Other work entry options"
+    "showMoreModes": "Other work entry options",
+    "language": {
+      "hebrew": "Hebrew",
+      "english": "English",
+      "both": "Both languages"
+    }
   },
   "ManagerDashboard": {
     "title": "Manager Dashboard",

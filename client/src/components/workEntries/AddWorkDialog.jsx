@@ -3,6 +3,7 @@ import {
   Dialog, DialogActions, DialogContent, DialogTitle,
   TextField, Button, CircularProgress, MenuItem, Select,
   FormControl, InputLabel, FormHelperText, Tabs, Tab, Box
+  // , Radio, RadioGroup, FormControlLabel
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import TimerInput from "./TimerInput";
@@ -17,6 +18,8 @@ const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [disableTabs, setDisableTabs] = useState(false);
+  // const user = JSON.parse(localStorage.getItem("user"));
+  // const isProjectManager = user?.roles?.includes(8);
 
   const [newWork, setNewWork] = useState({
     book_id: "",
@@ -27,7 +30,9 @@ const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
     description: "",
     notes: "",
     date: new Date().toISOString().split("T")[0],
-    entry_mode: "timer"
+    entry_mode: "timer",
+    // rate: "0.00",
+    // language: "",
   });
 
   const [startTime, setStartTime] = useState(null);
@@ -182,6 +187,45 @@ const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
         <TextField label={t("AddWorkDialog.description")} name="description" value={newWork.description} onChange={handleInputChange} fullWidth margin="normal" error={!!errors.description} helperText={errors.description} />
         <TextField label={t("AddWorkDialog.notes")} name="notes" value={newWork.notes || ""} onChange={handleInputChange} fullWidth margin="normal" />
         <TextField label={t("AddWorkDialog.date")} name="date" type="date" value={newWork.date} onChange={handleInputChange} fullWidth margin="normal" error={!!errors.date} helperText={errors.date} />
+        {/* <Box display="flex" justifyContent="center" mt={2}>
+  <RadioGroup
+    row
+    name="language"
+    value={newWork.language}
+    onChange={handleInputChange}
+  >
+    <FormControlLabel
+      value="he"
+      control={<Radio size="small" />}
+      label={t("AddWorkDialog.language.hebrew")}
+    />
+    <FormControlLabel
+      value="en"
+      control={<Radio size="small" />}
+      label={t("AddWorkDialog.language.english")}
+    />
+    <FormControlLabel
+      value="both"
+      control={<Radio size="small" />}
+      label={t("AddWorkDialog.language.both")}
+    />
+  </RadioGroup>
+</Box>
+
+        {isProjectManager && (
+          <TextField
+            label={t("AddWorkDialog.rate")}
+            name="rate"
+            value={newWork.rate}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            type="number"
+            inputProps={{ min: 0 }}
+            error={!!errors.rate}
+            helperText={errors.rate}
+          />
+        )} */}
       </DialogContent>
 
       <DialogActions>

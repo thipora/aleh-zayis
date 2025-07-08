@@ -191,7 +191,12 @@
     "no": "לא",
     "hours": "שעות",
     "minutes": "דקות",
-    "showMoreModes": "אפשרויות הזנת עבודה נוספות"
+    "showMoreModes": "אפשרויות הזנת עבודה נוספות",
+    "language": {
+      "hebrew": "עברית",
+      "english": "אנגלית",
+      "both": "שתי השפות"
+    }
   },
   "ManagerDashboard": {
     "title": "לוח מנהל",
