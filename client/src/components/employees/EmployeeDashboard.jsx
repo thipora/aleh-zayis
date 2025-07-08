@@ -122,6 +122,9 @@ const EmployeeDashboard = () => {
       const roleId = user?.roles[0];
       const currentDate = new Date().toISOString().split('T')[0];
 
+      setWorkEntries((prevWorkEntries) => [...prevWorkEntries, { ...newWorkData, is_special_work }]);
+      setNewWork({ book_id: "", quantity: "", description: "", notes: "", is_special_work: false, date: currentDate });
+
       await apiRequests.postRequest(`/workEntries/${employeeId}`, {
         roleId,
         book_id,
@@ -134,9 +137,6 @@ const EmployeeDashboard = () => {
         start_time,
         end_time
       });
-
-      setWorkEntries((prevWorkEntries) => [...prevWorkEntries, { ...newWorkData, is_special_work }]);
-      setNewWork({ book_id: "", quantity: "", description: "", notes: "", is_special_work: false, date: currentDate });
       setOpen(false);
       fetchWorkEntries();
     } catch (error) {
