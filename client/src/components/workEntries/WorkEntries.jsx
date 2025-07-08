@@ -289,7 +289,6 @@ const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonth
                         variant="outlined"
                         color="error"
                         onClick={() => handleDeleteClick(log.id_work_entries)}
-                        disabled={!isToday(log.date)}
                       >
                         {t("workEntries.delete")}
                       </Button>
