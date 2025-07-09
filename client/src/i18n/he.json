@@ -44,7 +44,8 @@
     "changePassword": "שינוי סיסמה",
     "addNew": "הוסף שעות עבודה",
     "close": "סגור",
-    "cancel": "ביטול"
+    "cancel": "ביטול",
+    "projectEmployees": "רשימת עובדים"
   },
   "workEntries": {
     "actions": "פעולות",

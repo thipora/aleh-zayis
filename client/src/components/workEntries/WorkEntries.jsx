@@ -12,6 +12,16 @@ import i18n from "i18next";
 import ConfirmDialog from "../common/ConfirmDialog";
 import { APIrequests } from "../../APIrequests";
 
+function isWithin24Hours(createdAtString) {
+  const createdAt = new Date(createdAtString);
+  const now = new Date();
+
+  const diffInMs = now - createdAt;
+  const diffInHours = diffInMs / (1000 * 60 * 60);
+
+  return diffInHours <= 24;
+};
+
 function useDurationFormatter() {
   const { t } = useTranslation();
 
@@ -272,16 +282,27 @@ const WorkEntries = ({ workEntries, onUpdate, month, year, employeeName, onMonth
                 {(allowUpdate || allowDelete) && (
                   <TableCell>
                     {allowUpdate && (
+                      // <Button
+                      //   size="small"
+                      //   variant="outlined"
+                      //   color="primary"
+                      //   onClick={() => handleUpdate(log)}
+                      //   disabled={!isToday(log.date)}
+                      //   sx={{ mr: allowDelete ? 1 : 0 }}
+                      // >
+                      //   {t("workEntries.update")}
+                      // </Button>
                       <Button
                         size="small"
                         variant="outlined"
                         color="primary"
                         onClick={() => handleUpdate(log)}
-                        disabled={!isToday(log.date)}
+                        disabled={!isWithin24Hours(log.created_at)}
                         sx={{ mr: allowDelete ? 1 : 0 }}
                       >
                         {t("workEntries.update")}
                       </Button>
+
                     )}
                     {allowDelete && (
                       <Button

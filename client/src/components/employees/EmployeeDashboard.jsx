@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import MonthSelector from "../common/MonthSelector";
 
 
-
 const EmployeeDashboard = () => {
   const [workEntries, setWorkEntries] = useState([]);
   const [newWorkEntrie, setNewWork] = useState({
@@ -48,7 +47,8 @@ const EmployeeDashboard = () => {
   const { t } = useTranslation();
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [currency, setcurrency] = useState(null);
-
+  const isProjectManager = localStorage.getItem("isProjectManager") === "true";
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const employeeId = user.employee_id;
@@ -269,7 +269,19 @@ const EmployeeDashboard = () => {
           onChange={handleAvailabilityChange}
         />
       </Box>
+
+      {isProjectManager && (
+        <Button
+          variant="contained"
+          onClick={() => navigate("/manager/employees")}
+          sx={{ px: 2, py: 1, fontSize: "1rem", borderRadius: 3 }}
+        >
+          {t("EmployeeDashboard.projectEmployees")}
+        </Button>
+      )}
+
       <Typography variant="h4">{t("EmployeeDashboard.title")}</Typography>
+
       <Box
         display="flex"
         flexWrap="wrap"

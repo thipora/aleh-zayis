@@ -42,7 +42,8 @@ export class WorkEntriesService {
         r.role_name,
         r.special_unit,
         we.is_special_work,
-        e.currency
+        e.currency,
+        we.created_at
       FROM work_entries we
       JOIN employee_roles er ON we.employee_role_id = er.id_employee_role
       JOIN employees e ON er.employee_id = e.id_employee
@@ -61,7 +62,6 @@ export class WorkEntriesService {
         project_manager_name: managerName,
       };
     }));
-
     return {
       entries: entriesWithManager,
       currency

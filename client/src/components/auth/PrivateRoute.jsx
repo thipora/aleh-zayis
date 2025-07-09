@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { APIrequests } from "../../APIrequests";
 
-const PrivateRoute = ({ children, allowedRoles }) => {
+// const PrivateRoute = ({ children, allowedRoles }) => {
+const PrivateRoute = ({ children, allowedRoles = [], allowProjectManager = false }) => {
   const [user, setUser] = useState(null);
   const [valid, setValid] = useState(null);
   const api = new APIrequests();
@@ -28,11 +29,20 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
   if (!valid) return <Navigate to="/login" replace />;
 
-  if (allowedRoles && !allowedRoles.includes(user.account_type)) {
+  const hasAccountTypeAccess = allowedRoles.includes(user.account_type);
+  const hasProjectManagerAccess = allowProjectManager && user.isProjectManager === true;
+
+  // if (allowedRoles && !allowedRoles.includes(user.account_type)) {
+  //   return <div style={{ textAlign: "center", paddingTop: "5rem", color: "darkred" }}>
+  //     Access Denied
+  //   </div>;
+  // }
+  if (!hasAccountTypeAccess && !hasProjectManagerAccess) {
     return <div style={{ textAlign: "center", paddingTop: "5rem", color: "darkred" }}>
       Access Denied
     </div>;
   }
+
 
   return children;
 };
