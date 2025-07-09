@@ -50,7 +50,8 @@
     "changePassword": "Change Password",
     "addNew": "Add Work Entry",
     "close": "Close",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "projectEmployees": "Employees List"
   },
   "workEntries": {
     "actions": "Actions",

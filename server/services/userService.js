@@ -53,6 +53,7 @@ export class UserService {
             }
         }
 
+        users[0].isProjectManager = users[0].roles?.includes(16);
         return users[0];
     }
 
