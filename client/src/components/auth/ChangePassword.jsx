@@ -6,6 +6,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useTranslation } from "react-i18next";
 
+
 const ChangePassword = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
