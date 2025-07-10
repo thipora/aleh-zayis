@@ -29,7 +29,7 @@ const AddWorkDialog = ({ open, onClose, onAdd, books }) => {
     quantity: "",
     description: "",
     notes: "",
-    date: new Date().toISOString().split("T")[0],
+    date: new Date().toLocaleDateString("sv-SE"),
     entry_mode: "timer",
     // rate: "0.00",
     // language: "",
